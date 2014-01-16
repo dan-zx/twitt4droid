@@ -62,11 +62,11 @@ public class WebLoginActivity extends Activity {
     /**
      * The name of the Intent-extra used to indicate the twitter user returned.
      */
-    public static final String EXTRA_USER = "com.twitter4droid.extra.user";
+    public static final String EXTRA_USER = "com.twitt4droid.extra.user";
      
     private static final String TAG = WebLoginActivity.class.getSimpleName();
     private static final String URL_OAUTH_VERIFIER = "oauth_verifier";
-    private static final String CALLBACK_URL = "oauth://twitter4droid";
+    private static final String CALLBACK_URL = "oauth://twitt4droid";
 
     private AsyncTwitter twitter;
     private ProgressBar loadingBar;

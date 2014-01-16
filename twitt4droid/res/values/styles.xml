@@ -14,12 +14,21 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Widget.HoloDark.Horizontal.ProgressBar" parent="android:Widget.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/holo_dark_horizontal_progress_bar</item>
-        <item name="android:minHeight">4dip</item>
-        <item name="android:maxHeight">4dip</item>
+        <item name="android:minHeight">4dp</item>
+        <item name="android:maxHeight">4dp</item>
+    </style>
+
+    <style name="Widget.LoginButton" parent="android:Widget.Button">
+        <item name="android:background">@drawable/login_button</item>
+        <item name="android:drawableLeft">@drawable/twitter_icon</item>
+        <item name="android:minHeight">45dp</item>
+        <item name="android:maxHeight">45dp</item>
+        <item name="android:text">@string/login_label</item>
+        <item name="android:textColor">#333333</item>
     </style>
 
 </resources>

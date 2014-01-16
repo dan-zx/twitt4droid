@@ -14,17 +14,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
-    
-    <!-- MENUS -->
-    <string name="reload_menu_title">Reload</string>
-    <string name="cancel_menu_title">Cancel</string>
-    
-    <!-- LOGIN BUTTON -->
-    <string name="login_label">Login</string>
-    <string name="logout_label">Logout</string>
-    
-    <!-- SHARED PREFERENCES -->
-    <string name="preference_file_key">com.twitt4droid.PREFERENCES</string>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-</resources>
+    <item android:drawable="@drawable/disabled_login_button" android:state_enabled="false"/>
+    <item android:drawable="@drawable/pressed_login_button" android:state_pressed="true"/>
+    <item android:drawable="@drawable/active_login_button"/>
+
+</selector>
