@@ -45,7 +45,7 @@ import com.twitt4droid.Twitt4droid;
  * <pre>
  * {@code 
  * <activity android:name="com.twitt4droid.activity.WebLoginActivity" 
- *           android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+ *           android:theme="@android:style/Theme.Black.NoTitleBar" />
  * }
  * </pre>
  * 
@@ -73,6 +73,9 @@ public class WebLoginActivity extends Activity {
     private MenuItem reloadCancelItem;
     private WebView webView;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +95,9 @@ public class WebLoginActivity extends Activity {
         }
     }
 
+    /**
+     * Sets up the web view
+     */
     private void setUpWebView() {
         webView = (WebView) findViewById(R.id.web_view);
         loadingBar = (ProgressBar) findViewById(R.id.loading_bar);
@@ -126,7 +132,10 @@ public class WebLoginActivity extends Activity {
             }
         });
     }
-    
+
+    /**
+     * Sets up Twitter async listeners.
+     */
     private void setUpTwitter() {
         twitter = Twitt4droid.getCurrentTwitter(getApplicationContext());
         twitter.addListener(new TwitterAdapter() {
@@ -162,6 +171,9 @@ public class WebLoginActivity extends Activity {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.web_browser, menu);
@@ -173,6 +185,9 @@ public class WebLoginActivity extends Activity {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.reload_cancel_item) {
