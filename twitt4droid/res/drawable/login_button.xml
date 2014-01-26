@@ -17,7 +17,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:drawable="@drawable/disabled_login_button" android:state_enabled="false"/>
-    <item android:drawable="@drawable/pressed_login_button" android:state_pressed="true"/>
+    <item android:drawable="@drawable/pressed_login_button" android:state_pressed="true" />
     <item android:drawable="@drawable/active_login_button"/>
 
 </selector>

@@ -143,6 +143,7 @@ public class WebLoginActivity extends Activity {
             @Override
             public void gotOAuthRequestToken(RequestToken token) {
                 Log.d(TAG, "RequestToken=" + token);
+                // FIXME: webView.loadUrl() cannot be called from other threads in higher API levels 
                 webView.loadUrl(token.getAuthenticationURL());
             }
 
@@ -155,7 +156,8 @@ public class WebLoginActivity extends Activity {
             @Override
             public void onException(TwitterException te, TwitterMethod method) {
                 Log.e(TAG, "Twitter error", te);
-                // TODO: report exception
+                // TODO: Report Twitter errors
+                // TODO: Catch cancel button event
             }
         });
     }
