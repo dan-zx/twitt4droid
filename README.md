@@ -1,9 +1,8 @@
 twitt4droid
-=======
+===========
 
-<img src="http://i40.tinypic.com/29qo2o2.png" height="150px" align="left" />
+<img src="https://dl.dropboxusercontent.com/u/1995295/img/twitt4droid/launcher-web.png" height="150px" align="left" />
 
-### twitt4droid, version 1.0
 This open-source library allows you to integrate Twitter into your Android app. 
 
 Contains several Android widgets and activities to easily integrate authentication and Twitter API services.
