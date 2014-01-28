@@ -97,7 +97,7 @@ public class LoginButton extends Button {
         setOnClickListener(new LoginClickListener(context));
 
         if (isInEditMode()) {
-            // hardcoding in edit mode as ontext.getResources().getColorStateList() doesn't seem to work in Eclipse
+            // hardcoding in edit mode as context.getResources().getColorStateList() doesn't seem to work in Eclipse
             setTextColor(Color.parseColor("#292f33"));
         } else {
             setTextColor(context.getResources().getColorStateList(R.color.login_button));

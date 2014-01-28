@@ -24,6 +24,12 @@
     <string name="login_label">Log in</string>
     <string name="logout_label">Log out</string>
     
+    <!-- ERRORS -->
+    <string name="twitter_error_title">Twitt4droid Error</string>
+    <string name="twitter_error_message">Something went wrong while connecting with Twitter. Try again later :(</string>
+    <string name="go_to_previous_activity">Return</string>
+    <string name="continue_working">Continue</string>
+    
     <!-- SHARED PREFERENCES -->
     <string name="preference_file_key">com.twitt4droid.PREFERENCES</string>
 

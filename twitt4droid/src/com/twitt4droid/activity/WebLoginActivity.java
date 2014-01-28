@@ -23,6 +23,8 @@ import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -65,7 +67,8 @@ public class WebLoginActivity extends Activity {
     public static final String EXTRA_USER = "com.twitt4droid.extra.user";
      
     private static final String TAG = WebLoginActivity.class.getSimpleName();
-    private static final String URL_OAUTH_VERIFIER = "oauth_verifier";
+    private static final String OAUTH_VERIFIER_CALLBACK_PARAMETER = "oauth_verifier";
+    private static final String DENIED_CALLBACK_PARAMETER = "denied";
     private static final String CALLBACK_URL = "oauth://twitt4droid";
 
     private AsyncTwitter twitter;
@@ -79,7 +82,6 @@ public class WebLoginActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
         if (Twitt4droid.areConsumerTokensAvailable(getApplicationContext())) {
             setUpTwitter();
             if (Twitt4droid.isUserLoggedIn(getApplicationContext())) {
@@ -91,6 +93,7 @@ public class WebLoginActivity extends Activity {
             }
         } else {
             Log.e(TAG, "Twitter consumer key and/or consumer secret are not defined correctly");
+            setResult(RESULT_CANCELED, getIntent());
             finish();
         }
     }
@@ -120,12 +123,21 @@ public class WebLoginActivity extends Activity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.d(TAG, url);
                 if (url.startsWith(CALLBACK_URL)) {
-                    String oauthVerifier = Uri.parse(url).getQueryParameter(URL_OAUTH_VERIFIER);
-                    twitter.getOAuthAccessTokenAsync(oauthVerifier);
-                    twitter.verifyCredentials();
-                    return true;
+                    Uri uri = Uri.parse(url);
+                    if (uri.getQueryParameter(DENIED_CALLBACK_PARAMETER) != null) {
+                        Log.i(TAG, "Authentication process was denied");
+                        setResult(RESULT_CANCELED, getIntent());
+                        twitter.addListener(null);
+                        finish();
+                        return true;
+                    }
+                    if (uri.getQueryParameter(OAUTH_VERIFIER_CALLBACK_PARAMETER) != null) {
+                        String oauthVerifier = uri.getQueryParameter(OAUTH_VERIFIER_CALLBACK_PARAMETER);
+                        twitter.getOAuthAccessTokenAsync(oauthVerifier);
+                        twitter.verifyCredentials();
+                        return true;
+                    }
                 }
 
                 return super.shouldOverrideUrlLoading(view, url);
@@ -141,7 +153,7 @@ public class WebLoginActivity extends Activity {
         twitter.addListener(new TwitterAdapter() {
             @Override
             public void verifiedCredentials(User user) {
-                Log.d(TAG, "User=" + user);
+                Log.i(TAG, "@" + user.getScreenName() + " was successfully authenticated");
                 Intent data = getIntent();
                 data.putExtra(EXTRA_USER, user);
                 setResult(RESULT_OK, data);
@@ -150,23 +162,46 @@ public class WebLoginActivity extends Activity {
             }
 
             @Override
-            public void gotOAuthRequestToken(RequestToken token) {
-                Log.d(TAG, "RequestToken=" + token);
-                // FIXME: webView.loadUrl() cannot be called from other threads in higher API levels 
-                webView.loadUrl(token.getAuthenticationURL());
+            public void gotOAuthRequestToken(final RequestToken token) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Log.d(TAG, "Loading authentication page...");
+                        webView.loadUrl(token.getAuthenticationURL());
+                    }
+                });
             }
 
             @Override
             public void gotOAuthAccessToken(AccessToken token) {
-                Log.d(TAG, "AccessToken=" + token);
+                Log.d(TAG, "Saving access tokens...");
                 Twitt4droid.saveAuthenticationInfo(getApplicationContext(), token);
             }
 
             @Override
             public void onException(TwitterException te, TwitterMethod method) {
                 Log.e(TAG, "Twitter error", te);
-                // TODO: Report Twitter errors
-                // TODO: Catch cancel button event
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        new AlertDialog.Builder(WebLoginActivity.this)
+                                .setTitle(R.string.twitter_error_title)
+                                .setMessage(R.string.twitter_error_message)
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton(R.string.continue_working, null)
+                                .setNegativeButton(R.string.go_to_previous_activity,
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Log.i(TAG, "User canceled authentication process due to an error");
+                                                setResult(RESULT_CANCELED, getIntent());
+                                                twitter.addListener(null);
+                                                finish();
+                                            }
+                                        })
+                                .setCancelable(false)
+                                .show();
+                    }
+                });
             }
         });
     }
