@@ -15,13 +15,6 @@
  */
 package com.twitt4droid.activity;
 
-import twitter4j.AsyncTwitter;
-import twitter4j.TwitterAdapter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterMethod;
-import twitter4j.User;
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.RequestToken;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -39,6 +32,15 @@ import android.widget.ProgressBar;
 
 import com.twitt4droid.R;
 import com.twitt4droid.Twitt4droid;
+
+import twitter4j.AsyncTwitter;
+import twitter4j.AsyncTwitterFactory;
+import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterMethod;
+import twitter4j.User;
+import twitter4j.auth.AccessToken;
+import twitter4j.auth.RequestToken;
 
 /**
  * This Activity provides the web based Twitter login process. Is not meant to 
@@ -127,8 +129,8 @@ public class WebLoginActivity extends Activity {
                     Uri uri = Uri.parse(url);
                     if (uri.getQueryParameter(DENIED_CALLBACK_PARAMETER) != null) {
                         Log.i(TAG, "Authentication process was denied");
-                        setResult(RESULT_CANCELED, getIntent());
                         twitter.addListener(null);
+                        setResult(RESULT_CANCELED, getIntent());
                         finish();
                         return true;
                     }
@@ -149,15 +151,16 @@ public class WebLoginActivity extends Activity {
      * Sets up Twitter async listeners.
      */
     private void setUpTwitter() {
-        twitter = Twitt4droid.getCurrentTwitter(getApplicationContext());
+        twitter = new AsyncTwitterFactory(Twitt4droid.getCurrentConfig(getApplicationContext()))
+                .getInstance();
         twitter.addListener(new TwitterAdapter() {
             @Override
             public void verifiedCredentials(User user) {
                 Log.i(TAG, "@" + user.getScreenName() + " was successfully authenticated");
+                twitter.addListener(null);
                 Intent data = getIntent();
                 data.putExtra(EXTRA_USER, user);
                 setResult(RESULT_OK, data);
-                twitter.addListener(null);
                 finish();
             }
 
@@ -193,8 +196,8 @@ public class WebLoginActivity extends Activity {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 Log.i(TAG, "User canceled authentication process due to an error");
-                                                setResult(RESULT_CANCELED, getIntent());
                                                 twitter.addListener(null);
+                                                setResult(RESULT_CANCELED, getIntent());
                                                 finish();
                                             }
                                         })
