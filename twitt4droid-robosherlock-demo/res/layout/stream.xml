@@ -15,28 +15,21 @@
      limitations under the License.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/instructions_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:padding="12dp"
-        android:text="@string/instructions"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+    <ListView
+        android:id="@+id/tweets_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:visibility="gone" />
 
-    <com.twitt4droid.widget.LogInOutButton
-        xmlns:twitt4droid="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/login_button"
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/instructions_text_view"
         android:layout_centerHorizontal="true"
-        android:layout_margin="12dp"
-        twitt4droid:loginText="@string/custom_login" />
+        android:layout_centerVertical="true" />
 
 </RelativeLayout>

@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.twitt4droid.demo;
+package com.twitt4droid.demo.activity;
 
-import java.io.Serializable;
-
-import twitter4j.AsyncTwitter;
-import twitter4j.AsyncTwitterFactory;
-import twitter4j.TwitterAdapter;
-import twitter4j.User;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
+
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.activity.WebLoginActivity;
+import com.twitt4droid.demo.R;
+
+import twitter4j.AsyncTwitter;
+import twitter4j.TwitterAdapter;
+import twitter4j.User;
+
+import java.io.Serializable;
 
 public class SignInActivity extends RoboSherlockActivity {
 
@@ -41,8 +43,7 @@ public class SignInActivity extends RoboSherlockActivity {
             progressDialog.setCancelable(false);
             progressDialog.setIndeterminate(true);
             progressDialog.show();
-            AsyncTwitter twitter = new AsyncTwitterFactory(Twitt4droid.getCurrentConfig(getApplicationContext()))
-                .getInstance();
+            AsyncTwitter twitter = Twitt4droid.getAsyncTwitter(getApplicationContext());
             twitter.addListener(new TwitterAdapter() {
                 @Override
                 public void verifiedCredentials(User user) {

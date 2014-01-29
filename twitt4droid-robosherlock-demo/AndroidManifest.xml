@@ -20,7 +20,7 @@
     android:versionName="1.0-SNAPSHOT" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="7"
         android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -37,17 +37,17 @@
             android:name="com.twitt4droid.auth.CONSUMER_SECRET"
             android:value="@string/twitter_consumer_secret" />
 
-        <activity android:name="com.twitt4droid.demo.MainActivity" />
-        <activity
-            android:name="com.twitt4droid.activity.WebLoginActivity"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
-        <activity android:name="com.twitt4droid.demo.SignInActivity" >
+        <activity android:name="com.twitt4droid.demo.activity.SignInActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.twitt4droid.demo.activity.MainActivity" />
+        <activity
+            android:name="com.twitt4droid.activity.WebLoginActivity"
+            android:theme="@android:style/Theme.Black.NoTitleBar" />
     </application>
 
 </manifest>
