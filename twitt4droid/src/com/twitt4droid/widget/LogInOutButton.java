@@ -37,40 +37,41 @@ import com.twitt4droid.activity.WebLoginActivity;
  * @author Daniel Pedraza
  * @since version 1.0
  */
-public class LoginButton extends Button {
+public class LogInOutButton extends Button {
 
-    private static final String TAG = LoginButton.class.getName();
+    private static final String TAG = LogInOutButton.class.getName();
     
     private String loginText;
     private String logoutText;
+    private DefaultOnClickListener clickListener;
 
     /**
-     * Create the LoginButton.
+     * Create the LogInOutButton.
      * @see android.view.View#View(Context)
      */
-    public LoginButton(Context context) {
+    public LogInOutButton(Context context) {
         super(context);
+        setListeners(context);
         setStyle(context);
     }
 
     /**
-     * Create the LoginButton by inflating from XML
+     * Create the LogInOutButton by inflating from XML
      * @see android.view.View#View(Context, AttributeSet)
      */
-    public LoginButton(Context context, AttributeSet attrs) {
+    public LogInOutButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         setAttributes(context, attrs);
+        setListeners(context);
         setStyle(context);
     }
 
     /**
-     * Create the LoginButton by inflating from XML and applying a style.
+     * Create the LogInOutButton by inflating from XML and applying a style.
      * @see android.view.View#View(Context, AttributeSet, int)
      */
-    public LoginButton(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        setAttributes(context, attrs);
-        setStyle(context);
+    public LogInOutButton(Context context, AttributeSet attrs, int defStyle) {
+        this(context, attrs);
     }
 
     /**
@@ -79,7 +80,7 @@ public class LoginButton extends Button {
      */
     @Override
     public void setOnClickListener(View.OnClickListener l) {
-        super.setOnClickListener(l);
+        super.setOnClickListener(clickListener);
     }
 
     /**
@@ -94,7 +95,6 @@ public class LoginButton extends Button {
         setCompoundDrawablePadding(15);
         setCompoundDrawablesWithIntrinsicBounds(R.drawable.twitter_white_icon, 0, 0, 0);
         setBackgroundResource(R.drawable.twitt4droid_blue_button_background);
-        setOnClickListener(new LoginClickListener(context));
 
         if (isInEditMode()) {
             // hardcoding in edit mode as context.getResources().getColorStateList() doesn't seem to work in Eclipse
@@ -116,6 +116,10 @@ public class LoginButton extends Button {
         typedArray.recycle();
     }
 
+    private void setListeners(Context context) {
+        clickListener = new DefaultOnClickListener(context);
+        setOnClickListener(clickListener);
+    }
     /**
      * Sets the text when there is no user logged in this app.
      * <p><b>Related XML Attributes</b> 
@@ -165,6 +169,15 @@ public class LoginButton extends Button {
     }
 
     /**
+     * Sets the listener interface that will be called when the user is logged 
+     * out.
+     * @param logoutListener the callback interface.
+     */
+    public void setOnLogoutListener(OnLogoutListener logoutListener) {
+        clickListener.setOnLogoutListener(logoutListener);
+    }
+
+    /**
      * Sets the correct text when there is a user logged in or not.
      */
     private void setButtonLabel() {
@@ -180,17 +193,49 @@ public class LoginButton extends Button {
     }
 
     /**
-     * LoginButton default OnClickListener.
+     * LogInOutButton listener interface that will be called when the the user is
+     * logged out.
      * 
      * @author Daniel Pedraza
      * @since version 1.0
      */
-    private static final class LoginClickListener implements View.OnClickListener {
+    public static interface OnLogoutListener {
+        
+        /**
+         * Listener method.
+         * 
+         * @param button the button that called this listener.
+         */
+        void OnLogout(LogInOutButton button);
+    }
+
+    /**
+     * LogInOutButton default on click listener behavior.
+     * 
+     * @author Daniel Pedraza
+     * @since version 1.0
+     */
+    private static final class DefaultOnClickListener implements View.OnClickListener {
 
         private final Context context;
+        private OnLogoutListener logoutListener;
 
-        public LoginClickListener(Context context) {
+        /**
+         * Default constructor.
+         * 
+         * @param context activity context.
+         */
+        public DefaultOnClickListener(Context context) {
             this.context = context;
+        }
+
+        /**
+         * Sets the listener interface that will be called when the user is logged 
+         * out.
+         * @param logoutListener the callback interface.
+         */
+        public void setOnLogoutListener(OnLogoutListener logoutListener) {
+            this.logoutListener = logoutListener;
         }
 
         /**
@@ -204,7 +249,9 @@ public class LoginButton extends Button {
             if (Twitt4droid.isUserLoggedIn(context)) {
                 Log.d(TAG, "Deleting account info...");
                 Twitt4droid.deleteAuthenticationInfo(context);
-                ((LoginButton)v).setButtonLabel();
+                LogInOutButton button = (LogInOutButton)v;
+                button.setButtonLabel();
+                if (logoutListener != null) logoutListener.OnLogout(button);
             } else {
                 Log.d(TAG, "Starting WebLoginActivity...");
                 Intent intent = new Intent(context, WebLoginActivity.class);

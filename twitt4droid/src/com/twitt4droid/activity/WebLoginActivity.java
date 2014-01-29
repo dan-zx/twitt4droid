@@ -34,7 +34,6 @@ import com.twitt4droid.R;
 import com.twitt4droid.Twitt4droid;
 
 import twitter4j.AsyncTwitter;
-import twitter4j.AsyncTwitterFactory;
 import twitter4j.TwitterAdapter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterMethod;
@@ -151,8 +150,7 @@ public class WebLoginActivity extends Activity {
      * Sets up Twitter async listeners.
      */
     private void setUpTwitter() {
-        twitter = new AsyncTwitterFactory(Twitt4droid.getCurrentConfig(getApplicationContext()))
-                .getInstance();
+        twitter = Twitt4droid.getAsyncTwitter(getApplicationContext());
         twitter.addListener(new TwitterAdapter() {
             @Override
             public void verifiedCredentials(User user) {

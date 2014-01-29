@@ -18,6 +18,10 @@ package com.twitt4droid;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import twitter4j.AsyncTwitter;
+import twitter4j.AsyncTwitterFactory;
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
@@ -47,7 +51,29 @@ public final class Twitt4droid {
     private Twitt4droid() {
         throw new IllegalAccessError("This class cannot be instantiated nor extended");
     }
-    
+
+    /**
+     * Gets the current Twitter with consumer and access tokens pre-initialized.
+     * 
+     * @param context the application context.
+     * @return an Twitter object.
+     */
+    public static Twitter getTwitter(Context context) {
+        return new TwitterFactory(getCurrentConfig(context)).getInstance();
+    }
+
+
+    /**
+     * Gets the current AsyncTwitter with consumer and access tokens 
+     * pre-initialized.
+     * 
+     * @param context the application context.
+     * @return an AsyncTwitter object.
+     */
+    public static AsyncTwitter getAsyncTwitter(Context context) {
+        return new AsyncTwitterFactory(getCurrentConfig(context)).getInstance();
+    }
+
     /**
      * Gets the current twitter4j configuration with consumer and access tokens
      * pre-initialized. You can use this method to build a Twitter objects.
@@ -55,7 +81,7 @@ public final class Twitt4droid {
      * @param context the application context.
      * @return an Configuration object.
      */
-    public static Configuration getCurrentConfig(Context context) {
+    private static Configuration getCurrentConfig(Context context) {
         SharedPreferences preferences = Resources.getPreferences(context);
         return new ConfigurationBuilder()
                 .setOAuthConsumerKey(Resources.getMetaData(context, CONSUMER_KEY_META_DATA, null))
