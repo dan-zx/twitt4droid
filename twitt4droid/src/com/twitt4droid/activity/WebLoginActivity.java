@@ -89,7 +89,7 @@ public class WebLoginActivity extends Activity {
             if (Twitt4droid.isUserLoggedIn(getApplicationContext())) {
                 twitter.verifyCredentials();
             } else {
-                setContentView(R.layout.web_browser);
+                setContentView(R.layout.twitt4droid_web_browser);
                 setUpWebView();
                 twitter.getOAuthRequestTokenAsync(CALLBACK_URL);
             }
@@ -114,7 +114,7 @@ public class WebLoginActivity extends Activity {
                     loadingBar.setProgress(0);
                     if (reloadCancelItem != null) {
                         reloadCancelItem.setTitle(R.string.reload_menu_title);
-                        reloadCancelItem.setIcon(R.drawable.reload_icon);
+                        reloadCancelItem.setIcon(R.drawable.reload_white_icon);
                     }
                 } else {
                     loadingBar.setVisibility(View.VISIBLE);
@@ -187,11 +187,11 @@ public class WebLoginActivity extends Activity {
                     @Override
                     public void run() {
                         new AlertDialog.Builder(WebLoginActivity.this)
-                                .setTitle(R.string.twitter_error_title)
-                                .setMessage(R.string.twitter_error_message)
+                                .setTitle(R.string.twitt4droid_error_title)
+                                .setMessage(R.string.twitt4droid_error_message)
                                 .setIcon(android.R.drawable.ic_dialog_alert)
-                                .setPositiveButton(R.string.continue_working, null)
-                                .setNegativeButton(R.string.go_to_previous_activity,
+                                .setPositiveButton(R.string.twitt4droid_onerror_continue, null)
+                                .setNegativeButton(R.string.twitt4droid_onerror_return,
                                         new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
@@ -214,11 +214,11 @@ public class WebLoginActivity extends Activity {
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.web_browser, menu);
+        getMenuInflater().inflate(R.menu.twitt4droid_web_browser, menu);
         reloadCancelItem = menu.findItem(R.id.reload_cancel_item);
         if (loadingBar.getProgress() == loadingBar.getMax() || loadingBar.getProgress() == 0) {
             reloadCancelItem.setTitle(R.string.reload_menu_title);
-            reloadCancelItem.setIcon(R.drawable.reload_icon);
+            reloadCancelItem.setIcon(R.drawable.reload_white_icon);
         }
         return true;
     }
@@ -232,11 +232,11 @@ public class WebLoginActivity extends Activity {
             if (item.getTitle().toString().equals(getString(R.string.cancel_menu_title))) {
                 webView.stopLoading();
                 item.setTitle(R.string.reload_menu_title);
-                item.setIcon(R.drawable.reload_icon);
+                item.setIcon(R.drawable.reload_white_icon);
             } else {
                 webView.reload();
                 item.setTitle(R.string.cancel_menu_title);
-                item.setIcon(R.drawable.cancel_icon);
+                item.setIcon(R.drawable.cancel_white_icon);
             }
             return true;
         }

@@ -21,16 +21,16 @@
     <string name="cancel_menu_title">Cancel</string>
     
     <!-- LOGIN BUTTON -->
-    <string name="login_label">Log in</string>
-    <string name="logout_label">Log out</string>
+    <string name="twitt4droid_login_label">Login</string>
+    <string name="twitt4droid_logout_label">Log out</string>
     
     <!-- ERRORS -->
-    <string name="twitter_error_title">Twitt4droid Error</string>
-    <string name="twitter_error_message">Something went wrong while connecting with Twitter. Try again later :(</string>
-    <string name="go_to_previous_activity">Return</string>
-    <string name="continue_working">Continue</string>
+    <string name="twitt4droid_error_title">Twitt4droid Error</string>
+    <string name="twitt4droid_error_message">Something went wrong while connecting with Twitter. Try again later :(</string>
+    <string name="twitt4droid_onerror_return">Return</string>
+    <string name="twitt4droid_onerror_continue">Continue</string>
     
     <!-- SHARED PREFERENCES -->
-    <string name="preference_file_key">com.twitt4droid.PREFERENCES</string>
+    <string name="twitt4droid_preference_file_key">com.twitt4droid.PREFERENCES</string>
 
 </resources>

@@ -14,12 +14,15 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle" >
 
-    <item
-        android:id="@+id/reload_cancel_item"
-        android:icon="@drawable/cancel_icon"
-        android:showAsAction="always"
-        android:title="@string/cancel_menu_title"/>
+    <corners
+        android:bottomLeftRadius="3dp"
+        android:bottomRightRadius="3dp"
+        android:topLeftRadius="3dp"
+        android:topRightRadius="3dp" />
 
-</menu>
+    <solid android:color="#F5F8FA" />
+
+</shape>

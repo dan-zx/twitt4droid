@@ -59,8 +59,8 @@ public class LoginButton extends Button {
      */
     public LoginButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setStyle(context);
         setAttributes(context, attrs);
+        setStyle(context);
     }
 
     /**
@@ -69,8 +69,8 @@ public class LoginButton extends Button {
      */
     public LoginButton(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        setStyle(context);
         setAttributes(context, attrs);
+        setStyle(context);
     }
 
     /**
@@ -92,15 +92,15 @@ public class LoginButton extends Button {
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         setTypeface(Typeface.DEFAULT_BOLD);
         setCompoundDrawablePadding(15);
-        setCompoundDrawablesWithIntrinsicBounds(R.drawable.login_button_icon, 0, 0, 0);
-        setBackgroundResource(R.drawable.login_button_background);
+        setCompoundDrawablesWithIntrinsicBounds(R.drawable.twitter_white_icon, 0, 0, 0);
+        setBackgroundResource(R.drawable.twitt4droid_blue_button_background);
         setOnClickListener(new LoginClickListener(context));
 
         if (isInEditMode()) {
             // hardcoding in edit mode as context.getResources().getColorStateList() doesn't seem to work in Eclipse
-            setTextColor(Color.parseColor("#292f33"));
+            setTextColor(Color.parseColor("#F5F8FA"));
         } else {
-            setTextColor(context.getResources().getColorStateList(R.color.login_button));
+            setTextColor(context.getResources().getColorStateList(R.color.twitt4droid_blue_button));
         }
     }
 
@@ -110,9 +110,9 @@ public class LoginButton extends Button {
      * @param attrs the xml attributes.
      */
     private void setAttributes(Context context, AttributeSet attrs) {
-        TypedArray typedArray = context.obtainStyledAttributes(attrs,R.styleable.login_button);
-        loginText = typedArray.getString(R.styleable.login_button_loginText);
-        logoutText = typedArray.getString(R.styleable.login_button_logoutText);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs,R.styleable.twitt4droid_login_button);
+        loginText = typedArray.getString(R.styleable.twitt4droid_login_button_loginText);
+        logoutText = typedArray.getString(R.styleable.twitt4droid_login_button_logoutText);
         typedArray.recycle();
     }
 
@@ -170,12 +170,12 @@ public class LoginButton extends Button {
     private void setButtonLabel() {
         if (!isInEditMode()) {
             if (Twitt4droid.isUserLoggedIn(getContext())) {
-                setText(logoutText == null || logoutText.trim().length() == 0 ? getResources().getString(R.string.logout_label) : logoutText);
+                setText(logoutText == null || logoutText.trim().length() == 0 ? getResources().getString(R.string.twitt4droid_logout_label) : logoutText);
             } else {
-                setText(loginText == null || loginText.trim().length() == 0 ? getResources().getString(R.string.login_label) : loginText);
+                setText(loginText == null || loginText.trim().length() == 0 ? getResources().getString(R.string.twitt4droid_login_label) : loginText);
             }
         } else {
-            setText(R.string.login_label);
+            setText(R.string.twitt4droid_login_label);
         }
     }
 

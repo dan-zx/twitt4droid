@@ -27,12 +27,12 @@
 
     <ProgressBar
         android:id="@+id/loading_bar"
-        style="@style/Widget.HoloDark.Horizontal.ProgressBar"
+        style="@style/Twitt4droid.Widget.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:max="100" />
+        android:max="100"/>
 
 </RelativeLayout>

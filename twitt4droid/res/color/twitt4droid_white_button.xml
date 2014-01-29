@@ -14,11 +14,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <declare-styleable name="twitt4droid_login_button">
-        <attr name="loginText" format="string" />
-        <attr name="logoutText" format="string" />
-    </declare-styleable>
+    <item android:state_pressed="true" android:color="#292F33"/>
+    <item android:state_enabled="false" android:color="#CCD6DD"/>
+    <item android:color="#292F33"/>
 
-</resources>
+</selector>

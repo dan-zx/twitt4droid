@@ -46,7 +46,7 @@ public final class Resources {
      * @return a SharedPreferences object.
      */
     public static SharedPreferences getPreferences(Context context) {
-        String name = context.getString(R.string.preference_file_key);
+        String name = context.getString(R.string.twitt4droid_preference_file_key);
         return context.getSharedPreferences(name, Context.MODE_PRIVATE);
     }
 

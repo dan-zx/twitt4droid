@@ -14,10 +14,15 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle" >
 
-    <item android:drawable="@drawable/disabled_login_button" android:state_enabled="false"/>
-    <item android:drawable="@drawable/pressed_login_button" android:state_pressed="true" />
-    <item android:drawable="@drawable/active_login_button"/>
+    <corners
+        android:bottomLeftRadius="3dp"
+        android:bottomRightRadius="3dp"
+        android:topLeftRadius="3dp"
+        android:topRightRadius="3dp" />
 
-</selector>
+    <solid android:color="#55ACEE" />
+
+</shape>

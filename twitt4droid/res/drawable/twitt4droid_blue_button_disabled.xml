@@ -14,10 +14,15 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle" >
+    
+    <corners
+        android:bottomLeftRadius="3dp"
+        android:bottomRightRadius="3dp"
+        android:topLeftRadius="3dp"
+        android:topRightRadius="3dp" />
 
-    <item android:state_pressed="true" android:color="#292f33"/>
-    <item android:state_enabled="false" android:color="#f5f8fa"/>
-    <item android:color="#292f33"/>
+    <solid android:color="#292F33" />
 
-</selector>
+</shape>
