@@ -1,7 +1,7 @@
 twitt4droid
 ===========
 
-<img src="https://dl.dropboxusercontent.com/u/1995295/img/twitt4droid/launcher-web.png" height="120px" align="left" />
+<img src="https://dl.dropboxusercontent.com/u/1995295/img/twitt4droid/launcher-web.png" height="150px" align="left" />
 
 This open-source library allows you to integrate Twitter into your Android app. 
 
