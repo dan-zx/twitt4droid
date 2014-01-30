@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-present twitt4droid Project
+ * Copyright 2014 Daniel Pedraza-Arcega
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,12 +47,13 @@ import twitter4j.auth.RequestToken;
  * AndroidManifest.xml like this:
  * <pre>
  * {@code 
- * <activity android:name="com.twitt4droid.activity.WebLoginActivity" 
+ * <activity android:name="com.twitt4droid.activity.WebLoginActivity"
+ *           android:configChanges="orientation|keyboardHidden|screenSize" 
  *           android:theme="@android:style/Theme.Black.NoTitleBar" />
  * }
  * </pre>
  * 
- * @author Daniel Pedraza
+ * @author Daniel Pedraza-Arcega
  * @since version 1.0
  */
 public class WebLoginActivity extends Activity {
@@ -102,9 +103,12 @@ public class WebLoginActivity extends Activity {
     /**
      * Sets up the web view
      */
+    @SuppressWarnings("deprecation")
     private void setUpWebView() {
-        webView = (WebView) findViewById(R.id.web_view);
         loadingBar = (ProgressBar) findViewById(R.id.loading_bar);
+        webView = (WebView) findViewById(R.id.web_view);
+        webView.getSettings().setSaveFormData(false);
+        webView.getSettings().setSavePassword(false);
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int progress) {
@@ -149,7 +153,7 @@ public class WebLoginActivity extends Activity {
     /**
      * Sets up Twitter async listeners.
      */
-    private void setUpTwitter() {
+    private void setUpTwitter() { 
         twitter = Twitt4droid.getAsyncTwitter(getApplicationContext());
         twitter.addListener(new TwitterAdapter() {
             @Override

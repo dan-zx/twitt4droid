@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-present twitt4droid Project
+ * Copyright 2014 Daniel Pedraza-Arcega
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,6 +76,7 @@ public class StreamFragment extends RoboSherlockFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         updateTweets();
+        setHasOptionsMenu(true);
     }
 
     @Override

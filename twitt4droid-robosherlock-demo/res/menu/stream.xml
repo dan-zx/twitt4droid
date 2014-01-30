@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright 2014-present twitt4droid Project
+     Copyright 2014 Daniel Pedraza-Arcega
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
     <item
         android:id="@+id/reload_tweets_item"
         android:icon="@drawable/reload_white_icon"
-        android:showAsAction="always"
+        android:showAsAction="never"
         android:title="@string/reaload_tweets"/>
 
 </menu>

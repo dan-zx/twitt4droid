@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-present twitt4droid Project
+ * Copyright 2014 Daniel Pedraza-Arcega
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import twitter4j.conf.ConfigurationBuilder;
 /**
  * Utility class for loading Twitter configurations.
  * 
- * @author Daniel Pedraza
+ * @author Daniel Pedraza-Arcega
  * @since version 1.0
  */
 public final class Twitt4droid {
