@@ -15,6 +15,13 @@
  */
 package com.twitt4droid.activity;
 
+import twitter4j.AsyncTwitter;
+import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterMethod;
+import twitter4j.User;
+import twitter4j.auth.AccessToken;
+import twitter4j.auth.RequestToken;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -25,6 +32,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -32,14 +41,6 @@ import android.widget.ProgressBar;
 
 import com.twitt4droid.R;
 import com.twitt4droid.Twitt4droid;
-
-import twitter4j.AsyncTwitter;
-import twitter4j.TwitterAdapter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterMethod;
-import twitter4j.User;
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.RequestToken;
 
 /**
  * This Activity provides the web based Twitter login process. Is not meant to 
@@ -107,6 +108,8 @@ public class WebLoginActivity extends Activity {
     private void setUpWebView() {
         loadingBar = (ProgressBar) findViewById(R.id.loading_bar);
         webView = (WebView) findViewById(R.id.web_view);
+        CookieSyncManager.createInstance(this);
+        CookieManager.getInstance().removeAllCookie();
         webView.getSettings().setSaveFormData(false);
         webView.getSettings().setSavePassword(false);
         webView.setWebChromeClient(new WebChromeClient() {
@@ -244,5 +247,17 @@ public class WebLoginActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

@@ -15,7 +15,7 @@
      limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.twitt4droid.demo"
+    package="com.twitt4droid.app"
     android:installLocation="auto"
     android:versionCode="1"
     android:versionName="1.0-SNAPSHOT" >
@@ -24,6 +24,7 @@
         android:minSdkVersion="10"
         android:targetSdkVersion="19" />
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -39,7 +40,7 @@
             android:value="@string/twitter_consumer_secret" />
 
         <activity
-            android:name="com.twitt4droid.demo.activity.SignInActivity"
+            android:name="com.twitt4droid.app.activity.SignInActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,12 +49,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.twitt4droid.demo.activity.MainActivity"
+            android:name="com.twitt4droid.app.activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
             android:name="com.twitt4droid.activity.WebLoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@android:style/Theme.Black.NoTitleBar" />
+
+        <receiver android:name="com.twitt4droid.demo.monitor.NetworkStatusMonitor" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

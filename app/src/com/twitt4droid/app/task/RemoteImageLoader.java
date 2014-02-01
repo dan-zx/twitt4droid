@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.twitt4droid.demo.task;
+package com.twitt4droid.app.task;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

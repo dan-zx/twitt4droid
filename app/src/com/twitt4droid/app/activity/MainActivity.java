@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.twitt4droid.demo.activity;
+package com.twitt4droid.app.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -27,9 +27,9 @@ import com.actionbarsherlock.app.ActionBar.Tab;
 
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 
-import com.twitt4droid.demo.R;
-import com.twitt4droid.demo.fragment.ProfileFragment;
-import com.twitt4droid.demo.fragment.StreamFragment;
+import com.twitt4droid.app.fragment.ProfileFragment;
+import com.twitt4droid.app.fragment.StreamFragment;
+import com.twitt4droid.app.R;
 
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;

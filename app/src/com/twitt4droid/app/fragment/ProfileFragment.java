@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.twitt4droid.demo.fragment;
+package com.twitt4droid.app.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +25,9 @@ import android.widget.TextView;
 
 import com.github.rtyley.android.sherlock.roboguice.fragment.RoboSherlockFragment;
 
-import com.twitt4droid.demo.R;
-import com.twitt4droid.demo.task.RemoteImageLoader;
+import com.twitt4droid.app.activity.SignInActivity;
+import com.twitt4droid.app.task.RemoteImageLoader;
+import com.twitt4droid.app.R;
 import com.twitt4droid.widget.LogInOutButton;
 
 import roboguice.inject.InjectView;
@@ -75,6 +77,8 @@ public class ProfileFragment extends RoboSherlockFragment {
         logoutButton.setOnLogoutListener(new LogInOutButton.OnLogoutListener() {
             @Override
             public void OnLogout(LogInOutButton button) {
+                Intent intent = new Intent(getActivity(), SignInActivity.class);
+                getActivity().startActivity(intent);
                 getActivity().finish();
             }
         });

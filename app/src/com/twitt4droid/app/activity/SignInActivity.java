@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.twitt4droid.demo.activity;
+package com.twitt4droid.app.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -23,7 +23,7 @@ import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivit
 
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.activity.WebLoginActivity;
-import com.twitt4droid.demo.R;
+import com.twitt4droid.app.R;
 
 import twitter4j.AsyncTwitter;
 import twitter4j.TwitterAdapter;

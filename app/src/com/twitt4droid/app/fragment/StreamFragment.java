@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.twitt4droid.demo.fragment;
+package com.twitt4droid.app.fragment;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -33,7 +33,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.github.rtyley.android.sherlock.roboguice.fragment.RoboSherlockFragment;
 
 import com.twitt4droid.Twitt4droid;
-import com.twitt4droid.demo.R;
+import com.twitt4droid.app.R;
 
 import roboguice.inject.InjectView;
 
