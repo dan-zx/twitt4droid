@@ -15,15 +15,9 @@
  */
 package com.twitt4droid.app.fragment;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +33,8 @@ import com.github.rtyley.android.sherlock.roboguice.fragment.RoboSherlockFragmen
 
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.app.R;
+import com.twitt4droid.app.util.Dialogs;
+import com.twitt4droid.app.util.Networks;
 import com.twitt4droid.app.widget.TweetAdapter;
 
 import roboguice.inject.InjectView;
@@ -48,15 +44,12 @@ import twitter4j.TwitterException;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 public class StreamFragment extends RoboSherlockFragment {
 
     private static final String TAG = StreamFragment.class.getSimpleName();
     
     @InjectView(R.id.tweets_list)  private ListView tweetsListView;
     @InjectView(R.id.progress_bar) private ProgressBar progressBar;
-    @Inject                        private ConnectivityManager connectivityManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,8 +59,8 @@ public class StreamFragment extends RoboSherlockFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (isConnected()) updateTweets();
-        else showNetworkAlertDialog();
+        if (Networks.isConnectedToInternet(getActivity())) updateTweets();
+        else Dialogs.getNetworkAlertDialog(getActivity()).show();
         setHasOptionsMenu(true);
     }
 
@@ -81,8 +74,8 @@ public class StreamFragment extends RoboSherlockFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.reload_tweets_item: 
-                if (isConnected()) updateTweets();
-                else showNetworkAlertDialog();
+                if (Networks.isConnectedToInternet(getActivity())) updateTweets();
+                else Dialogs.getNetworkAlertDialog(getActivity()).show();
                 return true;
             default: return super.onOptionsItemSelected(item);
         }
@@ -93,28 +86,6 @@ public class StreamFragment extends RoboSherlockFragment {
             .setProgressBar(progressBar)
             .setTweetsListView(tweetsListView)
             .execute();
-    }
-
-    private boolean isConnected() {
-        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-    }
-
-    private void showNetworkAlertDialog() {
-        new AlertDialog.Builder(getActivity())
-            .setIcon(android.R.drawable.ic_dialog_alert)
-            .setTitle(R.string.twitt4droid_nonetwork_title)
-            .setMessage(R.string.twitt4droid_nonetwork_messege)
-            .setNegativeButton(R.string.twitt4droid_onerror_continue, null)
-            .setPositiveButton(R.string.twitt4droid_nonetwork_goto_settings, 
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(Settings.ACTION_SETTINGS));
-                    }
-                })
-            .setCancelable(false)
-            .show();
     }
 
     private static class TweetLoader extends AsyncTask<Void, Void, List<twitter4j.Status>> {

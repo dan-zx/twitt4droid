@@ -26,6 +26,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+
 import com.github.rtyley.android.sherlock.roboguice.fragment.RoboSherlockFragment;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -72,9 +75,21 @@ public class ProfileFragment extends RoboSherlockFragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.profile, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+    
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setUpLayout();
+    }
+    
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     private void setUpLayout() {

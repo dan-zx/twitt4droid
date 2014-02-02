@@ -15,20 +15,19 @@
  */
 package com.twitt4droid.app.activity;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.provider.Settings;
 
-import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.activity.WebLoginActivity;
 import com.twitt4droid.app.R;
+import com.twitt4droid.app.util.Dialogs;
+import com.twitt4droid.app.util.Networks;
 
 import twitter4j.AsyncTwitter;
 import twitter4j.TwitterAdapter;
@@ -36,27 +35,29 @@ import twitter4j.User;
 
 import java.io.Serializable;
 
-import javax.inject.Inject;
-
-public class SignInActivity extends RoboSherlockActivity {
-
-    @Inject private ConnectivityManager connectivityManager;
+public class SignInActivity extends SherlockActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!Twitt4droid.isUserLoggedIn(getApplicationContext())) {
+        if (!Twitt4droid.isUserLoggedIn(this)) {
             setContentView(R.layout.sign_in);
         }
     }
-    
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getSupportMenuInflater().inflate(R.menu.sign_in, menu);
+        return true;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        if (Twitt4droid.isUserLoggedIn(getApplicationContext())) {
-            if (isConnected()) {
+        if (Twitt4droid.isUserLoggedIn(this)) {
+            if (Networks.isConnectedToInternet(this)) {
                 final ProgressDialog progressDialog = getLoadingDialog();
-                AsyncTwitter twitter = Twitt4droid.getAsyncTwitter(getApplicationContext());
+                AsyncTwitter twitter = Twitt4droid.getAsyncTwitter(this);
                 twitter.addListener(new TwitterAdapter() {
                     @Override
                     public void verifiedCredentials(User user) {
@@ -66,11 +67,22 @@ public class SignInActivity extends RoboSherlockActivity {
                 });
                 twitter.verifyCredentials();
             } else {
-                showNetworkAlertDialog();
+                Dialogs.getNetworkAlertDialog(this).show();
             }
         }
     }
-    
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.show_licenses_item: 
+                Dialogs.getLicencesAlertDialog(this).show();
+                return true;
+            default: return super.onOptionsItemSelected(item);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -92,11 +104,6 @@ public class SignInActivity extends RoboSherlockActivity {
         startActivity(i);
         finish();
     }
-    
-    private boolean isConnected() {
-        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-    }
 
     private ProgressDialog getLoadingDialog() {
         ProgressDialog progressDialog = new ProgressDialog(this);
@@ -106,21 +113,5 @@ public class SignInActivity extends RoboSherlockActivity {
         progressDialog.setIndeterminate(true);
         progressDialog.show();
         return progressDialog;
-    }
-
-    private void showNetworkAlertDialog() {
-        new AlertDialog.Builder(this)
-            .setIcon(android.R.drawable.ic_dialog_alert)
-            .setTitle(R.string.twitt4droid_nonetwork_title)
-            .setMessage(R.string.twitt4droid_nonetwork_messege)
-            .setPositiveButton(R.string.twitt4droid_nonetwork_goto_settings, 
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(Settings.ACTION_SETTINGS));
-                    }
-                })
-            .setCancelable(false)
-            .show();
     }
 }

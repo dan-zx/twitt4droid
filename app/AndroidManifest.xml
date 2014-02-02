@@ -53,14 +53,18 @@
             android:value="@string/google_maps_debug_api_key" />
 
         <activity
-            android:name="com.twitt4droid.app.activity.SignInActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" >
+            android:name="com.twitt4droid.app.activity.GooglePlayServicesCheckerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Black.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.twitt4droid.app.activity.SignInActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
             android:name="com.twitt4droid.app.activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />

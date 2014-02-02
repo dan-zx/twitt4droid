@@ -19,7 +19,7 @@
     <string name="app_name">twitt4droid</string>
     
     <string name="instructions">Login to create a link to fetch your account data and use Twitter API</string>
-    <string name="custom_login">Sign in to Twitter!</string>
+    <string name="custom_login">Sign in!</string>
     <string name="custom_log_out">Change account</string>
     <string name="profile_image_description">Profile image</string>
     <string name="profile_tab_title">Profile</string>
@@ -28,11 +28,15 @@
     <string name="tweet_username_format">\@%1$s (%2$s)</string>
     <string name="loading">Wait&#8230;</string>
     <string name="reaload_tweets">Reload tweets</string>
-    <string name="network_not_connected">No Internet connection detected :(</string>
+    <string name="licenses_dialog_tile">Open source licenses</string>
+    <string name="show_licenses">Licenses</string>
+    
+    <string name="licenses_file">"file:///android_asset/licenses.html"</string>
     
     <string name="twitter_consumer_key">XyH43SS5C8wijBXkHsI1BA</string>
     <string name="twitter_consumer_secret">mdMAQCzfgOT4XHt3LTHlWB9sIPYpwVPTd6nTIXV45Q</string>
-
+    
     <string name="google_maps_debug_api_key">AIzaSyAPLz8grF4kkoIEpNI_D1CMPOPcryhEArk</string>
     <string name="google_maps_release_api_key">AIzaSyD11qsSFPA3Xg8zfX-y7Jm6C_K1UHKh1Og</string>
+
 </resources>

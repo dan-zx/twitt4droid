@@ -24,11 +24,13 @@ import android.support.v4.view.ViewPager;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
+import com.actionbarsherlock.view.MenuItem;
 
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 
 import com.twitt4droid.app.fragment.ProfileFragment;
 import com.twitt4droid.app.fragment.StreamFragment;
+import com.twitt4droid.app.util.Dialogs;
 import com.twitt4droid.app.R;
 
 import roboguice.inject.InjectExtra;
@@ -71,7 +73,17 @@ public class MainActivity extends RoboSherlockFragmentActivity {
                 .setText(R.string.profile_tab_title)
                 .setTabListener(listener));
     }
-    
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.show_licenses_item: 
+                Dialogs.getLicencesAlertDialog(this).show();
+                return true;
+            default: return super.onOptionsItemSelected(item);
+        }
+    }
+
     private static class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
         private static final int PAGE_COUNT = 2;
