@@ -33,6 +33,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:max="100"/>
+        android:max="100" />
 
 </RelativeLayout>
