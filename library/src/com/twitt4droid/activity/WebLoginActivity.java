@@ -15,19 +15,16 @@
  */
 package com.twitt4droid.activity;
 
-import twitter4j.AsyncTwitter;
-import twitter4j.TwitterAdapter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterMethod;
-import twitter4j.User;
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.RequestToken;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,6 +39,14 @@ import android.widget.ProgressBar;
 import com.twitt4droid.R;
 import com.twitt4droid.Twitt4droid;
 
+import twitter4j.AsyncTwitter;
+import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterMethod;
+import twitter4j.User;
+import twitter4j.auth.AccessToken;
+import twitter4j.auth.RequestToken;
+
 /**
  * This Activity provides the web based Twitter login process. Is not meant to 
  * be used directly (DO NOT START IT DIRECTLY). Add this activity to your 
@@ -49,7 +54,6 @@ import com.twitt4droid.Twitt4droid;
  * <pre>
  * {@code 
  * <activity android:name="com.twitt4droid.activity.WebLoginActivity"
- *           android:configChanges="orientation|keyboardHidden|screenSize" 
  *           android:theme="@android:style/Theme.Black.NoTitleBar" />
  * }
  * </pre>
@@ -86,13 +90,18 @@ public class WebLoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Twitt4droid.areConsumerTokensAvailable(getApplicationContext())) {
-            setUpTwitter();
-            if (Twitt4droid.isUserLoggedIn(getApplicationContext())) {
-                twitter.verifyCredentials();
+            if (isConnected()) {
+                setUpTwitter();
+                if (Twitt4droid.isUserLoggedIn(getApplicationContext())) {
+                    twitter.verifyCredentials();
+                } else {
+                    setContentView(R.layout.twitt4droid_web_browser);
+                    setUpView();
+                    twitter.getOAuthRequestTokenAsync(CALLBACK_URL);
+                }
             } else {
-                setContentView(R.layout.twitt4droid_web_browser);
-                setUpWebView();
-                twitter.getOAuthRequestTokenAsync(CALLBACK_URL);
+                Log.w(TAG, "No Internet connection detected");
+                showNetworkAlertDialog();
             }
         } else {
             Log.e(TAG, "Twitter consumer key and/or consumer secret are not defined correctly");
@@ -102,10 +111,49 @@ public class WebLoginActivity extends Activity {
     }
 
     /**
-     * Sets up the web view
+     * Determines if this activity has Internet connectivity.
+     * @return {@code true} if connectivity; otherwise {@code false}.
+     */
+    private boolean isConnected() {
+        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
+    /**
+     * Shows a network error alert dialog.
+     */
+    private void showNetworkAlertDialog() {
+        new AlertDialog.Builder(this)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setTitle(R.string.twitt4droid_nonetwork_title)
+            .setMessage(R.string.twitt4droid_nonetwork_messege)
+            .setNegativeButton(android.R.string.cancel, 
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.i(TAG, "User canceled authentication process due to network failure");
+                        setResult(RESULT_CANCELED, getIntent());
+                        finish();
+                    }
+            })
+            .setPositiveButton(R.string.twitt4droid_nonetwork_goto_settings, 
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(Settings.ACTION_SETTINGS));
+                        finish();
+                    }
+                })
+            .setCancelable(false)
+            .show();
+    }
+
+    /**
+     * Sets up views.
      */
     @SuppressWarnings("deprecation")
-    private void setUpWebView() {
+    private void setUpView() {
         loadingBar = (ProgressBar) findViewById(R.id.loading_bar);
         webView = (WebView) findViewById(R.id.web_view);
         CookieSyncManager.createInstance(this);
@@ -191,29 +239,35 @@ public class WebLoginActivity extends Activity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        new AlertDialog.Builder(WebLoginActivity.this)
-                                .setTitle(R.string.twitt4droid_error_title)
-                                .setMessage(R.string.twitt4droid_error_message)
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .setPositiveButton(R.string.twitt4droid_onerror_continue, null)
-                                .setNegativeButton(R.string.twitt4droid_onerror_return,
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Log.i(TAG, "User canceled authentication process due to an error");
-                                                twitter.addListener(null);
-                                                setResult(RESULT_CANCELED, getIntent());
-                                                finish();
-                                            }
-                                        })
-                                .setCancelable(false)
-                                .show();
+                        showErrorAlertDialog();
                     }
                 });
             }
         });
     }
 
+    /**
+     * Shows a generic alert dialog.
+     */
+    private void showErrorAlertDialog() {
+        new AlertDialog.Builder(WebLoginActivity.this)
+            .setTitle(R.string.twitt4droid_onerror_title)
+            .setMessage(R.string.twitt4droid_onerror_message)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setNegativeButton(R.string.twitt4droid_onerror_return,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.i(TAG, "User canceled authentication process due to an error");
+                        twitter.addListener(null);
+                        setResult(RESULT_CANCELED, getIntent());
+                        finish();
+                    }
+                })
+            .setPositiveButton(R.string.twitt4droid_onerror_continue, null)
+            .setCancelable(false)
+            .show();
+    }
     /**
      * {@inheritDoc}
      */
@@ -254,7 +308,7 @@ public class WebLoginActivity extends Activity {
      */
     @Override
     public void onBackPressed() {
-        if (webView.canGoBack()) {
+        if (webView != null && webView.canGoBack()) {
             webView.goBack();
         } else {
             super.onBackPressed();

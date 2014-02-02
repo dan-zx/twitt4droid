@@ -29,30 +29,34 @@
 
             <ImageView
                 android:id="@+id/profile_image_view"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
+                android:layout_margin="8dp"
+                android:adjustViewBounds="true"
                 android:contentDescription="@string/profile_image_description"
-                android:padding="8dp"
-                android:scaleType="fitXY" />
+                android:scaleType="fitXY"
+                android:src="@drawable/twitt4droid_no_profile_image" />
 
             <TextView
                 android:id="@+id/username_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
+                android:layout_marginTop="13dp"
                 android:layout_toRightOf="@id/profile_image_view"
-                android:padding="8dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/name_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/username_text_view"
+                android:layout_marginTop="3dp"
+                android:layout_toRightOf="@id/profile_image_view"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </RelativeLayout>
-
-        <TextView
-            android:id="@+id/name_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/location_text_view"
@@ -65,6 +69,8 @@
             android:id="@+id/web_site_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:linksClickable="true"
             android:padding="8dp"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -72,15 +78,36 @@
             android:id="@+id/description_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:linksClickable="true"
             android:padding="8dp"
             android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_margin="8dp" >
+
+            <fragment
+                xmlns:map="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                map:uiZoomControls="false" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent" />
+        </RelativeLayout>
 
         <com.twitt4droid.widget.LogInOutButton
             xmlns:twitt4droid="http://schemas.android.com/apk/res-auto"
             android:id="@+id/logout_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="center"
             android:layout_margin="12dp"
             twitt4droid:logoutText="@string/custom_log_out" />
     </LinearLayout>

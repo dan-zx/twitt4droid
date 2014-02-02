@@ -15,16 +15,21 @@
  */
 package com.twitt4droid.app.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.SimpleAdapter;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -34,28 +39,24 @@ import com.github.rtyley.android.sherlock.roboguice.fragment.RoboSherlockFragmen
 
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.app.R;
+import com.twitt4droid.app.widget.TweetAdapter;
 
 import roboguice.inject.InjectView;
 
-import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import javax.inject.Inject;
 
 public class StreamFragment extends RoboSherlockFragment {
 
     private static final String TAG = StreamFragment.class.getSimpleName();
-    private static final String[] DATA_BINDING_LABELS = { "user", "tweet" };
     
     @InjectView(R.id.tweets_list)  private ListView tweetsListView;
     @InjectView(R.id.progress_bar) private ProgressBar progressBar;
-    
-    private List<Map<String, Object>> tweets;
-    private SimpleAdapter tweetsAdapter;
+    @Inject                        private ConnectivityManager connectivityManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,19 +64,10 @@ public class StreamFragment extends RoboSherlockFragment {
     }
     
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        tweets = new ArrayList<Map<String, Object>>();
-        tweetsAdapter = new SimpleAdapter(getActivity(), 
-                tweets, R.layout.tweet_list_item, DATA_BINDING_LABELS, 
-                new int[] { R.id.username, R.id.tweet_content });
-        tweetsListView.setAdapter(tweetsAdapter);
-    }
-    
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        updateTweets();
+        if (isConnected()) updateTweets();
+        else showNetworkAlertDialog();
         setHasOptionsMenu(true);
     }
 
@@ -89,7 +81,8 @@ public class StreamFragment extends RoboSherlockFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.reload_tweets_item: 
-                updateTweets();
+                if (isConnected()) updateTweets();
+                else showNetworkAlertDialog();
                 return true;
             default: return super.onOptionsItemSelected(item);
         }
@@ -98,32 +91,42 @@ public class StreamFragment extends RoboSherlockFragment {
     private void updateTweets() {
         new TweetLoader(getActivity())
             .setProgressBar(progressBar)
-            .setTweets(tweets)
-            .setTweetsAdapter(tweetsAdapter)
             .setTweetsListView(tweetsListView)
             .execute();
     }
-    
-    private static class TweetLoader extends AsyncTask<Void, Void, List<Map<String, Object>>> {
 
-        private SimpleAdapter tweetsAdapter;
+    private boolean isConnected() {
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
+    private void showNetworkAlertDialog() {
+        new AlertDialog.Builder(getActivity())
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setTitle(R.string.twitt4droid_nonetwork_title)
+            .setMessage(R.string.twitt4droid_nonetwork_messege)
+            .setNegativeButton(R.string.twitt4droid_onerror_continue, null)
+            .setPositiveButton(R.string.twitt4droid_nonetwork_goto_settings, 
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(Settings.ACTION_SETTINGS));
+                    }
+                })
+            .setCancelable(false)
+            .show();
+    }
+
+    private static class TweetLoader extends AsyncTask<Void, Void, List<twitter4j.Status>> {
+
         private ProgressBar progressBar;
         private ListView tweetsListView;
-        private List<Map<String, Object>> tweets;
         private Twitter twitter;
+        private Context context;
         
         public TweetLoader(Context context) {
             this.twitter = Twitt4droid.getTwitter(context);
-        }
-        
-        public TweetLoader setTweetsAdapter(SimpleAdapter tweetsAdapter) {
-            this.tweetsAdapter = tweetsAdapter;
-            return this;
-        }
-        
-        public TweetLoader setTweets(List<Map<String, Object>> tweets) {
-            this.tweets = tweets;
-            return this;
+            this.context = context;
         }
         
         public TweetLoader setProgressBar(ProgressBar progressBar) {
@@ -143,30 +146,20 @@ public class StreamFragment extends RoboSherlockFragment {
         }
         
         @Override
-        protected List<Map<String, Object>> doInBackground(Void... params) {
-            List<Map<String, Object>> result = new ArrayList<Map<String, Object>>(20);
+        protected List<twitter4j.Status> doInBackground(Void... params) {
             try {
-                ResponseList<twitter4j.Status> statuses = twitter.getHomeTimeline();
-                for (twitter4j.Status s : statuses) {
-                    Map<String, Object> row = new HashMap<String, Object>(2);
-                    row.put(DATA_BINDING_LABELS[0], "@" + s.getUser().getScreenName());
-                    row.put(DATA_BINDING_LABELS[1], s.getText());
-                    result.add(row);
-                    Log.d(TAG, row.toString());
-                }
+                return twitter.getHomeTimeline();
             } catch (TwitterException ex) {
                 Log.e(TAG, "Twitter error", ex);
             }
-            return result;
+            return null;
         }
         
         @Override
-        protected void onPostExecute(List<Map<String, Object>> result) {
-            tweets.clear();
-            tweets.addAll(result);
+        protected void onPostExecute(List<twitter4j.Status> result) {
             progressBar.setVisibility(View.GONE);
             tweetsListView.setVisibility(View.VISIBLE);
-            tweetsAdapter.notifyDataSetChanged();
+            tweetsListView.setAdapter(new TweetAdapter(context, R.layout.tweet_list_item, result));
         }
     }
 }

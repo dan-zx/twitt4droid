@@ -15,9 +15,14 @@
  */
 package com.twitt4droid.app.activity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
 
@@ -31,33 +36,41 @@ import twitter4j.User;
 
 import java.io.Serializable;
 
+import javax.inject.Inject;
+
 public class SignInActivity extends RoboSherlockActivity {
+
+    @Inject private ConnectivityManager connectivityManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Twitt4droid.isUserLoggedIn(getApplicationContext())) {
-            final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.setMessage(getString(R.string.loading));
-            progressDialog.setCancelable(false);
-            progressDialog.setIndeterminate(true);
-            progressDialog.show();
-            AsyncTwitter twitter = Twitt4droid.getAsyncTwitter(getApplicationContext());
-            twitter.addListener(new TwitterAdapter() {
-                @Override
-                public void verifiedCredentials(User user) {
-                    progressDialog.dismiss();
-                    goToMainActivity(user);
-                }
-            });
-            twitter.verifyCredentials();
-            return;
+        if (!Twitt4droid.isUserLoggedIn(getApplicationContext())) {
+            setContentView(R.layout.sign_in);
         }
-
-        setContentView(R.layout.sign_in);
     }
-
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Twitt4droid.isUserLoggedIn(getApplicationContext())) {
+            if (isConnected()) {
+                final ProgressDialog progressDialog = getLoadingDialog();
+                AsyncTwitter twitter = Twitt4droid.getAsyncTwitter(getApplicationContext());
+                twitter.addListener(new TwitterAdapter() {
+                    @Override
+                    public void verifiedCredentials(User user) {
+                        progressDialog.dismiss();
+                        goToMainActivity(user);
+                    }
+                });
+                twitter.verifyCredentials();
+            } else {
+                showNetworkAlertDialog();
+            }
+        }
+    }
+    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -78,5 +91,36 @@ public class SignInActivity extends RoboSherlockActivity {
         i.putExtra(MainActivity.EXTRA_USER, user);
         startActivity(i);
         finish();
+    }
+    
+    private boolean isConnected() {
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
+    private ProgressDialog getLoadingDialog() {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setMessage(getString(R.string.loading));
+        progressDialog.setCancelable(false);
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
+        return progressDialog;
+    }
+
+    private void showNetworkAlertDialog() {
+        new AlertDialog.Builder(this)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setTitle(R.string.twitt4droid_nonetwork_title)
+            .setMessage(R.string.twitt4droid_nonetwork_messege)
+            .setPositiveButton(R.string.twitt4droid_nonetwork_goto_settings, 
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(Settings.ACTION_SETTINGS));
+                    }
+                })
+            .setCancelable(false)
+            .show();
     }
 }

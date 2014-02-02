@@ -16,44 +16,39 @@
 package com.twitt4droid.app.task;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.ImageView;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
+import com.twitt4droid.app.util.Images;
 
-public class RemoteImageLoader extends AsyncTask<String, Void, Bitmap> {
-
-    private static final String TAG = RemoteImageLoader.class.getSimpleName();
+public class ImageLoadingTask extends AsyncTask<String, Void, Bitmap> {
 
     private ImageView imageView;
+    private Integer loadingResourceImageId;
     
-    public RemoteImageLoader(ImageView imageView) {
+    public ImageLoadingTask setImageView(ImageView imageView) {
         this.imageView = imageView;
+        return this;
     }
     
+    public ImageLoadingTask setLoadingResourceImageId(int loadingResourceImageId) {
+        this.loadingResourceImageId = loadingResourceImageId;
+        return this;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        if (loadingResourceImageId != null) imageView.setImageResource(loadingResourceImageId);
+    }
+
     @Override
     protected Bitmap doInBackground(String... param) {
-        Log.d(TAG, "Loading image from " + param[0] + " ...");
-        try {
-            InputStream stream = new URL(param[0]).openConnection().getInputStream();
-            return BitmapFactory.decodeStream(stream);
-        } catch (MalformedURLException ex) {
-            Log.e(TAG, "Invalid url", ex);
-        } catch (IOException ex) {
-            Log.e(TAG, "Couldn't download image", ex);
-        }
-        
-        return null;
+        return Images.getFromUrl(param[0]);
     }
 
     @Override
     protected void onPostExecute(Bitmap result) {
-        imageView.setImageBitmap(result);
+        if (result != null) imageView.setImageBitmap(result);
         imageView = null;
     }
 }

@@ -16,6 +16,10 @@
 -->
 <resources>
     
+    <!-- SAMPLE TEXTS -->
+    <string name="lorem_ipsum_sample">Lorem ipsum ad his scripta blandit partiendo, eum fastidii accumsan euripidis in, eum liber hendrerit an. Qui ut wisi vocibus suscipiantur, quo dicit ridens inciderint id. Quo mundi lobortis reformidans eu, legimus senserit definiebas an eos. Eu sit tincidunt incorrupte definitionem, vis mutat affert percipit cu, eirmod consectetuer signiferumque eu per. In usu latine equidem dolores. Quo no falli viris intellegam, ut fugit veritus placerat per</string>
+    <string name="sample_url">http://www.domain.com</string>
+    
     <!-- MENUS -->
     <string name="reload_menu_title">Reload</string>
     <string name="cancel_menu_title">Cancel</string>
@@ -25,10 +29,13 @@
     <string name="twitt4droid_logout_label">Log out</string>
     
     <!-- ERRORS -->
-    <string name="twitt4droid_error_title">Twitt4droid Error</string>
-    <string name="twitt4droid_error_message">Something went wrong while connecting with Twitter. Try again later :(</string>
+    <string name="twitt4droid_onerror_title">Twitt4droid Error</string>
+    <string name="twitt4droid_onerror_message">Something went wrong while connecting with Twitter. Try again later :(</string>
     <string name="twitt4droid_onerror_return">Return</string>
     <string name="twitt4droid_onerror_continue">Continue</string>
+    <string name="twitt4droid_nonetwork_title">Connection Failure</string>
+    <string name="twitt4droid_nonetwork_messege">No Internet connection was detected</string>
+    <string name="twitt4droid_nonetwork_goto_settings">Go to settings</string>
     
     <!-- SHARED PREFERENCES -->
     <string name="twitt4droid_preference_file_key">com.twitt4droid.PREFERENCES</string>
