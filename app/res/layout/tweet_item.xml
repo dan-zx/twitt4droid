@@ -26,7 +26,7 @@
         android:layout_alignParentTop="true"
         android:layout_margin="8dp"
         android:adjustViewBounds="true"
-        android:contentDescription="@string/profile_image_description"
+        android:contentDescription="@string/user_image_description"
         android:scaleType="fitXY"
         android:src="@drawable/twitt4droid_no_profile_image" />
 

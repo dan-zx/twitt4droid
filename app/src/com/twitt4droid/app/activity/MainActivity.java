@@ -21,15 +21,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 
-import com.twitt4droid.app.fragment.ProfileFragment;
-import com.twitt4droid.app.fragment.StreamFragment;
+import com.twitt4droid.app.fragment.DirectMessagesFragment;
+import com.twitt4droid.app.fragment.MentionsFragment;
+import com.twitt4droid.app.fragment.UserFragment;
+import com.twitt4droid.app.fragment.HomeFragment;
 import com.twitt4droid.app.util.Dialogs;
 import com.twitt4droid.app.R;
 
@@ -38,12 +42,17 @@ import roboguice.inject.InjectView;
 
 import twitter4j.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends RoboSherlockFragmentActivity {
 
     public static final String EXTRA_USER = "com.twitt4droid.demo.extra.user";
 
     @InjectView(R.id.view_pager) private ViewPager viewPager;
     @InjectExtra(EXTRA_USER)     private User user;
+
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +61,12 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        viewPager.setAdapter(new MyFragmentPagerAdapter
-                (getSupportFragmentManager(), 
-                        new StreamFragment(),
-                        new ProfileFragment().setUser(user)));
+        MyFragmentPagerAdapter adapter = new MyFragmentPagerAdapter(getSupportFragmentManager())
+            .addFragment(new HomeFragment())
+            .addFragment(new MentionsFragment())
+            .addFragment(new DirectMessagesFragment())
+            .addFragment(new UserFragment().setUser(user));
+        viewPager.setAdapter(adapter);
         viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -66,45 +77,81 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         MyTabListener listener = new MyTabListener(viewPager);
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()
-                .setText(R.string.stream_tab_title)
+                .setContentDescription(R.string.home_tab_title)
+                .setIcon(R.drawable.dark_home_icon)
                 .setTabListener(listener));
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()
-                .setText(R.string.profile_tab_title)
+                .setContentDescription(R.string.mentions_tab_title)
+                .setIcon(R.drawable.dark_notifications_icon)
                 .setTabListener(listener));
+        getSupportActionBar().addTab(getSupportActionBar()
+                .newTab()
+                .setContentDescription(R.string.direct_messages_tab_title)
+                .setIcon(R.drawable.dark_direct_message_icon)
+                .setTabListener(listener));
+        getSupportActionBar().addTab(getSupportActionBar()
+                .newTab()
+                .setContentDescription(R.string.user_tab_title)
+                .setIcon(R.drawable.dark_person_icon)
+                .setTabListener(listener));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getSupportMenuInflater().inflate(R.menu.main, menu);
+        this.menu = menu;
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.show_licenses_item: 
+            case R.id.licenses_item: 
                 Dialogs.getLicencesAlertDialog(this).show();
                 return true;
             default: return super.onOptionsItemSelected(item);
         }
     }
 
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_MENU:
+                if (menu != null) menu.performIdentifierAction(R.id.overflow_item, 0);
+                return true;
+            default: return super.onKeyUp(keyCode, event);
+        }
+    }
+
     private static class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
-        private static final int PAGE_COUNT = 2;
+        private final List<Fragment> fragments;
 
-        private Fragment[] fragments;
-
-        public MyFragmentPagerAdapter(FragmentManager fm, Fragment... fragments) {
+        public MyFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
-            this.fragments = fragments;
+            fragments = new ArrayList<Fragment>();
+        }
+        
+        public MyFragmentPagerAdapter addFragment(Fragment fragment) {
+            fragments.add(fragment);
+            return this;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return fragments[position];
+            if (!fragments.isEmpty() && position >= 0) {
+                return fragments.get(position);
+            }
+            else {
+                return null;
+            }
         }
 
         @Override
         public int getCount() {
-            return PAGE_COUNT;
+            return fragments.size();
         }
-        
     }
 
     private static class MyTabListener implements ActionBar.TabListener {

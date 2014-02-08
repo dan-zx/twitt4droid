@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -44,16 +45,16 @@ import twitter4j.TwitterException;
 
 import java.util.List;
 
-public class StreamFragment extends RoboSherlockFragment {
+public class HomeFragment extends RoboSherlockFragment {
 
-    private static final String TAG = StreamFragment.class.getSimpleName();
+    private static final String TAG = HomeFragment.class.getSimpleName();
     
     @InjectView(R.id.tweets_list)  private ListView tweetsListView;
     @InjectView(R.id.progress_bar) private ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.stream, container, false);
+        return inflater.inflate(R.layout.home, container, false);
     }
     
     @Override
@@ -66,7 +67,7 @@ public class StreamFragment extends RoboSherlockFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.stream, menu);
+        inflater.inflate(R.menu.home, menu);
         super.onCreateOptionsMenu(menu,inflater);
     }
 
@@ -130,7 +131,11 @@ public class StreamFragment extends RoboSherlockFragment {
         protected void onPostExecute(List<twitter4j.Status> result) {
             progressBar.setVisibility(View.GONE);
             tweetsListView.setVisibility(View.VISIBLE);
-            tweetsListView.setAdapter(new TweetAdapter(context, R.layout.tweet_list_item, result));
+            if (result != null && !result.isEmpty()) {
+                tweetsListView.setAdapter(new TweetAdapter(context, R.layout.tweet_item, result));
+            } else {
+                Toast.makeText(context.getApplicationContext(), R.string.twitt4droid_onerror_message, Toast.LENGTH_LONG).show();
+            }
         }
     }
 }

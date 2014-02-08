@@ -17,9 +17,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/show_licenses_item"
-        android:icon="@android:drawable/ic_menu_info_details"
-        android:showAsAction="never"
-        android:title="@string/show_licenses"/>
+        android:id="@+id/overflow_item"
+        android:icon="@drawable/abs__ic_menu_moreoverflow_holo_light"
+        android:orderInCategory="999"
+        android:showAsAction="always"
+        android:title="@string/overflow">
+        <menu>
+            <item
+                android:id="@+id/licenses_item"
+                android:icon="@drawable/dark_about_item"
+                android:showAsAction="never"
+                android:title="@string/licenses"/>
+            <item
+                android:id="@+id/settings_item"
+                android:icon="@drawable/dark_settings_icon"
+                android:showAsAction="never"
+                android:title="@string/settings"/>
+        </menu>
+    </item>
 
 </menu>

@@ -42,7 +42,7 @@ public final class Dialogs {
 
     public static AlertDialog getNetworkAlertDialog(final Context context) {
         return new AlertDialog.Builder(context)
-            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setIcon(R.drawable.dark_warning_icon)
             .setTitle(R.string.twitt4droid_nonetwork_title)
             .setMessage(R.string.twitt4droid_nonetwork_messege)
             .setNegativeButton(R.string.twitt4droid_onerror_continue, null)

@@ -20,8 +20,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.activity.WebLoginActivity;
@@ -46,12 +44,6 @@ public class SignInActivity extends SherlockActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getSupportMenuInflater().inflate(R.menu.sign_in, menu);
-        return true;
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         if (Twitt4droid.isUserLoggedIn(this)) {
@@ -69,17 +61,6 @@ public class SignInActivity extends SherlockActivity {
             } else {
                 Dialogs.getNetworkAlertDialog(this).show();
             }
-        }
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.show_licenses_item: 
-                Dialogs.getLicencesAlertDialog(this).show();
-                return true;
-            default: return super.onOptionsItemSelected(item);
         }
     }
 

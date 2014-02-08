@@ -14,12 +14,17 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
-    <item
-        android:id="@+id/show_licenses_item"
-        android:icon="@android:drawable/ic_menu_info_details"
-        android:showAsAction="never"
-        android:title="@string/show_licenses"/>
+    <TextView
+        android:id="@+id/todo_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="@string/todo_view_text"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-</menu>
+</RelativeLayout>

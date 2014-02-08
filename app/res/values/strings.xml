@@ -21,22 +21,33 @@
     <string name="instructions">Login to create a link to fetch your account data and use Twitter API</string>
     <string name="custom_login">Sign in!</string>
     <string name="custom_log_out">Change account</string>
-    <string name="profile_image_description">Profile image</string>
-    <string name="profile_tab_title">Profile</string>
-    <string name="stream_tab_title">Tweets</string>
+    <string name="user_image_description">Profile image</string>
+    <string name="map_image_description">Map image</string>
     <string name="screen_name_format">\@%s</string>
     <string name="tweet_username_format">\@%1$s (%2$s)</string>
     <string name="loading">Wait&#8230;</string>
-    <string name="reaload_tweets">Reload tweets</string>
     <string name="licenses_dialog_tile">Open source licenses</string>
-    <string name="show_licenses">Licenses</string>
+    <string name="todo_view_text">TODO view</string>
+    
+    <!-- TABS -->
+    <string name="home_tab_title">Timeline</string>
+    <string name="mentions_tab_title">Mentions</string>
+    <string name="direct_messages_tab_title">Direct messages</string>
+    <string name="user_tab_title">My profile</string>
+    
+    <!-- MENU -->
+    <string name="refresh_tweets">Refresh tweets</string>
+    <string name="tweet">Tweet</string>
+    <string name="settings">Settings</string>
+    <string name="licenses">Licenses</string>
+    <string name="overflow">More</string>
     
     <string name="licenses_file">"file:///android_asset/licenses.html"</string>
     
+    <string name="google_static_maps_url">http://maps.googleapis.com/maps/api/staticmap</string>
+    <string name="google_static_maps_latlng_format">%1$s,%2$s</string>
+    
     <string name="twitter_consumer_key">XyH43SS5C8wijBXkHsI1BA</string>
     <string name="twitter_consumer_secret">mdMAQCzfgOT4XHt3LTHlWB9sIPYpwVPTd6nTIXV45Q</string>
-    
-    <string name="google_maps_debug_api_key">AIzaSyAPLz8grF4kkoIEpNI_D1CMPOPcryhEArk</string>
-    <string name="google_maps_release_api_key">AIzaSyD11qsSFPA3Xg8zfX-y7Jm6C_K1UHKh1Og</string>
 
 </resources>

@@ -48,7 +48,7 @@ public class TweetAdapter extends ArrayAdapter<Status> {
         LayoutInflater mInflater = (LayoutInflater) getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.tweet_list_item, null);
+            convertView = mInflater.inflate(R.layout.tweet_item, null);
             holder = new ViewHolder()
                     .setContext(getContext())
                     .setProfileImage((ImageView) convertView.findViewById(R.id.profile_image_view))

@@ -18,6 +18,7 @@ package com.twitt4droid.app.fragment;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,18 +27,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-
 import com.github.rtyley.android.sherlock.roboguice.fragment.RoboSherlockFragment;
-
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.activity.SignInActivity;
@@ -45,7 +35,6 @@ import com.twitt4droid.app.task.ImageLoadingTask;
 import com.twitt4droid.app.util.Strings;
 import com.twitt4droid.widget.LogInOutButton;
 
-import roboguice.inject.InjectFragment;
 import roboguice.inject.InjectView;
 
 import twitter4j.User;
@@ -53,43 +42,30 @@ import twitter4j.User;
 import java.io.IOException;
 import java.util.List;
 
-public class ProfileFragment extends RoboSherlockFragment {
+public class UserFragment extends RoboSherlockFragment {
 
-    private static final String TAG = ProfileFragment.class.getSimpleName();
+    private static final String TAG = UserFragment.class.getSimpleName();
 
     @InjectView(R.id.profile_image_view)    private ImageView profileImageView;
+    @InjectView(R.id.map_image_view)        private ImageView mapImageView;
     @InjectView(R.id.username_text_view)    private TextView usernameTextView;
     @InjectView(R.id.name_text_view)        private TextView nameTextView;
     @InjectView(R.id.location_text_view)    private TextView locationTextView;
     @InjectView(R.id.web_site_text_view)    private TextView webSiteTextView;
     @InjectView(R.id.description_text_view) private TextView descriptionTextView;
     @InjectView(R.id.logout_button)         private LogInOutButton logoutButton;
-    @InjectFragment(R.id.map)               private SupportMapFragment mapFragment;
-    
-    private GoogleMap map;
+
     private User user;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.profile, container, false);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.profile, menu);
-        super.onCreateOptionsMenu(menu,inflater);
+        return inflater.inflate(R.layout.user, container, false);
     }
     
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setUpLayout();
-    }
-    
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     private void setUpLayout() {
@@ -124,39 +100,42 @@ public class ProfileFragment extends RoboSherlockFragment {
     
     private void setUpLocation() {
         if (Strings.isNullOrBlank(user.getLocation())) {
-            mapFragment.getView().setVisibility(View.GONE);
+            mapImageView.setVisibility(View.GONE);
             locationTextView.setVisibility(View.GONE); 
-        } else if (map == null) {
-            map = mapFragment.getMap();
-            if (map != null) {
-                try {
-                    Geocoder geocoder = new Geocoder(getActivity());
-                    List<Address> addresses = geocoder.getFromLocationName(user.getLocation(), 1);
-                    if (addresses.isEmpty() || addresses.get(0) == null) {
-                        Log.d(TAG,  "Address " + user.getLocation() + " couldn't be found");
-                        mapFragment.getView().setVisibility(View.GONE);
-                        locationTextView.setText(user.getLocation());
-                    } else {
-                        locationTextView.setVisibility(View.GONE);
-                        LatLng position = new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude());
-                        Marker marker = map.addMarker(new MarkerOptions()
-                            .position(position)
-                            .title(user.getLocation())
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                        marker.showInfoWindow();
-                        map.moveCamera(CameraUpdateFactory.newLatLng(position));
-                        Log.d(TAG,  "Location " + position + " found");
-                    }
-                } catch (IOException ex) {
-                    Log.w(TAG, "Address " + user.getLocation() + " couldn't be decoded", ex);
-                    mapFragment.getView().setVisibility(View.GONE);
+        } else {
+            try {
+                Geocoder geocoder = new Geocoder(getActivity());
+                List<Address> addresses = geocoder.getFromLocationName(user.getLocation(), 1);
+                if (addresses.isEmpty() || addresses.get(0) == null) {
+                    Log.w(TAG,  "Address " + user.getLocation() + " couldn't be found");
+                    mapImageView.setVisibility(View.GONE);
                     locationTextView.setText(user.getLocation());
+                } else {
+                    Log.d(TAG,  "Location " + addresses.get(0) + " found");
+                    locationTextView.setVisibility(View.GONE);
+                    String url = Uri.parse(getString(R.string.google_static_maps_url))
+                        .buildUpon()
+                        .appendQueryParameter("sensor", "false")
+                        .appendQueryParameter("size", "540x200")
+                        .appendQueryParameter("scale", "2")
+                        .appendQueryParameter("zoom", "4")
+                        .appendQueryParameter("markers", getString(R.string.google_static_maps_latlng_format, addresses.get(0).getLatitude(), addresses.get(0).getLongitude()))
+                        .build()
+                        .toString();
+                    new ImageLoadingTask()
+                        .setImageView(mapImageView)
+                        .setLoadingResourceImageId(R.drawable.twitt4droid_no_image)
+                        .execute(url);
                 }
+            } catch (IOException ex) {
+                Log.w(TAG, "Address " + user.getLocation() + " couldn't be decoded", ex);
+                mapImageView.setVisibility(View.GONE);
+                locationTextView.setText(user.getLocation());
             }
-        }
+        }        
     }
     
-    public ProfileFragment setUser(User user) {
+    public UserFragment setUser(User user) {
         this.user = user;
         return this;
     }

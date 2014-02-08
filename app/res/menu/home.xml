@@ -17,14 +17,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/reload_tweets_item"
-        android:icon="@drawable/reload_white_icon"
-        android:showAsAction="never"
-        android:title="@string/reaload_tweets"/>
+        android:id="@+id/tweet_item"
+        android:icon="@drawable/dark_tweet_icon"
+        android:showAsAction="always"
+        android:title="@string/tweet"/>
+    
     <item
-        android:id="@+id/show_licenses_item"
-        android:icon="@android:drawable/ic_menu_info_details"
-        android:showAsAction="never"
-        android:title="@string/show_licenses"/>
+        android:id="@+id/reload_tweets_item"
+        android:icon="@drawable/dark_refresh_icon"
+        android:showAsAction="always"
+        android:title="@string/refresh_tweets"/>
 
 </menu>
