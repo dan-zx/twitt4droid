@@ -93,7 +93,7 @@ public class LogInOutButton extends Button {
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         setTypeface(Typeface.DEFAULT_BOLD);
         setCompoundDrawablePadding(15);
-        setCompoundDrawablesWithIntrinsicBounds(R.drawable.twitter_white_icon, 0, 0, 0);
+        setCompoundDrawablesWithIntrinsicBounds(R.drawable.light_twitter_icon, 0, 0, 0);
         setBackgroundResource(R.drawable.twitt4droid_blue_button_background);
 
         if (isInEditMode()) {

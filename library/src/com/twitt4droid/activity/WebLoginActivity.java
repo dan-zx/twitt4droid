@@ -168,7 +168,7 @@ public class WebLoginActivity extends Activity {
                     loadingBar.setProgress(0);
                     if (reloadCancelItem != null) {
                         reloadCancelItem.setTitle(R.string.reload_menu_title);
-                        reloadCancelItem.setIcon(R.drawable.reload_white_icon);
+                        reloadCancelItem.setIcon(R.drawable.light_refresh_icon);
                     }
                 } else {
                     loadingBar.setVisibility(View.VISIBLE);
@@ -277,7 +277,7 @@ public class WebLoginActivity extends Activity {
         reloadCancelItem = menu.findItem(R.id.reload_cancel_item);
         if (loadingBar.getProgress() == loadingBar.getMax() || loadingBar.getProgress() == 0) {
             reloadCancelItem.setTitle(R.string.reload_menu_title);
-            reloadCancelItem.setIcon(R.drawable.reload_white_icon);
+            reloadCancelItem.setIcon(R.drawable.light_refresh_icon);
         }
         return true;
     }
@@ -291,11 +291,11 @@ public class WebLoginActivity extends Activity {
             if (item.getTitle().toString().equals(getString(R.string.cancel_menu_title))) {
                 webView.stopLoading();
                 item.setTitle(R.string.reload_menu_title);
-                item.setIcon(R.drawable.reload_white_icon);
+                item.setIcon(R.drawable.light_refresh_icon);
             } else {
                 webView.reload();
                 item.setTitle(R.string.cancel_menu_title);
-                item.setIcon(R.drawable.cancel_white_icon);
+                item.setIcon(R.drawable.light_cancel_icon);
             }
             return true;
         }
