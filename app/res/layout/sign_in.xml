@@ -15,28 +15,35 @@
      limitations under the License.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/instructions_text_view"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:padding="12dp"
-        android:text="@string/instructions"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_centerVertical="true" >
 
-    <com.twitt4droid.widget.LogInOutButton
-        xmlns:twitt4droid="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/instructions_text_view"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="12dp"
-        twitt4droid:loginText="@string/custom_login" />
+        <TextView
+            android:id="@+id/instructions_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="@string/instructions"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <com.twitt4droid.widget.LogInOutButton
+            xmlns:twitt4droid="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/instructions_text_view"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="12dp"
+            twitt4droid:loginText="@string/custom_login" />
+    </RelativeLayout>
 
 </RelativeLayout>

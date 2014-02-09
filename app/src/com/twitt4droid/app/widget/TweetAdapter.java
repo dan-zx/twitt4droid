@@ -17,10 +17,12 @@ package com.twitt4droid.app.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,10 +31,12 @@ import com.twitt4droid.app.task.ImageLoadingTask;
 
 import twitter4j.Status;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class TweetAdapter extends ArrayAdapter<Status> {
 
+    
     public TweetAdapter(Context context, int resource) {
         super(context, resource);
     }
@@ -51,9 +55,11 @@ public class TweetAdapter extends ArrayAdapter<Status> {
             convertView = mInflater.inflate(R.layout.tweet_item, null);
             holder = new ViewHolder()
                     .setContext(getContext())
-                    .setProfileImage((ImageView) convertView.findViewById(R.id.profile_image_view))
-                    .setTweetTextView((TextView) convertView.findViewById(R.id.tweet_content_text_view))
-                    .setUsernameTextView((TextView) convertView.findViewById(R.id.username_text_view));
+                    .setProfileImage((ImageView) convertView.findViewById(R.id.profile_image))
+                    .setTweetTextView((TextView) convertView.findViewById(R.id.tweet_content_text))
+                    .setUsernameTextView((TextView) convertView.findViewById(R.id.tweet_username_text))
+                    .setTweetTimeTextView((TextView) convertView.findViewById(R.id.tweet_time_text))
+                    .setOverflowButton((ImageButton) convertView.findViewById(R.id.tweet_options_button));
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -64,10 +70,13 @@ public class TweetAdapter extends ArrayAdapter<Status> {
     }
     
     private static class ViewHolder {
+        
         private Context context;
         private ImageView profileImage;
         private TextView usernameTextView;
         private TextView tweetTextView;
+        private TextView tweetTimeTextView;
+        private ImageButton overflowButton;
 
         public ViewHolder setContext(Context context) {
             this.context = context;
@@ -77,6 +86,10 @@ public class TweetAdapter extends ArrayAdapter<Status> {
         public void setContent(Status status) {
             usernameTextView.setText(context.getString(R.string.tweet_username_format, status.getUser().getScreenName(), status.getUser().getName()));
             tweetTextView.setText(status.getText());
+            String dateText = context.getString(R.string.tweet_date_format, 
+                    DateFormat.getDateFormat(context.getApplicationContext()).format(status.getCreatedAt()),
+                    DateFormat.getTimeFormat(context.getApplicationContext()).format(status.getCreatedAt()));
+            tweetTimeTextView.setText(dateText);
             new ImageLoadingTask()
                 .setImageView(profileImage)
                 .setLoadingResourceImageId(R.drawable.twitt4droid_no_profile_image)
@@ -95,6 +108,16 @@ public class TweetAdapter extends ArrayAdapter<Status> {
         
         public ViewHolder setTweetTextView(TextView tweetTextView) {
             this.tweetTextView = tweetTextView;
+            return this;
+        }
+        
+        public ViewHolder setTweetTimeTextView(TextView tweetTimeTextView) {
+            this.tweetTimeTextView = tweetTimeTextView;
+            return this;
+        }
+        
+        public ViewHolder setOverflowButton(ImageButton overflowButton) {
+            this.overflowButton = overflowButton;
             return this;
         }
     }

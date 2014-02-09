@@ -21,14 +21,18 @@
     <string name="instructions">Login to create a link to fetch your account data and use Twitter API</string>
     <string name="custom_login">Sign in!</string>
     <string name="custom_log_out">Change account</string>
-    <string name="user_image_description">Profile image</string>
-    <string name="map_image_description">Map image</string>
     <string name="screen_name_format">\@%s</string>
     <string name="tweet_username_format">\@%1$s (%2$s)</string>
+    <string name="tweet_date_format">%1$s %2$s</string>
     <string name="loading">Wait&#8230;</string>
     <string name="licenses_dialog_tile">Open source licenses</string>
     <string name="todo_view_text">TODO view</string>
     
+    <!-- IMAGE DESCRIPTION -->
+    <string name="user_image_description">Profile image</string>
+    <string name="map_image_description">Map image</string>
+    <string name="clock_image_description">Clock icon</string>
+
     <!-- TABS -->
     <string name="home_tab_title">Timeline</string>
     <string name="mentions_tab_title">Mentions</string>

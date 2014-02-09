@@ -15,19 +15,15 @@
  */
 package com.twitt4droid.app.fragment;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import twitter4j.ResponseList;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
-import com.github.rtyley.android.sherlock.roboguice.fragment.RoboSherlockFragment;
-
-import com.twitt4droid.app.R;
-
-public class MentionsFragment extends RoboSherlockFragment {
+public class MentionsFragment extends TimelineFragment {
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.todo, container, false);
+    protected ResponseList<Status> getTweets(Twitter twitter) throws TwitterException {
+        return twitter.getMentionsTimeline();
     }
 }

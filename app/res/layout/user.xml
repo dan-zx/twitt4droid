@@ -86,7 +86,7 @@
         <ImageView
             android:id="@+id/map_image_view"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="150dp"
             android:layout_margin="8dp"
             android:contentDescription="@string/map_image_description"
             android:scaleType="centerCrop" />

@@ -17,13 +17,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/tweet_item"
+        android:id="@+id/new_tweet_item"
         android:icon="@drawable/dark_tweet_icon"
         android:showAsAction="always"
         android:title="@string/tweet"/>
     
     <item
-        android:id="@+id/reload_tweets_item"
+        android:id="@+id/refresh_tweets_item"
         android:icon="@drawable/dark_refresh_icon"
         android:showAsAction="always"
         android:title="@string/refresh_tweets"/>
