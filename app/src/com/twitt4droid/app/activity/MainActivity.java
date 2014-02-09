@@ -30,12 +30,12 @@ import com.actionbarsherlock.view.MenuItem;
 
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 
-import com.twitt4droid.app.fragment.DirectMessagesFragment;
-import com.twitt4droid.app.fragment.MentionsFragment;
-import com.twitt4droid.app.fragment.UserFragment;
-import com.twitt4droid.app.fragment.HomeFragment;
-import com.twitt4droid.app.util.Dialogs;
 import com.twitt4droid.app.R;
+import com.twitt4droid.app.fragment.CustomHomeTimelineFragment;
+import com.twitt4droid.app.fragment.CustomMentionsTimelineFragment;
+import com.twitt4droid.app.fragment.DirectMessagesFragment;
+import com.twitt4droid.app.fragment.UserFragment;
+import com.twitt4droid.app.util.Dialogs;
 
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
@@ -62,8 +62,8 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         MyFragmentPagerAdapter adapter = new MyFragmentPagerAdapter(getSupportFragmentManager())
-            .addFragment(new HomeFragment())
-            .addFragment(new MentionsFragment())
+            .addFragment(new CustomHomeTimelineFragment())
+            .addFragment(new CustomMentionsTimelineFragment())
             .addFragment(new DirectMessagesFragment())
             .addFragment(new UserFragment().setUser(user));
         viewPager.setAdapter(adapter);

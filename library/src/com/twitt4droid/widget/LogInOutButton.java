@@ -51,8 +51,8 @@ public class LogInOutButton extends Button {
      */
     public LogInOutButton(Context context) {
         super(context);
-        setListeners(context);
-        setStyle(context);
+        setListeners();
+        setStyle();
     }
 
     /**
@@ -61,9 +61,9 @@ public class LogInOutButton extends Button {
      */
     public LogInOutButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setAttributes(context, attrs);
-        setListeners(context);
-        setStyle(context);
+        setAttributes(attrs);
+        setListeners();
+        setStyle();
     }
 
     /**
@@ -71,7 +71,10 @@ public class LogInOutButton extends Button {
      * @see android.view.View#View(Context, AttributeSet, int)
      */
     public LogInOutButton(Context context, AttributeSet attrs, int defStyle) {
-        this(context, attrs);
+        super(context, attrs, defStyle);
+        setAttributes(attrs);
+        setListeners();
+        setStyle();
     }
 
     /**
@@ -88,19 +91,19 @@ public class LogInOutButton extends Button {
      * setting an xml style we need to do this programmatically.
      * @param context the current context.
      */
-    private void setStyle(Context context) {
+    private void setStyle() {
         setButtonLabel();
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         setTypeface(Typeface.DEFAULT_BOLD);
         setCompoundDrawablePadding(15);
-        setCompoundDrawablesWithIntrinsicBounds(R.drawable.light_twitter_icon, 0, 0, 0);
+        setCompoundDrawablesWithIntrinsicBounds(R.drawable.twitt4droid_light_twitter_icon, 0, 0, 0);
         setBackgroundResource(R.drawable.twitt4droid_blue_button_background);
 
         if (isInEditMode()) {
             // hardcoding in edit mode as context.getResources().getColorStateList() doesn't seem to work in Eclipse
             setTextColor(Color.parseColor("#F5F8FA"));
         } else {
-            setTextColor(context.getResources().getColorStateList(R.color.twitt4droid_blue_button));
+            setTextColor(getContext().getResources().getColorStateList(R.color.twitt4droid_blue_button));
         }
     }
 
@@ -109,16 +112,16 @@ public class LogInOutButton extends Button {
      * @param context the current context.
      * @param attrs the xml attributes.
      */
-    private void setAttributes(Context context, AttributeSet attrs) {
-        TypedArray typedArray = context.obtainStyledAttributes(attrs,R.styleable.twitt4droid_login_button);
+    private void setAttributes(AttributeSet attrs) {
+        TypedArray typedArray = getContext().obtainStyledAttributes(attrs,R.styleable.twitt4droid_login_button);
         loginText = typedArray.getString(R.styleable.twitt4droid_login_button_loginText);
         logoutText = typedArray.getString(R.styleable.twitt4droid_login_button_logoutText);
         typedArray.recycle();
     }
 
-    private void setListeners(Context context) {
-        clickListener = new DefaultOnClickListener(context);
-        setOnClickListener(clickListener);
+    private void setListeners() {
+        clickListener = new DefaultOnClickListener(getContext());
+        super.setOnClickListener(clickListener);
     }
     /**
      * Sets the text when there is no user logged in this app.
@@ -181,14 +184,14 @@ public class LogInOutButton extends Button {
      * Sets the correct text when there is a user logged in or not.
      */
     private void setButtonLabel() {
-        if (!isInEditMode()) {
+        if (isInEditMode()) {
+            setText(R.string.twitt4droid_login_label);
+        } else {
             if (Twitt4droid.isUserLoggedIn(getContext())) {
                 setText(logoutText == null || logoutText.trim().length() == 0 ? getResources().getString(R.string.twitt4droid_logout_label) : logoutText);
             } else {
                 setText(loginText == null || loginText.trim().length() == 0 ? getResources().getString(R.string.twitt4droid_login_label) : loginText);
             }
-        } else {
-            setText(R.string.twitt4droid_login_label);
         }
     }
 
@@ -210,7 +213,7 @@ public class LogInOutButton extends Button {
     }
 
     /**
-     * LogInOutButton default on click listener behavior.
+     * LogInOutButton default on click listener.
      * 
      * @author Daniel Pedraza
      * @since version 1.0

@@ -19,6 +19,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 /**
@@ -137,5 +139,19 @@ public final class Resources {
             Log.w(TAG, "<meta-data android:name=\"" + name + "\" ... \\> not found");
             return defaultValue;
         }
+    }
+
+    /**
+     * Checks whether this application is connected to Internet or not.
+     * @param context the application context.
+     * @return if this application is connected to Internet or not.
+     */
+    public static boolean isConnectedToInternet(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+            return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        }
+        return false;
     }
 }

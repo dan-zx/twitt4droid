@@ -14,18 +14,21 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
-    <item
-        android:id="@+id/new_tweet_item"
-        android:icon="@drawable/dark_tweet_icon"
-        android:showAsAction="always"
-        android:title="@string/tweet"/>
-    
-    <item
-        android:id="@+id/refresh_tweets_item"
-        android:icon="@drawable/dark_refresh_icon"
-        android:showAsAction="always"
-        android:title="@string/refresh_tweets"/>
+    <com.twitt4droid.widget.RefreshableListView
+        android:id="@+id/tweets_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
-</menu>
+    <ProgressBar
+        android:id="@+id/tweets_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+
+</RelativeLayout>

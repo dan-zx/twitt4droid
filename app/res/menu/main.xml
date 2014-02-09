@@ -17,6 +17,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
+        android:id="@+id/new_tweet_item"
+        android:icon="@drawable/dark_tweet_icon"
+        android:showAsAction="always"
+        android:title="@string/tweet"/>
+    <item
+        android:id="@+id/new_direct_message_item"
+        android:icon="@drawable/dark_new_direct_message_icon"
+        android:showAsAction="always"
+        android:title="@string/direct_message"/>
+    <item
         android:id="@+id/overflow_item"
         android:icon="@drawable/abs__ic_menu_moreoverflow_holo_light"
         android:orderInCategory="999"

@@ -16,13 +16,9 @@
 -->
 <resources>
 
-    <!-- SAMPLE TEXTS -->
-    <string name="lorem_ipsum_sample">Lorem ipsum ad his scripta blandit partiendo, eum fastidii accumsan euripidis in, eum liber hendrerit an. Qui ut wisi vocibus suscipiantur, quo dicit ridens inciderint id. Quo mundi lobortis reformidans eu, legimus senserit definiebas an eos. Eu sit tincidunt incorrupte definitionem, vis mutat affert percipit cu, eirmod consectetuer signiferumque eu per. In usu latine equidem dolores. Quo no falli viris intellegam, ut fugit veritus placerat per</string>
-    <string name="sample_url">http://www.domain.com</string>
-
     <!-- MENUS -->
-    <string name="reload_menu_title">Reload</string>
-    <string name="cancel_menu_title">Cancel</string>
+    <string name="twitt4droid_refresh_menu_title">Refresh</string>
+    <string name="twitt4droid_cancel_menu_title">Cancel</string>
 
     <!-- LOGIN BUTTON -->
     <string name="twitt4droid_login_label">Login</string>
@@ -36,6 +32,22 @@
     <string name="twitt4droid_nonetwork_title">Connection Failure</string>
     <string name="twitt4droid_nonetwork_messege">No Internet connection was detected</string>
     <string name="twitt4droid_nonetwork_goto_settings">Go to settings</string>
+    
+    <!-- PULL TO REFRESH -->
+    <string name="twitt4droid_pull_to_refresh_text">Pull to refresh&#8230;</string>
+    <string name="twitt4droid_release_to_refresh_text">Release to refresh&#8230;</string>
+    <string name="twitt4droid_refreshing_text">Refreshing&#8230;</string>
+    <string name="twitt4droid_refreshing_arrow_description">Refreshing arrow</string>
+    
+    <!-- IMAGE DESCRIPTION -->
+    <string name="twitt4droid_profile_image_description">Profile image</string>
+    <string name="twitt4droid_generic_image_description">Generic Image</string>
+    <string name="twitt4droid_clock_icon_description">Clock icon</string>
+    
+    <!-- TWEETS -->
+    <string name="twitt4droid_tweet_username_format">\@%1$s (%2$s)</string>
+    <string name="twitt4droid_tweet_date_format">%1$s %2$s</string>
+    <string name="twitt4droid_tweet_overflow_label">More</string>
 
     <!-- SHARED PREFERENCES -->
     <string name="twitt4droid_preference_file_key">com.twitt4droid.PREFERENCES</string>

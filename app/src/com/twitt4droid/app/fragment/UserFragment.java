@@ -31,8 +31,8 @@ import com.github.rtyley.android.sherlock.roboguice.fragment.RoboSherlockFragmen
 
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.activity.SignInActivity;
-import com.twitt4droid.app.task.ImageLoadingTask;
 import com.twitt4droid.app.util.Strings;
+import com.twitt4droid.task.ImageLoadingTask;
 import com.twitt4droid.widget.LogInOutButton;
 
 import roboguice.inject.InjectView;

@@ -17,11 +17,8 @@ package com.twitt4droid.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -37,6 +34,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.twitt4droid.R;
+import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
 
 import twitter4j.AsyncTwitter;
@@ -90,7 +88,7 @@ public class WebLoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Twitt4droid.areConsumerTokensAvailable(getApplicationContext())) {
-            if (isConnected()) {
+            if (Resources.isConnectedToInternet(this)) {
                 setUpTwitter();
                 if (Twitt4droid.isUserLoggedIn(getApplicationContext())) {
                     twitter.verifyCredentials();
@@ -108,16 +106,6 @@ public class WebLoginActivity extends Activity {
             setResult(RESULT_CANCELED, getIntent());
             finish();
         }
-    }
-
-    /**
-     * Determines if this activity has Internet connectivity.
-     * @return {@code true} if connectivity; otherwise {@code false}.
-     */
-    private boolean isConnected() {
-        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
     /**
@@ -167,8 +155,8 @@ public class WebLoginActivity extends Activity {
                     loadingBar.setVisibility(View.INVISIBLE);
                     loadingBar.setProgress(0);
                     if (reloadCancelItem != null) {
-                        reloadCancelItem.setTitle(R.string.reload_menu_title);
-                        reloadCancelItem.setIcon(R.drawable.light_refresh_icon);
+                        reloadCancelItem.setTitle(R.string.twitt4droid_refresh_menu_title);
+                        reloadCancelItem.setIcon(R.drawable.twitt4droid_light_refresh_icon);
                     }
                 } else {
                     loadingBar.setVisibility(View.VISIBLE);
@@ -276,8 +264,8 @@ public class WebLoginActivity extends Activity {
         getMenuInflater().inflate(R.menu.twitt4droid_web_browser, menu);
         reloadCancelItem = menu.findItem(R.id.reload_cancel_item);
         if (loadingBar.getProgress() == loadingBar.getMax() || loadingBar.getProgress() == 0) {
-            reloadCancelItem.setTitle(R.string.reload_menu_title);
-            reloadCancelItem.setIcon(R.drawable.light_refresh_icon);
+            reloadCancelItem.setTitle(R.string.twitt4droid_refresh_menu_title);
+            reloadCancelItem.setIcon(R.drawable.twitt4droid_light_refresh_icon);
         }
         return true;
     }
@@ -288,14 +276,14 @@ public class WebLoginActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.reload_cancel_item) {
-            if (item.getTitle().toString().equals(getString(R.string.cancel_menu_title))) {
+            if (item.getTitle().toString().equals(getString(R.string.twitt4droid_cancel_menu_title))) {
                 webView.stopLoading();
-                item.setTitle(R.string.reload_menu_title);
-                item.setIcon(R.drawable.light_refresh_icon);
+                item.setTitle(R.string.twitt4droid_refresh_menu_title);
+                item.setIcon(R.drawable.twitt4droid_light_refresh_icon);
             } else {
                 webView.reload();
-                item.setTitle(R.string.cancel_menu_title);
-                item.setIcon(R.drawable.light_cancel_icon);
+                item.setTitle(R.string.twitt4droid_cancel_menu_title);
+                item.setIcon(R.drawable.twitt4droid_light_cancel_icon);
             }
             return true;
         }

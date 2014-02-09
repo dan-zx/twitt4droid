@@ -21,11 +21,11 @@ import android.os.Bundle;
 
 import com.actionbarsherlock.app.SherlockActivity;
 
+import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.activity.WebLoginActivity;
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.util.Dialogs;
-import com.twitt4droid.app.util.Networks;
 
 import twitter4j.AsyncTwitter;
 import twitter4j.TwitterAdapter;
@@ -47,7 +47,7 @@ public class SignInActivity extends SherlockActivity {
     protected void onResume() {
         super.onResume();
         if (Twitt4droid.isUserLoggedIn(this)) {
-            if (Networks.isConnectedToInternet(this)) {
+            if (Resources.isConnectedToInternet(this)) {
                 final ProgressDialog progressDialog = getLoadingDialog();
                 AsyncTwitter twitter = Twitt4droid.getAsyncTwitter(this);
                 twitter.addListener(new TwitterAdapter() {

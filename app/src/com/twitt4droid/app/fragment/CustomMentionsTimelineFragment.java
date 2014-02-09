@@ -15,15 +15,15 @@
  */
 package com.twitt4droid.app.fragment;
 
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
+import android.widget.Toast;
 
-public class MentionsFragment extends TimelineFragment {
+import com.twitt4droid.app.R;
+import com.twitt4droid.fragment.MentionsTimelineFragment;
+
+public class CustomMentionsTimelineFragment extends MentionsTimelineFragment {
 
     @Override
-    protected ResponseList<Status> getTweets(Twitter twitter) throws TwitterException {
-        return twitter.getMentionsTimeline();
+    protected void onTwitterError(Exception ex) {
+        Toast.makeText(getActivity().getApplicationContext(), R.string.twitt4droid_onerror_message, Toast.LENGTH_LONG).show();
     }
 }

@@ -17,7 +17,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Twitt4droid.Widget.ProgressBar.Horizontal" parent="android:Widget.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/holo_dark_horizontal_progress_bar</item>
+        <item name="android:progressDrawable">@drawable/twitt4droid_holo_dark_horizontal_progress_bar</item>
         <item name="android:minHeight">4dp</item>
         <item name="android:maxHeight">4dp</item>
     </style>

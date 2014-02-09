@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.twitt4droid.app.task;
+package com.twitt4droid.task;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
-import com.twitt4droid.app.util.Images;
+import com.twitt4droid.util.Images;
 
 public class ImageLoadingTask extends AsyncTask<String, Void, Bitmap> {
 

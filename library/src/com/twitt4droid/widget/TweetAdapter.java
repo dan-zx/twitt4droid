@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.twitt4droid.app.widget;
+package com.twitt4droid.widget;
 
+import java.util.List;
+
+import twitter4j.Status;
 import android.app.Activity;
 import android.content.Context;
 import android.text.format.DateFormat;
@@ -26,17 +29,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.twitt4droid.app.R;
-import com.twitt4droid.app.task.ImageLoadingTask;
-
-import twitter4j.Status;
-
-import java.text.SimpleDateFormat;
-import java.util.List;
+import com.twitt4droid.R;
+import com.twitt4droid.task.ImageLoadingTask;
 
 public class TweetAdapter extends ArrayAdapter<Status> {
 
-    
     public TweetAdapter(Context context, int resource) {
         super(context, resource);
     }
@@ -52,10 +49,10 @@ public class TweetAdapter extends ArrayAdapter<Status> {
         LayoutInflater mInflater = (LayoutInflater) getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.tweet_item, null);
+            convertView = mInflater.inflate(R.layout.twitt4droid_tweet_item, null);
             holder = new ViewHolder()
                     .setContext(getContext())
-                    .setProfileImage((ImageView) convertView.findViewById(R.id.profile_image))
+                    .setProfileImage((ImageView) convertView.findViewById(R.id.tweet_profile_image))
                     .setTweetTextView((TextView) convertView.findViewById(R.id.tweet_content_text))
                     .setUsernameTextView((TextView) convertView.findViewById(R.id.tweet_username_text))
                     .setTweetTimeTextView((TextView) convertView.findViewById(R.id.tweet_time_text))
@@ -84,9 +81,9 @@ public class TweetAdapter extends ArrayAdapter<Status> {
         }
 
         public void setContent(Status status) {
-            usernameTextView.setText(context.getString(R.string.tweet_username_format, status.getUser().getScreenName(), status.getUser().getName()));
+            usernameTextView.setText(context.getString(R.string.twitt4droid_tweet_username_format, status.getUser().getScreenName(), status.getUser().getName()));
             tweetTextView.setText(status.getText());
-            String dateText = context.getString(R.string.tweet_date_format, 
+            String dateText = context.getString(R.string.twitt4droid_tweet_date_format, 
                     DateFormat.getDateFormat(context.getApplicationContext()).format(status.getCreatedAt()),
                     DateFormat.getTimeFormat(context.getApplicationContext()).format(status.getCreatedAt()));
             tweetTimeTextView.setText(dateText);

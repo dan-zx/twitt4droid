@@ -19,7 +19,7 @@
     android:layout_height="match_parent" >
 
     <ImageView
-        android:id="@+id/profile_image"
+        android:id="@+id/tweet_profile_image"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentLeft="true"
@@ -27,7 +27,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        android:contentDescription="@string/user_image_description"
+        android:contentDescription="@string/twitt4droid_profile_image_description"
         android:scaleType="centerCrop"
         android:src="@drawable/twitt4droid_no_profile_image" />
 
@@ -39,7 +39,7 @@
         android:layout_marginRight="2dp"
         android:layout_marginTop="5dp"
         android:layout_toLeftOf="@+id/tweet_options_button"
-        android:layout_toRightOf="@id/profile_image"
+        android:layout_toRightOf="@id/tweet_profile_image"
         android:orientation="vertical" >
 
         <TextView
@@ -71,8 +71,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="-6dp"
-                android:contentDescription="@string/clock_image_description"
-                android:src="@drawable/dark_clock_icon" />
+                android:contentDescription="@string/twitt4droid_clock_icon_description"
+                android:src="@drawable/twitt4droid_dark_clock_icon" />
 
             <TextView
                 android:id="@+id/tweet_time_text"
@@ -91,7 +91,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="2dp"
         android:background="@android:color/transparent"
-        android:contentDescription="@string/overflow"
-        android:src="@drawable/abs__ic_menu_moreoverflow_holo_light" />
+        android:contentDescription="@string/twitt4droid_tweet_overflow_label"
+        android:src="@drawable/twitt4droid_overflow_dark_icon" />
 
 </RelativeLayout>
