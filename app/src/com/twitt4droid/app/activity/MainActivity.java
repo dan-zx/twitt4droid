@@ -15,6 +15,7 @@
  */
 package com.twitt4droid.app.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -109,6 +110,12 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         switch (item.getItemId()) {
             case R.id.licenses_item: 
                 Dialogs.getLicencesAlertDialog(this).show();
+                return true;
+            case R.id.new_tweet_item:
+                startActivity(new Intent(this, TweetingActivity.class));
+                return true;
+            case R.id.new_direct_message_item:
+                startActivity(new Intent(this, DirectMessagingActivity.class));
                 return true;
             default: return super.onOptionsItemSelected(item);
         }

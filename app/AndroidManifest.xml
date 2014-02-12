@@ -57,6 +57,12 @@
             android:name="com.twitt4droid.activity.WebLoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@android:style/Theme.Black.NoTitleBar" />
+        <activity
+            android:name="com.twitt4droid.app.activity.TweetingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name="com.twitt4droid.app.activity.DirectMessagingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
     </application>
 
 </manifest>
