@@ -59,10 +59,12 @@
             android:theme="@android:style/Theme.Black.NoTitleBar" />
         <activity
             android:name="com.twitt4droid.app.activity.TweetingActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/tweeting_activity_title" />
         <activity
             android:name="com.twitt4droid.app.activity.DirectMessagingActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/direct_messaging_activity_title" />
     </application>
 
 </manifest>

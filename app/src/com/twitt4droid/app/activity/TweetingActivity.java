@@ -15,6 +15,7 @@
  */
 package com.twitt4droid.app.activity;
 
+import roboguice.inject.InjectView;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -24,40 +25,39 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
-
 import com.twitt4droid.app.R;
-
-import roboguice.inject.InjectView;
 
 public class TweetingActivity extends RoboSherlockActivity {
     
     private static final int TWEET_CHAR_LIMIT = 140;
     private static final int RED_COLOR = Color.parseColor("#FF0000");
-    private static final String ZERO_STRING = "0"; 
     
     @InjectView(R.id.new_tweet_edit_text) private EditText newTweetEditText;
     
     private TextView characterCountTextView;
+    private MenuItem sendMenuItem;
     private int defaultCharacterCountTextViewTextColor;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tweeting);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        // TODO: show soft keyboard
         newTweetEditText.addTextChangedListener(new TextWatcher() {
             
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > TWEET_CHAR_LIMIT) {
                     characterCountTextView.setTextColor(RED_COLOR);
+                    sendMenuItem.setEnabled(false);
                 } else {
                     characterCountTextView.setTextColor(defaultCharacterCountTextViewTextColor);
+                    sendMenuItem.setEnabled(true);
                 }
                 
-                characterCountTextView.setText(String.valueOf(s.length()));
+                characterCountTextView.setText(String.valueOf(TWEET_CHAR_LIMIT - s.length()));
             }
             
             @Override
@@ -71,8 +71,9 @@ public class TweetingActivity extends RoboSherlockActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getSupportMenuInflater().inflate(R.menu.tweeting, menu);
+        sendMenuItem = menu.findItem(R.id.send_tweet_item);
         characterCountTextView = (TextView)menu.findItem(R.id.tweet_char_count_item).getActionView();
-        characterCountTextView.setText(ZERO_STRING);
+        characterCountTextView.setText(String.valueOf(TWEET_CHAR_LIMIT));
         defaultCharacterCountTextViewTextColor = characterCountTextView.getTextColors().getDefaultColor();
         return true;
     }
@@ -84,7 +85,8 @@ public class TweetingActivity extends RoboSherlockActivity {
                 onBackPressed();
                 return true;
             case R.id.send_tweet_item:
-                if (newTweetEditText.getText().length() <= TWEET_CHAR_LIMIT) {
+                if (newTweetEditText.getText().length() > 0 && 
+                    newTweetEditText.getText().length() <= TWEET_CHAR_LIMIT) {
                     // TODO: Send tweet and finish activity
                 }
                 return true;
