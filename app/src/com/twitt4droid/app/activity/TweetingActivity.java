@@ -15,25 +15,44 @@
  */
 package com.twitt4droid.app.activity;
 
-import roboguice.inject.InjectView;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
+
+import com.twitt4droid.Resources;
+import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.app.R;
+import com.twitt4droid.app.util.Dialogs;
+
+import roboguice.inject.InjectView;
+
+import twitter4j.AsyncTwitter;
+import twitter4j.Status;
+import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterMethod;
+
+import javax.inject.Inject;
 
 public class TweetingActivity extends RoboSherlockActivity {
     
     private static final int TWEET_CHAR_LIMIT = 140;
     private static final int RED_COLOR = Color.parseColor("#FF0000");
+    private static final String TAG = TweetingActivity.class.getSimpleName();
     
     @InjectView(R.id.new_tweet_edit_text) private EditText newTweetEditText;
+    @Inject                               private InputMethodManager inputMethodManager; 
     
     private TextView characterCountTextView;
     private MenuItem sendMenuItem;
@@ -44,12 +63,53 @@ public class TweetingActivity extends RoboSherlockActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tweeting);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // TODO: show soft keyboard
+        setUpLayout();
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getSupportMenuInflater().inflate(R.menu.tweeting, menu);
+        sendMenuItem = menu.findItem(R.id.send_tweet_item);
+        characterCountTextView = (TextView)menu.findItem(R.id.tweet_char_count_item).getActionView();
+        characterCountTextView.setText(String.valueOf(TWEET_CHAR_LIMIT));
+        defaultCharacterCountTextViewTextColor = characterCountTextView.getTextColors().getDefaultColor();
+        return true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        hideSoftKeyboard();
+    }
+    
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.send_tweet_item:
+                if (Resources.isConnectedToInternet(this)) {
+                    if (newTweetEditText.getText().toString().trim().length() > 0 && 
+                            newTweetEditText.getText().toString().trim().length() <= TWEET_CHAR_LIMIT) {
+                        sendTweet();
+                        finish();
+                    }
+                } else {
+                    Dialogs.getNetworkAlertDialog(this).show();
+                }
+                return true;
+            default: return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void setUpLayout() {
         newTweetEditText.addTextChangedListener(new TextWatcher() {
             
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > TWEET_CHAR_LIMIT) {
+                if (s.toString().trim().length() > TWEET_CHAR_LIMIT) {
                     characterCountTextView.setTextColor(RED_COLOR);
                     sendMenuItem.setEnabled(false);
                 } else {
@@ -66,31 +126,56 @@ public class TweetingActivity extends RoboSherlockActivity {
             @Override
             public void afterTextChanged(Editable s) { }
         });
+        toggleSoftKeyboard();
+    }
+
+    private void sendTweet() {
+        AsyncTwitter twitter = Twitt4droid.getAsyncTwitter(this);
+        twitter.addListener(new TwitterAdapter() {
+            @Override
+            public void updatedStatus(Status status) {
+                Log.d(TAG, "Tweet [" + status.getText() + "] sent");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(),
+                                R.string.tweet_sent,
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+            }
+
+            @Override
+            public void onException(TwitterException te, TwitterMethod method) {
+                Log.e(TAG, "Error while sending tweet", te);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(),
+                                R.string.twitt4droid_onerror_message,
+                                Toast.LENGTH_LONG)
+                                .show();
+                    }
+                });
+            }
+        });
+        Toast.makeText(getApplicationContext(),
+                R.string.sending_tweet,
+                Toast.LENGTH_SHORT)
+                .show();
+        twitter.updateStatus(newTweetEditText.getText().toString().trim());
     }
     
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getSupportMenuInflater().inflate(R.menu.tweeting, menu);
-        sendMenuItem = menu.findItem(R.id.send_tweet_item);
-        characterCountTextView = (TextView)menu.findItem(R.id.tweet_char_count_item).getActionView();
-        characterCountTextView.setText(String.valueOf(TWEET_CHAR_LIMIT));
-        defaultCharacterCountTextViewTextColor = characterCountTextView.getTextColors().getDefaultColor();
-        return true;
+    private void toggleSoftKeyboard() {
+        inputMethodManager.toggleSoftInput(
+                InputMethodManager.SHOW_FORCED, 
+                InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
     
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            case R.id.send_tweet_item:
-                if (newTweetEditText.getText().length() > 0 && 
-                    newTweetEditText.getText().length() <= TWEET_CHAR_LIMIT) {
-                    // TODO: Send tweet and finish activity
-                }
-                return true;
-            default: return super.onOptionsItemSelected(item);
-        }
+    private void hideSoftKeyboard() {
+        inputMethodManager.hideSoftInputFromWindow(
+                newTweetEditText.getWindowToken(),
+                0);
     }
 }

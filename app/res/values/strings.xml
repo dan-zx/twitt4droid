@@ -31,6 +31,8 @@
     <string name="todo_view_text">TODO view</string>
     <string name="new_teet_hit">What\'s Going On?</string>
     <string name="char_count">Char count</string>
+    <string name="tweet_sent">Tweet sent</string>
+    <string name="sending_tweet">Sending tweet&#8230;</string>
     
     <!-- IMAGE DESCRIPTION -->
     <string name="map_image_description">Map image</string>
