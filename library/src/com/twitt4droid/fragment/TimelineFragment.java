@@ -30,8 +30,10 @@ import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.widget.RefreshableListView;
 import com.twitt4droid.widget.TweetAdapter;
 
-import twitter4j.ResponseList;
+import twitter4j.Status;
 import twitter4j.Twitter;
+
+import java.util.List;
 
 public abstract class TimelineFragment extends Fragment {
 
@@ -64,11 +66,11 @@ private static final String TAG = TimelineFragment.class.getSimpleName();
         }
     }
     
-    protected abstract ResponseList<twitter4j.Status> updateTweets(Twitter twitter) throws Exception;
+    protected abstract List<Status> updateTweets(Twitter twitter) throws Exception;
     protected void onTwitterError(Exception ex) {}
     protected void onNetworkDown() {}
     
-    private class TweetLoader extends AsyncTask<Void, Void, ResponseList<twitter4j.Status>> {
+    private class TweetLoader extends AsyncTask<Void, Void, List<Status>> {
 
         protected Twitter twitter;
         protected Exception twitterError;
@@ -84,7 +86,7 @@ private static final String TAG = TimelineFragment.class.getSimpleName();
         }
         
         @Override
-        protected ResponseList<twitter4j.Status> doInBackground(Void... params) {
+        protected List<twitter4j.Status> doInBackground(Void... params) {
             try {
                 return updateTweets(twitter);
             } catch (Exception ex) {
@@ -95,32 +97,31 @@ private static final String TAG = TimelineFragment.class.getSimpleName();
         }
         
         @Override
-        protected void onPostExecute(ResponseList<twitter4j.Status> result) {
+        protected void onPostExecute(List<twitter4j.Status> result) {
             tweetListView.onRefreshComplete();
+            progressBar.setVisibility(View.GONE);
+            tweetListView.setVisibility(View.VISIBLE);
             if (result != null && !result.isEmpty()) {
                 tweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, result));
-                progressBar.setVisibility(View.GONE);
-                tweetListView.setVisibility(View.VISIBLE);
+                Log.d(TAG, "Loaded");
             } else {
                 onTwitterError(twitterError);
             }
         }
     }
-    
-    
+
     private class TweetUpdater extends TweetLoader {
         
         @Override
         protected void onPreExecute() { }
         
         @Override
-        protected ResponseList<twitter4j.Status> doInBackground(Void... params) {
-            Log.d(TAG, "Updating...");
+        protected List<twitter4j.Status> doInBackground(Void... params) {
             return super.doInBackground(params);
         }
 
         @Override
-        protected void onPostExecute(ResponseList<twitter4j.Status> result) {
+        protected void onPostExecute(List<twitter4j.Status> result) {
             tweetListView.onRefreshComplete();
             if (result != null && !result.isEmpty()) {
                 tweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, result));
