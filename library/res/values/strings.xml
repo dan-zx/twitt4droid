@@ -54,5 +54,8 @@
 
     <!-- SHARED PREFERENCES -->
     <string name="twitt4droid_preference_file_key">com.twitt4droid.PREFERENCES</string>
+    
+    <!-- MISC -->
+    <string name="twitt4droid_github_url">https://github.com/dan-zx/twitt4droid</string>
 
 </resources>

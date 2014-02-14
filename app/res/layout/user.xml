@@ -37,7 +37,7 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/twitt4droid_profile_image_description"
                 android:scaleType="fitXY"
-                android:src="@drawable/twitt4droid_no_profile_image" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/username_text_view"
@@ -46,7 +46,8 @@
                 android:layout_marginTop="13dp"
                 android:layout_toRightOf="@id/profile_image_view"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/name_text_view"
@@ -55,7 +56,8 @@
                 android:layout_below="@id/username_text_view"
                 android:layout_marginTop="3dp"
                 android:layout_toRightOf="@id/profile_image_view"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:visibility="gone" />
         </RelativeLayout>
 
         <TextView
@@ -63,7 +65,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/web_site_text_view"
@@ -72,7 +75,8 @@
             android:autoLink="web"
             android:linksClickable="true"
             android:padding="8dp"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/description_text_view"
@@ -81,7 +85,8 @@
             android:autoLink="web"
             android:linksClickable="true"
             android:padding="8dp"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/map_image_view"
@@ -89,7 +94,8 @@
             android:layout_height="150dp"
             android:layout_margin="8dp"
             android:contentDescription="@string/map_image_description"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
 
         <com.twitt4droid.widget.LogInOutButton
             xmlns:twitt4droid="http://schemas.android.com/apk/res-auto"
@@ -98,6 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="12dp"
+            android:visibility="gone"
             twitt4droid:logoutText="@string/custom_log_out" />
     </LinearLayout>
 

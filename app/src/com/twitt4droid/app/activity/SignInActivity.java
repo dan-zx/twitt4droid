@@ -15,7 +15,6 @@
  */
 package com.twitt4droid.app.activity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -26,12 +25,6 @@ import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.activity.WebLoginActivity;
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.util.Dialogs;
-
-import twitter4j.AsyncTwitter;
-import twitter4j.TwitterAdapter;
-import twitter4j.User;
-
-import java.io.Serializable;
 
 public class SignInActivity extends SherlockActivity {
 
@@ -48,16 +41,7 @@ public class SignInActivity extends SherlockActivity {
         super.onResume();
         if (Twitt4droid.isUserLoggedIn(this)) {
             if (Resources.isConnectedToInternet(this)) {
-                final ProgressDialog progressDialog = getLoadingDialog();
-                AsyncTwitter twitter = Twitt4droid.getAsyncTwitter(this);
-                twitter.addListener(new TwitterAdapter() {
-                    @Override
-                    public void verifiedCredentials(User user) {
-                        progressDialog.dismiss();
-                        goToMainActivity(user);
-                    }
-                });
-                twitter.verifyCredentials();
+                goToMainActivity(); 
             } else {
                 Dialogs.getNetworkAlertDialog(this).show();
             }
@@ -71,7 +55,7 @@ public class SignInActivity extends SherlockActivity {
             case WebLoginActivity.REQUEST_CODE:
                 switch (resultCode) {
                     case RESULT_OK:
-                        goToMainActivity(data.getExtras().getSerializable(WebLoginActivity.EXTRA_USER));
+                        goToMainActivity();
                         break;
                     case RESULT_CANCELED: break;
                 }
@@ -79,20 +63,9 @@ public class SignInActivity extends SherlockActivity {
         }
     }
     
-    private void goToMainActivity(Serializable user) {
+    private void goToMainActivity() {
         Intent i = new Intent(this, MainActivity.class);
-        i.putExtra(MainActivity.EXTRA_USER, user);
         startActivity(i);
         finish();
-    }
-
-    private ProgressDialog getLoadingDialog() {
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setMessage(getString(R.string.loading));
-        progressDialog.setCancelable(false);
-        progressDialog.setIndeterminate(true);
-        progressDialog.show();
-        return progressDialog;
     }
 }

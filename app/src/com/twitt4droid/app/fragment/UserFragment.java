@@ -26,9 +26,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.rtyley.android.sherlock.roboguice.fragment.RoboSherlockFragment;
-
+import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.activity.SignInActivity;
 import com.twitt4droid.app.util.Strings;
@@ -36,7 +37,10 @@ import com.twitt4droid.task.ImageLoadingTask;
 import com.twitt4droid.widget.LogInOutButton;
 
 import roboguice.inject.InjectView;
-
+import twitter4j.AsyncTwitter;
+import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterMethod;
 import twitter4j.User;
 
 import java.io.IOException;
@@ -63,56 +67,99 @@ public class UserFragment extends RoboSherlockFragment {
     }
     
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        setUpLayout();
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setUpUser();
+    }
+    
+    private void setUpUser() {
+        AsyncTwitter twitter = Twitt4droid.getAsyncTwitter(getActivity());
+        twitter.addListener(new TwitterAdapter() {
+            
+            @Override
+            public void verifiedCredentials(final User user) {
+                Log.d(TAG, "User: " + user);
+                getActivity().runOnUiThread(new Runnable() {
+                    
+                    @Override
+                    public void run() {
+                        UserFragment.this.user = user;
+                        setUpLayout();                        
+                    }
+                });
+            }
+            
+            @Override
+            public void onException(TwitterException te, TwitterMethod method) {
+                Log.e(TAG, "Twitter error", te);
+                getActivity().runOnUiThread(new Runnable() {
+                    
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity().getApplicationContext(), 
+                                R.string.twitt4droid_onerror_message, 
+                                Toast.LENGTH_LONG)
+                                .show();
+                    }
+                });
+            }
+        });
+        twitter.verifyCredentials();
     }
 
     private void setUpLayout() {
-        usernameTextView.setText(getString(R.string.screen_name_format, user.getScreenName()));
-
-        if (!Strings.isNullOrBlank(user.getProfileImageURL())) 
-            new ImageLoadingTask()
-                .setImageView(profileImageView)
-                .setLoadingResourceImageId(R.drawable.twitt4droid_no_profile_image)
-                .execute(user.getProfileImageURL());
-
-        if (Strings.isNullOrBlank(user.getName())) nameTextView.setVisibility(View.GONE); 
-        else nameTextView.setText(user.getName());
-        
-        if (Strings.isNullOrBlank(user.getURL())) webSiteTextView.setVisibility(View.GONE); 
-        else webSiteTextView.setText(user.getURL());
-        
-        if (Strings.isNullOrBlank(user.getDescription())) descriptionTextView.setVisibility(View.GONE); 
-        else descriptionTextView.setText(user.getDescription());
-        
-        setUpLocation();
-        
-        logoutButton.setOnLogoutListener(new LogInOutButton.OnLogoutListener() {
-            @Override
-            public void OnLogout(LogInOutButton button) {
-                Intent intent = new Intent(getActivity(), SignInActivity.class);
-                getActivity().startActivity(intent);
-                getActivity().finish();
+        if (user != null) {
+            usernameTextView.setText(getString(R.string.screen_name_format, user.getScreenName()));
+            usernameTextView.setVisibility(View.VISIBLE);
+    
+            if (!Strings.isNullOrBlank(user.getProfileImageURL())) {
+                new ImageLoadingTask()
+                    .setImageView(profileImageView)
+                    .setLoadingResourceImageId(R.drawable.twitt4droid_no_profile_image)
+                    .execute(user.getProfileImageURL());
+                profileImageView.setVisibility(View.VISIBLE);
             }
-        });
+    
+            if (!Strings.isNullOrBlank(user.getName())) {
+                nameTextView.setText(user.getName());
+                nameTextView.setVisibility(View.VISIBLE);
+            }
+            
+            if (!Strings.isNullOrBlank(user.getURL())) {
+                webSiteTextView.setText(user.getURL());
+                webSiteTextView.setVisibility(View.VISIBLE);
+            }
+            
+            if (!Strings.isNullOrBlank(user.getDescription())) {
+                descriptionTextView.setText(user.getDescription());
+                descriptionTextView.setVisibility(View.VISIBLE);
+            }
+            
+            setUpLocation();
+            
+            logoutButton.setOnLogoutListener(new LogInOutButton.OnLogoutListener() {
+                @Override
+                public void OnLogout(LogInOutButton button) {
+                    Intent intent = new Intent(getActivity(), SignInActivity.class);
+                    getActivity().startActivity(intent);
+                    getActivity().finish();
+                }
+            });
+            logoutButton.setVisibility(View.VISIBLE);
+        }
     }
     
     private void setUpLocation() {
-        if (Strings.isNullOrBlank(user.getLocation())) {
-            mapImageView.setVisibility(View.GONE);
-            locationTextView.setVisibility(View.GONE); 
-        } else {
+        if (!Strings.isNullOrBlank(user.getLocation())) { 
             try {
                 Geocoder geocoder = new Geocoder(getActivity());
                 List<Address> addresses = geocoder.getFromLocationName(user.getLocation(), 1);
                 if (addresses.isEmpty() || addresses.get(0) == null) {
                     Log.w(TAG,  "Address " + user.getLocation() + " couldn't be found");
-                    mapImageView.setVisibility(View.GONE);
                     locationTextView.setText(user.getLocation());
+                    locationTextView.setVisibility(View.VISIBLE);
                 } else {
                     Log.d(TAG,  "Location " + addresses.get(0) + " found");
-                    locationTextView.setVisibility(View.GONE);
                     String url = Uri.parse(getString(R.string.google_static_maps_url))
                         .buildUpon()
                         .appendQueryParameter("sensor", "false")
@@ -126,17 +173,13 @@ public class UserFragment extends RoboSherlockFragment {
                         .setImageView(mapImageView)
                         .setLoadingResourceImageId(R.drawable.twitt4droid_no_image)
                         .execute(url);
+                    mapImageView.setVisibility(View.VISIBLE);
                 }
             } catch (IOException ex) {
                 Log.w(TAG, "Address " + user.getLocation() + " couldn't be decoded", ex);
-                mapImageView.setVisibility(View.GONE);
                 locationTextView.setText(user.getLocation());
+                locationTextView.setVisibility(View.VISIBLE);
             }
         }        
-    }
-    
-    public UserFragment setUser(User user) {
-        this.user = user;
-        return this;
     }
 }

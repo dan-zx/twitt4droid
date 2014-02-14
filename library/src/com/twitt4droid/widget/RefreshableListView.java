@@ -76,6 +76,7 @@ public class RefreshableListView extends ListView {
         setUpAnimations();
         setUpHeader();
         setUpListeners();
+        setVerticalScrollBarEnabled(false); 
     }
 
     /**
@@ -87,6 +88,7 @@ public class RefreshableListView extends ListView {
         setUpAnimations();
         setUpHeader();
         setUpListeners();
+        setVerticalScrollBarEnabled(false); 
     }
 
     /**
@@ -98,6 +100,7 @@ public class RefreshableListView extends ListView {
         setUpAnimations();
         setUpHeader();
         setUpListeners();
+        setVerticalScrollBarEnabled(false); 
     }
 
     /**

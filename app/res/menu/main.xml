@@ -29,11 +29,6 @@
         android:title="@string/overflow">
         <menu>
             <item
-                android:id="@+id/licenses_item"
-                android:icon="@drawable/dark_about_icon"
-                android:showAsAction="never"
-                android:title="@string/licenses"/>
-            <item
                 android:id="@+id/settings_item"
                 android:icon="@drawable/dark_settings_icon"
                 android:showAsAction="never"

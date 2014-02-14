@@ -21,7 +21,18 @@
     <!-- ACTIVITY TITLES -->
     <string name="tweeting_activity_title">Tweet</string>
     <string name="direct_messaging_activity_title">Direct message</string>
+    <string name="settings_activity_title">Settings</string>
     
+    <!-- SETTINGS ACTIVITY -->
+    <string name="about_preferences">About</string>
+    <string name="github_pref_title">twitt4droid on GitHub</string>
+    <string name="github_pref_summary">Library code and wikis</string>
+    <string name="licenses_pref_title">Licenses</string>
+    <string name="licenses_pref_summary">License details for open source software</string>
+    <string name="version_pref_title">App version</string>
+    <string name="version_pref_summary">1.0-SNAPSHOT</string>
+    
+    <!-- OTHER TEXTS -->
     <string name="instructions">Login to create a link to fetch your account data and use Twitter API</string>
     <string name="custom_login">Sign in!</string>
     <string name="custom_log_out">Change account</string>

@@ -65,6 +65,9 @@
             android:name="com.twitt4droid.app.activity.DirectMessagingActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/direct_messaging_activity_title" />
+        <activity
+            android:name="com.twitt4droid.app.activity.SettingsActivity"
+            android:label="@string/settings_activity_title" />
     </application>
 
 </manifest>

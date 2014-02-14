@@ -28,27 +28,23 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
+
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.fragment.CustomHomeTimelineFragment;
 import com.twitt4droid.app.fragment.CustomMentionsTimelineFragment;
 import com.twitt4droid.app.fragment.CustomQueryableTimelineFragment;
 import com.twitt4droid.app.fragment.UserFragment;
-import com.twitt4droid.app.util.Dialogs;
 
-import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
-import twitter4j.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends RoboSherlockFragmentActivity {
 
-    public static final String EXTRA_USER = "com.twitt4droid.demo.extra.user";
-
     @InjectView(R.id.view_pager) private ViewPager viewPager;
-    @InjectExtra(EXTRA_USER)     private User user;
 
     private Menu menu;
 
@@ -63,7 +59,7 @@ public class MainActivity extends RoboSherlockFragmentActivity {
             .addFragment(new CustomHomeTimelineFragment())
             .addFragment(new CustomMentionsTimelineFragment())
             .addFragment(new CustomQueryableTimelineFragment())
-            .addFragment(new UserFragment().setUser(user));
+            .addFragment(new UserFragment());
         viewPager.setAdapter(adapter);
         viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
@@ -105,11 +101,11 @@ public class MainActivity extends RoboSherlockFragmentActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.licenses_item: 
-                Dialogs.getLicencesAlertDialog(this).show();
-                return true;
             case R.id.new_tweet_item:
                 startActivity(new Intent(this, TweetingActivity.class));
+                return true;
+            case R.id.settings_item:
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             default: return super.onOptionsItemSelected(item);
         }
