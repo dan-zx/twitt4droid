@@ -23,7 +23,7 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-public abstract class QueryableTimelineFragment extends TimelineFragment {
+public abstract class FixedQueryTimelineFragment extends TimelineFragment {
 
     protected abstract String getQuery();
     

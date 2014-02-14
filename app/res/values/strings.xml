@@ -40,6 +40,7 @@
     <!-- TABS -->
     <string name="home_tab_title">Timeline</string>
     <string name="mentions_tab_title">Mentions</string>
+    <string name="query_tab_title">Search</string>
     <string name="user_tab_title">Profile</string>
 
     <!-- MENU -->

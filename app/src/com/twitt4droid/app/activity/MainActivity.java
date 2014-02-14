@@ -28,18 +28,16 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
-
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.fragment.CustomHomeTimelineFragment;
 import com.twitt4droid.app.fragment.CustomMentionsTimelineFragment;
+import com.twitt4droid.app.fragment.CustomQueryableTimelineFragment;
 import com.twitt4droid.app.fragment.UserFragment;
 import com.twitt4droid.app.util.Dialogs;
 
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
-
 import twitter4j.User;
 
 import java.util.ArrayList;
@@ -64,6 +62,7 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         MyFragmentPagerAdapter adapter = new MyFragmentPagerAdapter(getSupportFragmentManager())
             .addFragment(new CustomHomeTimelineFragment())
             .addFragment(new CustomMentionsTimelineFragment())
+            .addFragment(new CustomQueryableTimelineFragment())
             .addFragment(new UserFragment().setUser(user));
         viewPager.setAdapter(adapter);
         viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -83,6 +82,11 @@ public class MainActivity extends RoboSherlockFragmentActivity {
                 .newTab()
                 .setContentDescription(R.string.mentions_tab_title)
                 .setIcon(R.drawable.dark_notifications_icon)
+                .setTabListener(listener));
+        getSupportActionBar().addTab(getSupportActionBar()
+                .newTab()
+                .setContentDescription(R.string.query_tab_title)
+                .setIcon(R.drawable.twitt4droid_dark_search_icon)
                 .setTabListener(listener));
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()

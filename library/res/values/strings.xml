@@ -48,6 +48,9 @@
     <string name="twitt4droid_tweet_username_format">\@%1$s (%2$s)</string>
     <string name="twitt4droid_tweet_date_format">%1$s %2$s</string>
     <string name="twitt4droid_tweet_overflow_label">More</string>
+    
+    <!-- HINTS -->
+    <string name="twitt4droid_search">Search for tweets</string>
 
     <!-- SHARED PREFERENCES -->
     <string name="twitt4droid_preference_file_key">com.twitt4droid.PREFERENCES</string>

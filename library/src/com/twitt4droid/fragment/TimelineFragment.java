@@ -36,8 +36,8 @@ import twitter4j.Twitter;
 import java.util.List;
 
 public abstract class TimelineFragment extends Fragment {
-
-private static final String TAG = TimelineFragment.class.getSimpleName();
+    
+    private static final String TAG = TimelineFragment.class.getSimpleName();
     
     private RefreshableListView tweetListView;
     private ProgressBar progressBar;
@@ -45,14 +45,7 @@ private static final String TAG = TimelineFragment.class.getSimpleName();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.twitt4droid_timeline, container, false);
-        tweetListView = (RefreshableListView) layout.findViewById(R.id.tweets_list);
-        progressBar = (ProgressBar) layout.findViewById(R.id.tweets_progress_bar);
-        tweetListView.setOnRefreshListener(new RefreshableListView.OnRefreshListener() {
-            @Override
-            public void onRefresh(RefreshableListView refreshableListView) {
-                new TweetUpdater().execute();
-            }
-        });
+        setUpLayout(layout);
         return layout;
     }
     
@@ -65,10 +58,25 @@ private static final String TAG = TimelineFragment.class.getSimpleName();
             onNetworkDown();
         }
     }
-    
+
     protected abstract List<Status> updateTweets(Twitter twitter) throws Exception;
     protected void onTwitterError(Exception ex) {}
     protected void onNetworkDown() {}
+
+    private void setUpLayout(View layout) {
+        tweetListView = (RefreshableListView) layout.findViewById(R.id.tweets_list);
+        progressBar = (ProgressBar) layout.findViewById(R.id.tweets_progress_bar);
+        tweetListView.setOnRefreshListener(new RefreshableListView.OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshableListView refreshableListView) {
+                if (Resources.isConnectedToInternet(getActivity())) {
+                    new TweetUpdater().execute();
+                } else {
+                    onNetworkDown();
+                }
+            }
+        });
+    }
     
     private class TweetLoader extends AsyncTask<Void, Void, List<Status>> {
 
@@ -114,11 +122,6 @@ private static final String TAG = TimelineFragment.class.getSimpleName();
         
         @Override
         protected void onPreExecute() { }
-        
-        @Override
-        protected List<twitter4j.Status> doInBackground(Void... params) {
-            return super.doInBackground(params);
-        }
 
         @Override
         protected void onPostExecute(List<twitter4j.Status> result) {
