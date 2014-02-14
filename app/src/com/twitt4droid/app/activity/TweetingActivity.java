@@ -51,8 +51,8 @@ public class TweetingActivity extends RoboSherlockActivity {
     private static final int RED_COLOR = Color.parseColor("#FF0000");
     private static final String TAG = TweetingActivity.class.getSimpleName();
     
-    @InjectView(R.id.new_tweet_edit_text) private EditText newTweetEditText;
-    @Inject                               private InputMethodManager inputMethodManager; 
+    @InjectView(R.id.new_message_edit_text) private EditText newTweetEditText;
+    @Inject                                 private InputMethodManager inputMethodManager; 
     
     private TextView characterCountTextView;
     private MenuItem sendMenuItem;
@@ -61,7 +61,7 @@ public class TweetingActivity extends RoboSherlockActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.tweeting);
+        setContentView(R.layout.texting);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setUpLayout();
     }

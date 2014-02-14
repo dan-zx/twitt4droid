@@ -34,7 +34,6 @@ import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmen
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.fragment.CustomHomeTimelineFragment;
 import com.twitt4droid.app.fragment.CustomMentionsTimelineFragment;
-import com.twitt4droid.app.fragment.DirectMessagesFragment;
 import com.twitt4droid.app.fragment.UserFragment;
 import com.twitt4droid.app.util.Dialogs;
 
@@ -65,7 +64,6 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         MyFragmentPagerAdapter adapter = new MyFragmentPagerAdapter(getSupportFragmentManager())
             .addFragment(new CustomHomeTimelineFragment())
             .addFragment(new CustomMentionsTimelineFragment())
-            .addFragment(new DirectMessagesFragment())
             .addFragment(new UserFragment().setUser(user));
         viewPager.setAdapter(adapter);
         viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -85,11 +83,6 @@ public class MainActivity extends RoboSherlockFragmentActivity {
                 .newTab()
                 .setContentDescription(R.string.mentions_tab_title)
                 .setIcon(R.drawable.dark_notifications_icon)
-                .setTabListener(listener));
-        getSupportActionBar().addTab(getSupportActionBar()
-                .newTab()
-                .setContentDescription(R.string.direct_messages_tab_title)
-                .setIcon(R.drawable.dark_direct_message_icon)
                 .setTabListener(listener));
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()
@@ -113,9 +106,6 @@ public class MainActivity extends RoboSherlockFragmentActivity {
                 return true;
             case R.id.new_tweet_item:
                 startActivity(new Intent(this, TweetingActivity.class));
-                return true;
-            case R.id.new_direct_message_item:
-                startActivity(new Intent(this, DirectMessagingActivity.class));
                 return true;
             default: return super.onOptionsItemSelected(item);
         }

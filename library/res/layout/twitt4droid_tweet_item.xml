@@ -92,6 +92,7 @@
         android:layout_marginTop="2dp"
         android:background="@android:color/transparent"
         android:contentDescription="@string/twitt4droid_tweet_overflow_label"
-        android:src="@drawable/twitt4droid_overflow_dark_icon" />
+        android:src="@drawable/twitt4droid_overflow_dark_icon"
+        android:visibility="gone" />
 
 </RelativeLayout>

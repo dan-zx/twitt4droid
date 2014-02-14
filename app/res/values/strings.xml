@@ -40,17 +40,15 @@
     <!-- TABS -->
     <string name="home_tab_title">Timeline</string>
     <string name="mentions_tab_title">Mentions</string>
-    <string name="direct_messages_tab_title">Direct messages</string>
     <string name="user_tab_title">Profile</string>
 
     <!-- MENU -->
-    <string name="refresh_tweets">Refresh tweets</string>
     <string name="tweet">Tweet</string>
-    <string name="direct_message">Direct message</string>
     <string name="settings">Settings</string>
     <string name="licenses">Licenses</string>
     <string name="overflow">More</string>
     <string name="send">Send</string>
+    <string name="to_person">To</string>
 
     <string name="licenses_file">"file:///android_asset/licenses.html"</string>
     
