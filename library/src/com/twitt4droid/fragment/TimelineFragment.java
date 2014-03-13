@@ -15,7 +15,6 @@
  */
 package com.twitt4droid.fragment;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -23,15 +22,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.twitt4droid.R;
 import com.twitt4droid.Resources;
-import com.twitt4droid.Twitt4droid;
+import com.twitt4droid.task.TweetLoader;
 import com.twitt4droid.widget.RefreshableListView;
 import com.twitt4droid.widget.TweetAdapter;
 
 import twitter4j.Status;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
 import java.util.List;
 
@@ -53,15 +54,16 @@ public abstract class TimelineFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (Resources.isConnectedToInternet(getActivity())) {
-            new TweetLoader().execute();
+            new TimelineLoader().execute();
         } else {
-            onNetworkDown();
+            Toast.makeText(getActivity().getApplicationContext(), 
+                    R.string.twitt4droid_is_offline_messege, 
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
-    protected abstract List<Status> updateTweets(Twitter twitter) throws Exception;
-    protected void onTwitterError(Exception ex) {}
-    protected void onNetworkDown() {}
+    protected abstract List<Status> getTweets(Twitter twitter) throws TwitterException;
+    protected void onTwitterError(TwitterException ex) {}
 
     private void setUpLayout(View layout) {
         tweetListView = (RefreshableListView) layout.findViewById(R.id.tweets_list);
@@ -70,21 +72,20 @@ public abstract class TimelineFragment extends Fragment {
             @Override
             public void onRefresh(RefreshableListView refreshableListView) {
                 if (Resources.isConnectedToInternet(getActivity())) {
-                    new TweetUpdater().execute();
+                    new TimelineUpdater().execute();
                 } else {
-                    onNetworkDown();
+                    Toast.makeText(getActivity().getApplicationContext(), 
+                            R.string.twitt4droid_is_offline_messege, 
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
-    
-    private class TweetLoader extends AsyncTask<Void, Void, List<Status>> {
 
-        protected Twitter twitter;
-        protected Exception twitterError;
-
-        public TweetLoader() {
-            this.twitter = Twitt4droid.getTwitter(getActivity());
+    private class TimelineLoader extends TweetLoader<Void> {
+        
+        public TimelineLoader() {
+            super(getActivity());
         }
 
         @Override
@@ -94,14 +95,8 @@ public abstract class TimelineFragment extends Fragment {
         }
         
         @Override
-        protected List<twitter4j.Status> doInBackground(Void... params) {
-            try {
-                return updateTweets(twitter);
-            } catch (Exception ex) {
-                Log.e(TAG, "Error while retrieving tweets", ex);
-                twitterError = ex;
-            }
-            return null;
+        protected List<twitter4j.Status> loadTweetsInBackground(Void... params) throws TwitterException {
+            return getTweets(getTwitter());
         }
         
         @Override
@@ -112,25 +107,35 @@ public abstract class TimelineFragment extends Fragment {
             if (result != null && !result.isEmpty()) {
                 tweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, result));
                 Log.d(TAG, "Loaded");
+            } else if (getTwitterException() != null) {
+                Log.e(TAG, "Error while retrieving tweets", getTwitterException());
+                onTwitterError(getTwitterException());
             } else {
-                onTwitterError(twitterError);
+                Toast.makeText(getActivity().getApplicationContext(),
+                        R.string.twitt4droid_no_tweets_found_message,
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private class TweetUpdater extends TweetLoader {
+    private class TimelineUpdater extends TimelineLoader {
         
         @Override
         protected void onPreExecute() { }
-
+        
         @Override
         protected void onPostExecute(List<twitter4j.Status> result) {
             tweetListView.onRefreshComplete();
             if (result != null && !result.isEmpty()) {
                 tweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, result));
-                Log.d(TAG, "Updated");
+                Log.d(TAG, "Loaded");
+            } else if (getTwitterException() != null) {
+                Log.e(TAG, "Error while retrieving tweets", getTwitterException());
+                onTwitterError(getTwitterException());
             } else {
-                onTwitterError(twitterError);
+                Toast.makeText(getActivity().getApplicationContext(),
+                        R.string.twitt4droid_no_tweets_found_message,
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }

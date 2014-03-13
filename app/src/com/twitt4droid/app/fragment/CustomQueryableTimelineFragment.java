@@ -9,6 +9,8 @@ public class CustomQueryableTimelineFragment extends QueryableTimelineFragment {
 
     @Override
     protected void onTwitterError(Exception ex) {
-        Toast.makeText(getActivity().getApplicationContext(), R.string.twitt4droid_onerror_message, Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity().getApplicationContext(), 
+                R.string.twitt4droid_error_message, 
+                Toast.LENGTH_LONG).show();
     }
 }

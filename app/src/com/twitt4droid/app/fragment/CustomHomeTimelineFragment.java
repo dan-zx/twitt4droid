@@ -20,10 +20,14 @@ import android.widget.Toast;
 import com.twitt4droid.app.R;
 import com.twitt4droid.fragment.HomeTimelineFragment;
 
+import twitter4j.TwitterException;
+
 public class CustomHomeTimelineFragment extends HomeTimelineFragment {
 
     @Override
-    protected void onTwitterError(Exception ex) {
-        Toast.makeText(getActivity().getApplicationContext(), R.string.twitt4droid_onerror_message, Toast.LENGTH_LONG).show();
+    protected void onTwitterError(TwitterException ex) {
+        Toast.makeText(getActivity().getApplicationContext(), 
+                R.string.twitt4droid_error_message, 
+                Toast.LENGTH_LONG).show();
     }
 }

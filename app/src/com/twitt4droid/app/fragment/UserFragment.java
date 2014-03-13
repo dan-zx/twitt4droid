@@ -29,14 +29,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.rtyley.android.sherlock.roboguice.fragment.RoboSherlockFragment;
+
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.activity.SignInActivity;
 import com.twitt4droid.app.util.Strings;
-import com.twitt4droid.task.ImageLoadingTask;
+import com.twitt4droid.task.ImageLoader;
 import com.twitt4droid.widget.LogInOutButton;
 
 import roboguice.inject.InjectView;
+
 import twitter4j.AsyncTwitter;
 import twitter4j.TwitterAdapter;
 import twitter4j.TwitterException;
@@ -97,9 +99,8 @@ public class UserFragment extends RoboSherlockFragment {
                     @Override
                     public void run() {
                         Toast.makeText(getActivity().getApplicationContext(), 
-                                R.string.twitt4droid_onerror_message, 
-                                Toast.LENGTH_LONG)
-                                .show();
+                                R.string.twitt4droid_error_message, 
+                                Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -113,7 +114,7 @@ public class UserFragment extends RoboSherlockFragment {
             usernameTextView.setVisibility(View.VISIBLE);
     
             if (!Strings.isNullOrBlank(user.getProfileImageURL())) {
-                new ImageLoadingTask()
+                new ImageLoader()
                     .setImageView(profileImageView)
                     .setLoadingResourceImageId(R.drawable.twitt4droid_no_profile_image)
                     .execute(user.getProfileImageURL());
@@ -169,7 +170,7 @@ public class UserFragment extends RoboSherlockFragment {
                         .appendQueryParameter("markers", getString(R.string.google_static_maps_latlng_format, addresses.get(0).getLatitude(), addresses.get(0).getLongitude()))
                         .build()
                         .toString();
-                    new ImageLoadingTask()
+                    new ImageLoader()
                         .setImageView(mapImageView)
                         .setLoadingResourceImageId(R.drawable.twitt4droid_no_image)
                         .execute(url);

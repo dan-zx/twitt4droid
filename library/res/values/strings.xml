@@ -25,13 +25,14 @@
     <string name="twitt4droid_logout_label">Log out</string>
 
     <!-- ERRORS -->
-    <string name="twitt4droid_onerror_title">Twitt4droid Error</string>
-    <string name="twitt4droid_onerror_message">Something went wrong while connecting with Twitter. Try again later :(</string>
-    <string name="twitt4droid_onerror_return">Return</string>
-    <string name="twitt4droid_onerror_continue">Continue</string>
-    <string name="twitt4droid_nonetwork_title">Connection Failure</string>
-    <string name="twitt4droid_nonetwork_messege">No Internet connection was detected</string>
-    <string name="twitt4droid_nonetwork_goto_settings">Go to settings</string>
+    <string name="twitt4droid_error_title">Twitt4droid Error</string>
+    <string name="twitt4droid_error_message">Something went wrong while connecting with Twitter. Try again later</string>
+    <string name="twitt4droid_return">Return</string>
+    <string name="twitt4droid_continue">Continue</string>
+    <string name="twitt4droid_is_offline_title">Connection Failure</string>
+    <string name="twitt4droid_is_offline_messege">No Internet connection was detected</string>
+    <string name="twitt4droid_goto_settings">Go to settings</string>
+    <string name="twitt4droid_no_tweets_found_message">No tweets found</string>
     
     <!-- PULL TO REFRESH -->
     <string name="twitt4droid_pull_to_refresh_text">Pull to refresh&#8230;</string>

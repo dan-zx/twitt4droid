@@ -21,17 +21,17 @@ import android.widget.ImageView;
 
 import com.twitt4droid.util.Images;
 
-public class ImageLoadingTask extends AsyncTask<String, Void, Bitmap> {
+public class ImageLoader extends AsyncTask<String, Void, Bitmap> {
 
     private ImageView imageView;
     private Integer loadingResourceImageId;
     
-    public ImageLoadingTask setImageView(ImageView imageView) {
+    public ImageLoader setImageView(ImageView imageView) {
         this.imageView = imageView;
         return this;
     }
     
-    public ImageLoadingTask setLoadingResourceImageId(int loadingResourceImageId) {
+    public ImageLoader setLoadingResourceImageId(int loadingResourceImageId) {
         this.loadingResourceImageId = loadingResourceImageId;
         return this;
     }

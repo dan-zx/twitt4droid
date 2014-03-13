@@ -30,7 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.twitt4droid.R;
-import com.twitt4droid.task.ImageLoadingTask;
+import com.twitt4droid.task.ImageLoader;
 
 public class TweetAdapter extends ArrayAdapter<Status> {
 
@@ -87,7 +87,7 @@ public class TweetAdapter extends ArrayAdapter<Status> {
                     DateFormat.getDateFormat(context.getApplicationContext()).format(status.getCreatedAt()),
                     DateFormat.getTimeFormat(context.getApplicationContext()).format(status.getCreatedAt()));
             tweetTimeTextView.setText(dateText);
-            new ImageLoadingTask()
+            new ImageLoader()
                 .setImageView(profileImage)
                 .setLoadingResourceImageId(R.drawable.twitt4droid_no_profile_image)
                 .execute(status.getUser().getProfileImageURL());

@@ -8,7 +8,7 @@ import twitter4j.TwitterException;
 public class HomeTimelineFragment extends TimelineFragment {
 
     @Override
-    protected ResponseList<Status> updateTweets(Twitter twitter) throws TwitterException {
+    protected ResponseList<Status> getTweets(Twitter twitter) throws TwitterException {
         return twitter.getHomeTimeline();
     }
 }

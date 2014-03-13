@@ -114,8 +114,8 @@ public class WebLoginActivity extends Activity {
     private void showNetworkAlertDialog() {
         new AlertDialog.Builder(this)
             .setIcon(android.R.drawable.ic_dialog_alert)
-            .setTitle(R.string.twitt4droid_nonetwork_title)
-            .setMessage(R.string.twitt4droid_nonetwork_messege)
+            .setTitle(R.string.twitt4droid_is_offline_title)
+            .setMessage(R.string.twitt4droid_is_offline_messege)
             .setNegativeButton(android.R.string.cancel, 
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -125,7 +125,7 @@ public class WebLoginActivity extends Activity {
                         finish();
                     }
             })
-            .setPositiveButton(R.string.twitt4droid_nonetwork_goto_settings, 
+            .setPositiveButton(R.string.twitt4droid_goto_settings, 
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -239,10 +239,10 @@ public class WebLoginActivity extends Activity {
      */
     private void showErrorAlertDialog() {
         new AlertDialog.Builder(WebLoginActivity.this)
-            .setTitle(R.string.twitt4droid_onerror_title)
-            .setMessage(R.string.twitt4droid_onerror_message)
+            .setTitle(R.string.twitt4droid_error_title)
+            .setMessage(R.string.twitt4droid_error_message)
             .setIcon(android.R.drawable.ic_dialog_alert)
-            .setNegativeButton(R.string.twitt4droid_onerror_return,
+            .setNegativeButton(R.string.twitt4droid_return,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -252,7 +252,7 @@ public class WebLoginActivity extends Activity {
                         finish();
                     }
                 })
-            .setPositiveButton(R.string.twitt4droid_onerror_continue, null)
+            .setPositiveButton(R.string.twitt4droid_continue, null)
             .setCancelable(false)
             .show();
     }

@@ -43,10 +43,10 @@ public final class Dialogs {
     public static AlertDialog getNetworkAlertDialog(final Context context) {
         return new AlertDialog.Builder(context)
             .setIcon(R.drawable.dark_warning_icon)
-            .setTitle(R.string.twitt4droid_nonetwork_title)
-            .setMessage(R.string.twitt4droid_nonetwork_messege)
-            .setNegativeButton(R.string.twitt4droid_onerror_continue, null)
-            .setPositiveButton(R.string.twitt4droid_nonetwork_goto_settings, 
+            .setTitle(R.string.twitt4droid_is_offline_title)
+            .setMessage(R.string.twitt4droid_is_offline_messege)
+            .setNegativeButton(R.string.twitt4droid_continue, null)
+            .setPositiveButton(R.string.twitt4droid_goto_settings, 
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

@@ -153,9 +153,8 @@ public class TweetingActivity extends RoboSherlockActivity {
                     @Override
                     public void run() {
                         Toast.makeText(getApplicationContext(),
-                                R.string.twitt4droid_onerror_message,
-                                Toast.LENGTH_LONG)
-                                .show();
+                                R.string.twitt4droid_error_message,
+                                Toast.LENGTH_LONG).show();
                     }
                 });
             }

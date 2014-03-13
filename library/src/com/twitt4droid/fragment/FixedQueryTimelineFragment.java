@@ -28,7 +28,7 @@ public abstract class FixedQueryTimelineFragment extends TimelineFragment {
     protected abstract String getQuery();
     
     @Override
-    protected List<Status> updateTweets(Twitter twitter) throws TwitterException {
+    protected List<Status> getTweets(Twitter twitter) throws TwitterException {
         QueryResult result = twitter.search(new Query(getQuery()));
         if (result != null) {
             return result.getTweets();
