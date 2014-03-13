@@ -34,6 +34,7 @@ import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.util.Dialogs;
+import com.twitt4droid.app.util.Strings;
 
 import roboguice.inject.InjectView;
 
@@ -49,6 +50,7 @@ public class TweetingActivity extends RoboSherlockActivity {
     
     private static final int TWEET_CHAR_LIMIT = 140;
     private static final int RED_COLOR = Color.parseColor("#FF0000");
+    private static final String TWEET_BEFORE_RESTART = "TWEET_BEFORE_RESTART";
     private static final String TAG = TweetingActivity.class.getSimpleName();
     
     @InjectView(R.id.new_message_edit_text) private EditText newTweetEditText;
@@ -63,9 +65,15 @@ public class TweetingActivity extends RoboSherlockActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.texting);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setUpLayout();
+        setUpLayout(savedInstanceState);
     }
-    
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(TWEET_BEFORE_RESTART, newTweetEditText.getText().toString());
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getSupportMenuInflater().inflate(R.menu.tweeting, menu);
@@ -73,6 +81,7 @@ public class TweetingActivity extends RoboSherlockActivity {
         characterCountTextView = (TextView)menu.findItem(R.id.tweet_char_count_item).getActionView();
         characterCountTextView.setText(String.valueOf(TWEET_CHAR_LIMIT));
         defaultCharacterCountTextViewTextColor = characterCountTextView.getTextColors().getDefaultColor();
+        onTweetTextChanged(newTweetEditText.getText().toString());
         return true;
     }
 
@@ -81,8 +90,7 @@ public class TweetingActivity extends RoboSherlockActivity {
         super.onPause();
         hideSoftKeyboard();
     }
-    
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -104,20 +112,12 @@ public class TweetingActivity extends RoboSherlockActivity {
         }
     }
 
-    private void setUpLayout() {
+    private void setUpLayout(Bundle savedInstanceState) {
         newTweetEditText.addTextChangedListener(new TextWatcher() {
             
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().length() > TWEET_CHAR_LIMIT) {
-                    characterCountTextView.setTextColor(RED_COLOR);
-                    sendMenuItem.setEnabled(false);
-                } else {
-                    characterCountTextView.setTextColor(defaultCharacterCountTextViewTextColor);
-                    sendMenuItem.setEnabled(true);
-                }
-                
-                characterCountTextView.setText(String.valueOf(TWEET_CHAR_LIMIT - s.length()));
+                onTweetTextChanged(s.toString());
             }
             
             @Override
@@ -126,7 +126,28 @@ public class TweetingActivity extends RoboSherlockActivity {
             @Override
             public void afterTextChanged(Editable s) { }
         });
+
+        if (savedInstanceState != null) {
+            String tweet = savedInstanceState.getString(TWEET_BEFORE_RESTART);
+            if (tweet == null) tweet = Strings.EMPTY;
+            newTweetEditText.setText(tweet);
+        }
+
         toggleSoftKeyboard();
+    }
+
+    private void onTweetTextChanged(String text) {
+        if (text.trim().length() > TWEET_CHAR_LIMIT) {
+            if (characterCountTextView != null) characterCountTextView.setTextColor(RED_COLOR);
+            if (sendMenuItem != null) sendMenuItem.setEnabled(false);
+        } else {
+            if (characterCountTextView != null) characterCountTextView.setTextColor(defaultCharacterCountTextViewTextColor);
+            if (sendMenuItem != null) sendMenuItem.setEnabled(true);
+        }
+        
+        if (characterCountTextView != null) {
+            characterCountTextView.setText(String.valueOf(TWEET_CHAR_LIMIT - text.length()));
+        }
     }
 
     private void sendTweet() {

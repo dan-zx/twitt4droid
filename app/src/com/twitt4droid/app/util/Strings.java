@@ -16,7 +16,9 @@
 package com.twitt4droid.app.util;
 
 public final class Strings {
-    
+
+    public static final String EMPTY = "";
+
     private Strings() {
         throw new IllegalAccessError("This class cannot be instantiated nor extended");
     }

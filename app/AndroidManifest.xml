@@ -41,8 +41,7 @@
             android:value="@string/twitter_consumer_secret" />
 
         <activity
-            android:name="com.twitt4droid.app.activity.SignInActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" >
+            android:name="com.twitt4droid.app.activity.SignInActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -54,11 +53,9 @@
             android:uiOptions="splitActionBarWhenNarrow" />
         <activity
             android:name="com.twitt4droid.activity.WebLoginActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@android:style/Theme.Black.NoTitleBar" />
         <activity
             android:name="com.twitt4droid.app.activity.TweetingActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/tweeting_activity_title" />
         <activity
             android:name="com.twitt4droid.app.activity.SettingsActivity"
