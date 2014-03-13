@@ -51,7 +51,6 @@
         </activity>
         <activity
             android:name="com.twitt4droid.app.activity.MainActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
             android:uiOptions="splitActionBarWhenNarrow" />
         <activity
             android:name="com.twitt4droid.activity.WebLoginActivity"
@@ -61,10 +60,6 @@
             android:name="com.twitt4droid.app.activity.TweetingActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/tweeting_activity_title" />
-        <activity
-            android:name="com.twitt4droid.app.activity.DirectMessagingActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/direct_messaging_activity_title" />
         <activity
             android:name="com.twitt4droid.app.activity.SettingsActivity"
             android:label="@string/settings_activity_title" />

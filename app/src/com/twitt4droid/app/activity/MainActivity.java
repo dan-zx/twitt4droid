@@ -18,7 +18,6 @@ package com.twitt4droid.app.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -55,7 +54,7 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        MyFragmentPagerAdapter adapter = new MyFragmentPagerAdapter(getSupportFragmentManager())
+        SwipeFragmentPagerAdapter adapter = new SwipeFragmentPagerAdapter()
             .addFragment(new CustomHomeTimelineFragment())
             .addFragment(new CustomMentionsTimelineFragment())
             .addFragment(new CustomQueryableTimelineFragment())
@@ -68,27 +67,26 @@ public class MainActivity extends RoboSherlockFragmentActivity {
                 getSupportActionBar().setSelectedNavigationItem(position);
             }
         });
-        MyTabListener listener = new MyTabListener(viewPager);
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()
                 .setContentDescription(R.string.home_tab_title)
                 .setIcon(R.drawable.dark_home_icon)
-                .setTabListener(listener));
+                .setTabListener(adapter));
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()
                 .setContentDescription(R.string.mentions_tab_title)
                 .setIcon(R.drawable.dark_notifications_icon)
-                .setTabListener(listener));
+                .setTabListener(adapter));
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()
                 .setContentDescription(R.string.query_tab_title)
                 .setIcon(R.drawable.twitt4droid_ic_search_holo_light)
-                .setTabListener(listener));
+                .setTabListener(adapter));
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()
                 .setContentDescription(R.string.user_tab_title)
                 .setIcon(R.drawable.dark_person_icon)
-                .setTabListener(listener));
+                .setTabListener(adapter));
     }
 
     @Override
@@ -121,44 +119,32 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         }
     }
 
-    private static class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+    private class SwipeFragmentPagerAdapter extends FragmentPagerAdapter implements ActionBar.TabListener {
 
         private final List<Fragment> fragments;
 
-        public MyFragmentPagerAdapter(FragmentManager fm) {
-            super(fm);
+        public SwipeFragmentPagerAdapter() {
+            super(getSupportFragmentManager());
             fragments = new ArrayList<Fragment>();
         }
         
-        public MyFragmentPagerAdapter addFragment(Fragment fragment) {
+        public SwipeFragmentPagerAdapter addFragment(Fragment fragment) {
             fragments.add(fragment);
+            notifyDataSetChanged();
             return this;
         }
 
         @Override
         public Fragment getItem(int position) {
-            if (!fragments.isEmpty() && position >= 0) {
-                return fragments.get(position);
-            }
-            else {
-                return null;
-            }
+            if (!fragments.isEmpty() && position >= 0) return fragments.get(position);
+            else return null;
         }
 
         @Override
         public int getCount() {
             return fragments.size();
         }
-    }
-
-    private static class MyTabListener implements ActionBar.TabListener {
-
-        private final ViewPager viewPager;
         
-        public MyTabListener(ViewPager viewPager) {
-            this.viewPager = viewPager;
-        }
-
         @Override
         public void onTabSelected(Tab tab, FragmentTransaction ft) {
             viewPager.setCurrentItem(tab.getPosition());
