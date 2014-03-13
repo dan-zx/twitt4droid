@@ -82,7 +82,7 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()
                 .setContentDescription(R.string.query_tab_title)
-                .setIcon(R.drawable.twitt4droid_dark_search_icon)
+                .setIcon(R.drawable.twitt4droid_ic_search_holo_light)
                 .setTabListener(listener));
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()

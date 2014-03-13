@@ -72,7 +72,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="-6dp"
                 android:contentDescription="@string/twitt4droid_clock_icon_description"
-                android:src="@drawable/twitt4droid_dark_clock_icon" />
+                android:src="@drawable/twitt4droid_ic_clock_holo_light" />
 
             <TextView
                 android:id="@+id/tweet_time_text"
@@ -92,7 +92,7 @@
         android:layout_marginTop="2dp"
         android:background="@android:color/transparent"
         android:contentDescription="@string/twitt4droid_tweet_overflow_label"
-        android:src="@drawable/twitt4droid_dark_overflow_icon"
+        android:src="@drawable/twitt4droid_ic_overflow_holo_light"
         android:visibility="gone" />
 
 </RelativeLayout>

@@ -309,7 +309,7 @@ public class RefreshableListView extends ListView {
             // Set refresh view text to the pull label
             refreshingTextView.setText(R.string.twitt4droid_pull_to_refresh_text);
             // Replace refresh drawable with arrow drawable ????
-            arrowImageView.setImageResource(R.drawable.twitt4droid_dark_arrow_icon);
+            arrowImageView.setImageResource(R.drawable.twitt4droid_ic_arrow_holo_light);
             // Clear the full rotation animation
             arrowImageView.clearAnimation();
             // Hide progress bar and arrow.

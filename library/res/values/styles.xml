@@ -17,7 +17,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Twitt4droid.Widget.ProgressBar.Horizontal" parent="android:Widget.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/twitt4droid_holo_dark_horizontal_progress_bar</item>
+        <item name="android:progressDrawable">@drawable/twitt4droid_horizontal_progress_bar_holo_dark</item>
         <item name="android:minHeight">4dp</item>
         <item name="android:maxHeight">4dp</item>
     </style>
@@ -30,12 +30,12 @@
     </style>
 
     <style name="Twitt4droid.Widget.Blue.Button" parent="Twitt4droid.Widget.Button">
-        <item name="android:background">@drawable/twitt4droid_blue_button_background</item>
+        <item name="android:background">@drawable/twitt4droid_button_blue_background</item>
         <item name="android:textColor">@color/twitt4droid_blue_button</item>
     </style>
 
     <style name="Twitt4droid.Widget.White.Button" parent="Twitt4droid.Widget.Button">
-        <item name="android:background">@drawable/twitt4droid_white_button_background</item>
+        <item name="android:background">@drawable/twitt4droid_button_white_background</item>
         <item name="android:textColor">@color/twitt4droid_white_button</item>
     </style>
 

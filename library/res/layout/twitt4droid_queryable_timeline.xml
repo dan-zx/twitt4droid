@@ -22,7 +22,7 @@
         android:id="@+id/search_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/twitt4droid_dark_search_icon"
+        android:drawableLeft="@drawable/twitt4droid_ic_search_holo_light"
         android:drawablePadding="8dp"
         android:hint="@string/twitt4droid_search"
         android:imeOptions="actionSearch"

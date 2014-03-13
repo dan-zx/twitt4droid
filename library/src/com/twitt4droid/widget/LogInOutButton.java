@@ -96,8 +96,8 @@ public class LogInOutButton extends Button {
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         setTypeface(Typeface.DEFAULT_BOLD);
         setCompoundDrawablePadding(15);
-        setCompoundDrawablesWithIntrinsicBounds(R.drawable.twitt4droid_light_twitter_icon, 0, 0, 0);
-        setBackgroundResource(R.drawable.twitt4droid_blue_button_background);
+        setCompoundDrawablesWithIntrinsicBounds(R.drawable.twitt4droid_ic_twitter_white, 0, 0, 0);
+        setBackgroundResource(R.drawable.twitt4droid_button_blue_background);
 
         if (isInEditMode()) {
             // hardcoding in edit mode as context.getResources().getColorStateList() doesn't seem to work in Eclipse

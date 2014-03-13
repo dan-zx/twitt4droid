@@ -18,7 +18,7 @@
 
     <item
         android:id="@+id/reload_cancel_item"
-        android:icon="@drawable/twitt4droid_light_cancel_icon"
+        android:icon="@drawable/twitt4droid_ic_cancel_holo_dark"
         android:showAsAction="always"
         android:title="@string/twitt4droid_cancel_menu_title"/>
 

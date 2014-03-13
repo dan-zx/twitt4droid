@@ -14,10 +14,20 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item android:drawable="@drawable/twitt4droid_white_button_disabled" android:state_enabled="false"/>
-    <item android:drawable="@drawable/twitt4droid_white_button_pressed" android:state_pressed="true" />
-    <item android:drawable="@drawable/twitt4droid_white_button_active"/>
+    <item
+        android:id="@android:id/background"
+        android:drawable="@drawable/twitt4droid_progress_bar_background_holo_dark"/>
+    <item android:id="@android:id/secondaryProgress">
+        <scale
+            android:drawable="@drawable/twitt4droid_secundary_progress_holo_dark"
+            android:scaleWidth="100%" />
+    </item>
+    <item android:id="@android:id/progress">
+        <scale
+            android:drawable="@drawable/twitt4droid_primary_progress_holo_dark"
+            android:scaleWidth="100%" />
+    </item>
 
-</selector>
+</layer-list>

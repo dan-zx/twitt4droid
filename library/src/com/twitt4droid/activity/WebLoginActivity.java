@@ -156,7 +156,7 @@ public class WebLoginActivity extends Activity {
                     loadingBar.setProgress(0);
                     if (reloadCancelItem != null) {
                         reloadCancelItem.setTitle(R.string.twitt4droid_refresh_menu_title);
-                        reloadCancelItem.setIcon(R.drawable.twitt4droid_light_refresh_icon);
+                        reloadCancelItem.setIcon(R.drawable.twitt4droid_ic_refresh_holo_dark);
                     }
                 } else {
                     loadingBar.setVisibility(View.VISIBLE);
@@ -265,7 +265,7 @@ public class WebLoginActivity extends Activity {
         reloadCancelItem = menu.findItem(R.id.reload_cancel_item);
         if (loadingBar.getProgress() == loadingBar.getMax() || loadingBar.getProgress() == 0) {
             reloadCancelItem.setTitle(R.string.twitt4droid_refresh_menu_title);
-            reloadCancelItem.setIcon(R.drawable.twitt4droid_light_refresh_icon);
+            reloadCancelItem.setIcon(R.drawable.twitt4droid_ic_refresh_holo_dark);
         }
         return true;
     }
@@ -279,11 +279,11 @@ public class WebLoginActivity extends Activity {
             if (item.getTitle().toString().equals(getString(R.string.twitt4droid_cancel_menu_title))) {
                 webView.stopLoading();
                 item.setTitle(R.string.twitt4droid_refresh_menu_title);
-                item.setIcon(R.drawable.twitt4droid_light_refresh_icon);
+                item.setIcon(R.drawable.twitt4droid_ic_refresh_holo_dark);
             } else {
                 webView.reload();
                 item.setTitle(R.string.twitt4droid_cancel_menu_title);
-                item.setIcon(R.drawable.twitt4droid_light_cancel_icon);
+                item.setIcon(R.drawable.twitt4droid_ic_cancel_holo_dark);
             }
             return true;
         }
