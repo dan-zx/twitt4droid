@@ -21,7 +21,7 @@
     android:versionName="1.0-SNAPSHOT" >
 
     <uses-sdk
-        android:minSdkVersion="10"
+        android:minSdkVersion="7"
         android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
