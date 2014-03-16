@@ -128,7 +128,7 @@ public class UserFragment extends RoboSherlockFragment {
             usernameTextView.setVisibility(View.VISIBLE);
     
             if (!Strings.isNullOrBlank(user.getProfileImageURL())) {
-                new ImageLoader()
+                new ImageLoader(getActivity().getApplicationContext())
                     .setImageView(profileImageView)
                     .setLoadingResourceImageId(R.drawable.twitt4droid_no_profile_image)
                     .execute(user.getProfileImageURL());

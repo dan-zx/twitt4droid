@@ -15,6 +15,7 @@
  */
 package com.twitt4droid.task;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.widget.ImageView;
@@ -25,7 +26,12 @@ public class ImageLoader extends AsyncTask<String, Void, Bitmap> {
 
     private ImageView imageView;
     private Integer loadingResourceImageId;
+    private Context context;
     
+    public ImageLoader(Context context) {
+        this.context = context;
+    }
+
     public ImageLoader setImageView(ImageView imageView) {
         this.imageView = imageView;
         return this;
@@ -43,12 +49,13 @@ public class ImageLoader extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected Bitmap doInBackground(String... param) {
-        return Images.getFromUrl(param[0]);
+        return Images.getFromUrl(context, param[0]);
     }
 
     @Override
     protected void onPostExecute(Bitmap result) {
         if (result != null) imageView.setImageBitmap(result);
         imageView = null;
+        context = null;
     }
 }
