@@ -64,9 +64,6 @@
 
     <string name="licenses_file">"file:///android_asset/licenses.html"</string>
     
-    <string name="google_static_maps_url">http://maps.googleapis.com/maps/api/staticmap</string>
-    <string name="google_static_maps_latlng_format">%1$s,%2$s</string>
-    
     <string name="twitter_consumer_key">XyH43SS5C8wijBXkHsI1BA</string>
     <string name="twitter_consumer_secret">mdMAQCzfgOT4XHt3LTHlWB9sIPYpwVPTd6nTIXV45Q</string>
     

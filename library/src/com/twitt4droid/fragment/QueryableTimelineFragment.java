@@ -32,25 +32,33 @@ import android.widget.Toast;
 
 import com.twitt4droid.R;
 import com.twitt4droid.Resources;
+import com.twitt4droid.Twitt4droid;
+import com.twitt4droid.data.dao.TimelineDao;
 import com.twitt4droid.task.TweetLoader;
+import com.twitt4droid.util.Strings;
 import com.twitt4droid.widget.RefreshableListView;
 import com.twitt4droid.widget.TweetAdapter;
+
+import twitter4j.Status;
 
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.TwitterException;
 
+import java.util.Collections;
 import java.util.List;
 
 public abstract class QueryableTimelineFragment extends Fragment {
 
     private static final String TAG = QueryableTimelineFragment.class.getSimpleName();
+    private static final String LAST_QUERY_KEY = "lastQuery";
 
     private InputMethodManager inputMethodManager;
     private EditText searchEditText;
     private RefreshableListView searchedtweetListView;
     private ProgressBar progressBar;
     private String lastQuery;
+    private TimelineDao queryableTimelineDao;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,6 +72,24 @@ public abstract class QueryableTimelineFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        queryableTimelineDao = Twitt4droid.SQLiteDaoFactory(getActivity().getApplicationContext())
+                .getQueryableTimelineDao();
+    }
+    
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        lastQuery = Resources.getPreferences(getActivity()).getString(LAST_QUERY_KEY, Strings.EMPTY);
+        if (!Strings.isNullOrBlank(lastQuery)) {
+            searchEditText.setText(lastQuery);
+            List<Status> list = queryableTimelineDao.readList();
+            if (list != null && !list.isEmpty()) {
+                searchedtweetListView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                Collections.reverse(list);
+                searchedtweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, list));
+            }
+        }
     }
 
     @Override
@@ -161,6 +187,13 @@ public abstract class QueryableTimelineFragment extends Fragment {
                 searchedtweetListView.setVisibility(View.VISIBLE);
                 if (result != null && !result.isEmpty()) {
                     searchedtweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, result));
+                    queryableTimelineDao.beginTransaction()
+                        .deleteAll()
+                        .save(result)
+                        .commit();
+                    Resources.getPreferences(getActivity()).edit()
+                        .putString(LAST_QUERY_KEY, lastQuery)
+                        .commit();
                     Log.d(TAG, "Loaded");
                 } else if (getTwitterException() != null) {
                     Log.e(TAG, "Error while retrieving tweets", getTwitterException());

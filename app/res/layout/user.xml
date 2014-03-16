@@ -88,15 +88,6 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:visibility="gone" />
 
-        <ImageView
-            android:id="@+id/map_image_view"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_margin="8dp"
-            android:contentDescription="@string/map_image_description"
-            android:scaleType="centerCrop"
-            android:visibility="gone" />
-
         <com.twitt4droid.widget.LogInOutButton
             xmlns:twitt4droid="http://schemas.android.com/apk/res-auto"
             android:id="@+id/logout_button"

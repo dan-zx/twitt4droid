@@ -16,9 +16,6 @@
 package com.twitt4droid.app.fragment;
 
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,11 +27,13 @@ import android.widget.Toast;
 
 import com.github.rtyley.android.sherlock.roboguice.fragment.RoboSherlockFragment;
 
+import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.activity.SignInActivity;
-import com.twitt4droid.app.util.Strings;
+import com.twitt4droid.data.dao.UserDao;
 import com.twitt4droid.task.ImageLoader;
+import com.twitt4droid.util.Strings;
 import com.twitt4droid.widget.LogInOutButton;
 
 import roboguice.inject.InjectView;
@@ -45,15 +44,11 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterMethod;
 import twitter4j.User;
 
-import java.io.IOException;
-import java.util.List;
-
 public class UserFragment extends RoboSherlockFragment {
 
     private static final String TAG = UserFragment.class.getSimpleName();
 
     @InjectView(R.id.profile_image_view)    private ImageView profileImageView;
-    @InjectView(R.id.map_image_view)        private ImageView mapImageView;
     @InjectView(R.id.username_text_view)    private TextView usernameTextView;
     @InjectView(R.id.name_text_view)        private TextView nameTextView;
     @InjectView(R.id.location_text_view)    private TextView locationTextView;
@@ -62,18 +57,27 @@ public class UserFragment extends RoboSherlockFragment {
     @InjectView(R.id.logout_button)         private LogInOutButton logoutButton;
 
     private User user;
+    private UserDao userDao;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.user, container, false);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        userDao = Twitt4droid.SQLiteDaoFactory(getActivity().getApplicationContext())
+                .getUserDao();
     }
-    
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setUpUser();
     }
-    
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.user, container, false);
+    }
+
     private void setUpUser() {
         AsyncTwitter twitter = Twitt4droid.getAsyncTwitter(getActivity());
         twitter.addListener(new TwitterAdapter() {
@@ -81,6 +85,10 @@ public class UserFragment extends RoboSherlockFragment {
             @Override
             public void verifiedCredentials(final User user) {
                 Log.d(TAG, "User: " + user);
+                userDao.beginTransaction()
+                        .deleteAll()
+                        .save(user)
+                        .commit();
                 getActivity().runOnUiThread(new Runnable() {
                     
                     @Override
@@ -105,7 +113,13 @@ public class UserFragment extends RoboSherlockFragment {
                 });
             }
         });
-        twitter.verifyCredentials();
+        
+        if (Resources.isConnectedToInternet(getActivity())) {
+            twitter.verifyCredentials();
+        } else {
+            user = userDao.readById(Twitt4droid.getCurrentUserId(getActivity()));
+            setUpLayout();
+        }
     }
 
     private void setUpLayout() {
@@ -136,7 +150,10 @@ public class UserFragment extends RoboSherlockFragment {
                 descriptionTextView.setVisibility(View.VISIBLE);
             }
             
-            setUpLocation();
+            if (!Strings.isNullOrBlank(user.getLocation())) {
+                locationTextView.setText(user.getLocation());
+                locationTextView.setVisibility(View.VISIBLE);
+            }
             
             logoutButton.setOnLogoutListener(new LogInOutButton.OnLogoutListener() {
                 @Override
@@ -148,39 +165,5 @@ public class UserFragment extends RoboSherlockFragment {
             });
             logoutButton.setVisibility(View.VISIBLE);
         }
-    }
-    
-    private void setUpLocation() {
-        if (!Strings.isNullOrBlank(user.getLocation())) { 
-            try {
-                Geocoder geocoder = new Geocoder(getActivity());
-                List<Address> addresses = geocoder.getFromLocationName(user.getLocation(), 1);
-                if (addresses.isEmpty() || addresses.get(0) == null) {
-                    Log.w(TAG,  "Address " + user.getLocation() + " couldn't be found");
-                    locationTextView.setText(user.getLocation());
-                    locationTextView.setVisibility(View.VISIBLE);
-                } else {
-                    Log.d(TAG,  "Location " + addresses.get(0) + " found");
-                    String url = Uri.parse(getString(R.string.google_static_maps_url))
-                        .buildUpon()
-                        .appendQueryParameter("sensor", "false")
-                        .appendQueryParameter("size", "540x200")
-                        .appendQueryParameter("scale", "2")
-                        .appendQueryParameter("zoom", "4")
-                        .appendQueryParameter("markers", getString(R.string.google_static_maps_latlng_format, addresses.get(0).getLatitude(), addresses.get(0).getLongitude()))
-                        .build()
-                        .toString();
-                    new ImageLoader()
-                        .setImageView(mapImageView)
-                        .setLoadingResourceImageId(R.drawable.twitt4droid_no_image)
-                        .execute(url);
-                    mapImageView.setVisibility(View.VISIBLE);
-                }
-            } catch (IOException ex) {
-                Log.w(TAG, "Address " + user.getLocation() + " couldn't be decoded", ex);
-                locationTextView.setText(user.getLocation());
-                locationTextView.setVisibility(View.VISIBLE);
-            }
-        }        
     }
 }

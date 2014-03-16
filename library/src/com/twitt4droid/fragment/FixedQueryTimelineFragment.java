@@ -15,7 +15,9 @@
  */
 package com.twitt4droid.fragment;
 
-import java.util.List;
+import android.os.Bundle;
+
+import com.twitt4droid.Twitt4droid;
 
 import twitter4j.Query;
 import twitter4j.QueryResult;
@@ -23,9 +25,18 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
+import java.util.List;
+
 public abstract class FixedQueryTimelineFragment extends TimelineFragment {
 
     protected abstract String getQuery();
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setTimelineDao(Twitt4droid.SQLiteDaoFactory(getActivity().getApplicationContext())
+                .getFixedQueryTimelineDao());
+    }
     
     @Override
     protected List<Status> getTweets(Twitter twitter) throws TwitterException {

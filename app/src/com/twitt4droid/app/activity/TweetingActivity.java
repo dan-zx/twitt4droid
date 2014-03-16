@@ -33,8 +33,7 @@ import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivit
 import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.app.R;
-import com.twitt4droid.app.util.Dialogs;
-import com.twitt4droid.app.util.Strings;
+import com.twitt4droid.util.Strings;
 
 import roboguice.inject.InjectView;
 
@@ -105,7 +104,9 @@ public class TweetingActivity extends RoboSherlockActivity {
                         finish();
                     }
                 } else {
-                    Dialogs.getNetworkAlertDialog(this).show();
+                    Toast.makeText(getApplicationContext(), 
+                            R.string.twitt4droid_is_offline_messege, 
+                            Toast.LENGTH_SHORT).show();
                 }
                 return true;
             default: return super.onOptionsItemSelected(item);

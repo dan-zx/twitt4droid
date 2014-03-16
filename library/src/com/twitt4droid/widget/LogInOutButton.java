@@ -120,7 +120,7 @@ public class LogInOutButton extends Button {
     }
 
     private void setListeners() {
-        clickListener = new DefaultOnClickListener(getContext());
+        clickListener = new DefaultOnClickListener();
         super.setOnClickListener(clickListener);
     }
     /**
@@ -218,19 +218,9 @@ public class LogInOutButton extends Button {
      * @author Daniel Pedraza
      * @since version 1.0
      */
-    private static final class DefaultOnClickListener implements View.OnClickListener {
+    private final class DefaultOnClickListener implements View.OnClickListener {
 
-        private final Context context;
         private OnLogoutListener logoutListener;
-
-        /**
-         * Default constructor.
-         * 
-         * @param context activity context.
-         */
-        public DefaultOnClickListener(Context context) {
-            this.context = context;
-        }
 
         /**
          * Sets the listener interface that will be called when the user is logged 
@@ -249,16 +239,16 @@ public class LogInOutButton extends Button {
          */
         @Override
         public void onClick(View v) {
-            if (Twitt4droid.isUserLoggedIn(context)) {
-                Log.d(TAG, "Deleting account info...");
-                Twitt4droid.deleteAuthenticationInfo(context);
+            if (Twitt4droid.isUserLoggedIn(getContext())) {
+                Log.d(TAG, "Deleting twitt4droid data...");
+                Twitt4droid.resetData(getContext());
                 LogInOutButton button = (LogInOutButton)v;
                 button.setButtonLabel();
                 if (logoutListener != null) logoutListener.OnLogout(button);
             } else {
                 Log.d(TAG, "Starting WebLoginActivity...");
-                Intent intent = new Intent(context, WebLoginActivity.class);
-                ((Activity) context).startActivityForResult(intent, WebLoginActivity.REQUEST_CODE);
+                Intent intent = new Intent(getContext(), WebLoginActivity.class);
+                ((Activity) getContext()).startActivityForResult(intent, WebLoginActivity.REQUEST_CODE);
                 //TODO: setButtonLabel() after completing authentication process
             }
         }

@@ -18,6 +18,10 @@ package com.twitt4droid;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.twitt4droid.data.dao.DaoFactory;
+import com.twitt4droid.data.dao.impl.sqlite.SQLiteDaoFactory;
+import com.twitt4droid.data.source.Twitt4droidDatabaseHelper;
+
 import twitter4j.AsyncTwitter;
 import twitter4j.AsyncTwitterFactory;
 import twitter4j.Twitter;
@@ -143,6 +147,20 @@ public final class Twitt4droid {
     }
 
     /**
+     * Deletes all information stored by twitt4droid.
+     * 
+     * @param context the application context.
+     */
+    public static void resetData(Context context) {
+        Resources.getPreferences(context)
+            .edit()
+            .clear()
+            .commit();
+        
+        Twitt4droidDatabaseHelper.destroyDb(context);
+    }
+
+    /**
      * Gets the current twitter user name.
      * 
      * @param context the application context.
@@ -161,5 +179,9 @@ public final class Twitt4droid {
      */
     public static long getCurrentUserId(Context context) {
         return Resources.getPreferences(context).getLong(USER_ID_KEY, INVALID_USER_ID);
+    }
+
+    public static DaoFactory SQLiteDaoFactory(Context context) {
+        return new SQLiteDaoFactory(context);
     }
 }

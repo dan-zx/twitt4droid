@@ -20,11 +20,9 @@ import android.os.Bundle;
 
 import com.actionbarsherlock.app.SherlockActivity;
 
-import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.activity.WebLoginActivity;
 import com.twitt4droid.app.R;
-import com.twitt4droid.app.util.Dialogs;
 
 public class SignInActivity extends SherlockActivity {
 
@@ -40,11 +38,7 @@ public class SignInActivity extends SherlockActivity {
     protected void onResume() {
         super.onResume();
         if (Twitt4droid.isUserLoggedIn(this)) {
-            if (Resources.isConnectedToInternet(this)) {
-                goToMainActivity(); 
-            } else {
-                Dialogs.getNetworkAlertDialog(this).show();
-            }
+            goToMainActivity();
         }
     }
 

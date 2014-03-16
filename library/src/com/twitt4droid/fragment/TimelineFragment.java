@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.twitt4droid.R;
 import com.twitt4droid.Resources;
+import com.twitt4droid.data.dao.TimelineDao;
 import com.twitt4droid.task.TweetLoader;
 import com.twitt4droid.widget.RefreshableListView;
 import com.twitt4droid.widget.TweetAdapter;
@@ -34,6 +35,7 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
+import java.util.Collections;
 import java.util.List;
 
 public abstract class TimelineFragment extends Fragment {
@@ -42,6 +44,7 @@ public abstract class TimelineFragment extends Fragment {
     
     private RefreshableListView tweetListView;
     private ProgressBar progressBar;
+    private TimelineDao timelineDao;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,15 +62,7 @@ public abstract class TimelineFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (Resources.isConnectedToInternet(getActivity())) {
-            new TimelineLoader().execute();
-        } else {
-            tweetListView.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
-            Toast.makeText(getActivity().getApplicationContext(), 
-                    R.string.twitt4droid_is_offline_messege, 
-                    Toast.LENGTH_SHORT).show();
-        }
+        loadTweets();
     }
 
     protected abstract List<Status> getTweets(Twitter twitter) throws TwitterException;
@@ -89,6 +84,24 @@ public abstract class TimelineFragment extends Fragment {
                 }
             }
         });
+    }
+
+    protected void loadTweets() {
+        if (Resources.isConnectedToInternet(getActivity())) {
+            new TimelineLoader().execute();
+        } else {
+            List<Status> list = timelineDao.readList();
+            if (list != null && !list.isEmpty()) {
+                tweetListView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                Collections.reverse(list);
+                tweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, list));
+            } 
+        }
+    }
+    
+    protected void setTimelineDao(TimelineDao timelineDao) {
+        this.timelineDao = timelineDao;
     }
 
     private class TimelineLoader extends TweetLoader<Void> {
@@ -120,6 +133,10 @@ public abstract class TimelineFragment extends Fragment {
                 tweetListView.setVisibility(View.VISIBLE);
                 if (result != null && !result.isEmpty()) {
                     tweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, result));
+                    timelineDao.beginTransaction()
+                        .deleteAll()
+                        .save(result)
+                        .commit();
                     Log.d(TAG, "Loaded");
                 } else if (getTwitterException() != null) {
                     Log.e(TAG, "Error while retrieving tweets", getTwitterException());
