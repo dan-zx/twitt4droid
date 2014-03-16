@@ -39,10 +39,9 @@ import com.twitt4droid.util.Strings;
 import com.twitt4droid.widget.RefreshableListView;
 import com.twitt4droid.widget.TweetAdapter;
 
-import twitter4j.Status;
-
 import twitter4j.Query;
 import twitter4j.QueryResult;
+import twitter4j.Status;
 import twitter4j.TwitterException;
 
 import java.util.Collections;
@@ -82,13 +81,28 @@ public abstract class QueryableTimelineFragment extends Fragment {
         lastQuery = Resources.getPreferences(getActivity()).getString(LAST_QUERY_KEY, Strings.EMPTY);
         if (!Strings.isNullOrBlank(lastQuery)) {
             searchEditText.setText(lastQuery);
-            List<Status> list = queryableTimelineDao.readList();
-            if (list != null && !list.isEmpty()) {
-                searchedtweetListView.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
-                Collections.reverse(list);
-                searchedtweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, list));
-            }
+            loadLocalTweets();
+        }
+    }
+    
+    protected void loadLocalTweets() {
+        List<Status> list = queryableTimelineDao.readList();
+        if (list != null && !list.isEmpty()) {
+            searchedtweetListView.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+            Collections.reverse(list);
+            searchedtweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, list));
+        }
+    }
+    
+    private void loadRemoteTweetsIfPossible() {
+        if (Resources.isConnectedToInternet(getActivity())) {
+            new TimelineLoader().execute(lastQuery);
+        } else {
+            searchedtweetListView.onRefreshComplete();
+            Toast.makeText(getActivity().getApplicationContext(), 
+                    R.string.twitt4droid_is_offline_messege, 
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -115,14 +129,8 @@ public abstract class QueryableTimelineFragment extends Fragment {
                         String text = v.getText().toString().trim();
                         if (text.length() > 0) {
                             lastQuery = text;
-                            if (Resources.isConnectedToInternet(getActivity())) {
-                                hideSoftKeyboard();
-                                new TimelineLoader().execute(lastQuery);
-                            } else {
-                                Toast.makeText(getActivity().getApplicationContext(), 
-                                        R.string.twitt4droid_is_offline_messege, 
-                                        Toast.LENGTH_SHORT).show();
-                            }
+                            hideSoftKeyboard();
+                            loadRemoteTweetsIfPossible();
                         }
                         return true;
                     default: return false;
@@ -133,14 +141,7 @@ public abstract class QueryableTimelineFragment extends Fragment {
             
             @Override
             public void onRefresh(RefreshableListView refreshableListView) {
-                if (Resources.isConnectedToInternet(getActivity())) {
-                    new TimelineLoader().execute(lastQuery);
-                } else {
-                    refreshableListView.onRefreshComplete();
-                    Toast.makeText(getActivity().getApplicationContext(), 
-                            R.string.twitt4droid_is_offline_messege, 
-                            Toast.LENGTH_SHORT).show();
-                }
+                loadRemoteTweetsIfPossible();
             }
         });
     }

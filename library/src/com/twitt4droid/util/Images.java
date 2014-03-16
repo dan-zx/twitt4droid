@@ -59,7 +59,7 @@ public final class Images {
     }
 
     private static void intDiskCacheIfNeeded(Context context) {
-        if (DISK_CACHE == null) {
+        if (DISK_CACHE == null || DISK_CACHE.isClosed()) {
             try {
                 long size = 1024 * 1024 * 10;
                 String cachePath = 
@@ -105,6 +105,17 @@ public final class Images {
         }
         
         return null;
+    }
+
+    public static void clearCache() {
+        MEM_CACHE.evictAll();
+        if (DISK_CACHE != null) {
+            try {
+                DISK_CACHE.delete();
+            } catch (IOException e) { 
+                Log.e(TAG, "Couldn't clear disk cache");
+            }
+        }
     }
 
     public static Bitmap getFromCache(Context context, String key) {

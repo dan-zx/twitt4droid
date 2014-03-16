@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import com.twitt4droid.data.dao.DaoFactory;
 import com.twitt4droid.data.dao.impl.sqlite.SQLiteDaoFactory;
 import com.twitt4droid.data.source.Twitt4droidDatabaseHelper;
+import com.twitt4droid.util.Images;
 
 import twitter4j.AsyncTwitter;
 import twitter4j.AsyncTwitterFactory;
@@ -158,6 +159,7 @@ public final class Twitt4droid {
             .commit();
         
         Twitt4droidDatabaseHelper.destroyDb(context);
+        Images.clearCache();
     }
 
     /**

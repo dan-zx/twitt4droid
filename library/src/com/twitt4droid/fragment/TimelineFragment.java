@@ -74,29 +74,31 @@ public abstract class TimelineFragment extends Fragment {
         tweetListView.setOnRefreshListener(new RefreshableListView.OnRefreshListener() {
             @Override
             public void onRefresh(RefreshableListView refreshableListView) {
-                if (Resources.isConnectedToInternet(getActivity())) {
-                    new TimelineLoader().execute();
-                } else {
-                    refreshableListView.onRefreshComplete();
-                    Toast.makeText(getActivity().getApplicationContext(), 
-                            R.string.twitt4droid_is_offline_messege, 
-                            Toast.LENGTH_SHORT).show();
-                }
+                loadRemoteTweetsIfPossible();
             }
         });
     }
 
     protected void loadTweets() {
+        List<Status> list = timelineDao.readList();
+        if (list != null && !list.isEmpty()) {
+            tweetListView.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+            Collections.reverse(list);
+            tweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, list));
+        } else {
+            loadRemoteTweetsIfPossible();
+        }
+    }
+    
+    private void loadRemoteTweetsIfPossible() {
         if (Resources.isConnectedToInternet(getActivity())) {
             new TimelineLoader().execute();
         } else {
-            List<Status> list = timelineDao.readList();
-            if (list != null && !list.isEmpty()) {
-                tweetListView.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
-                Collections.reverse(list);
-                tweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, list));
-            } 
+            tweetListView.onRefreshComplete();
+            Toast.makeText(getActivity().getApplicationContext(), 
+                    R.string.twitt4droid_is_offline_messege, 
+                    Toast.LENGTH_SHORT).show();
         }
     }
     
