@@ -18,8 +18,6 @@ package com.twitt4droid;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.twitt4droid.data.dao.DaoFactory;
-import com.twitt4droid.data.dao.impl.sqlite.SQLiteDaoFactory;
 import com.twitt4droid.data.source.Twitt4droidDatabaseHelper;
 import com.twitt4droid.util.Images;
 
@@ -181,9 +179,5 @@ public final class Twitt4droid {
      */
     public static long getCurrentUserId(Context context) {
         return Resources.getPreferences(context).getLong(USER_ID_KEY, INVALID_USER_ID);
-    }
-
-    public static DaoFactory SQLiteDaoFactory(Context context) {
-        return new SQLiteDaoFactory(context);
     }
 }

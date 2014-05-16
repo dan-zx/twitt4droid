@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 import com.twitt4droid.R;
 import com.twitt4droid.Resources;
-import com.twitt4droid.data.dao.TimelineDao;
+import com.twitt4droid.data.dao.TimelineDAO;
 import com.twitt4droid.task.TweetLoader;
 import com.twitt4droid.widget.RefreshableListView;
 import com.twitt4droid.widget.TweetAdapter;
@@ -44,7 +44,7 @@ public abstract class TimelineFragment extends Fragment {
     
     private RefreshableListView tweetListView;
     private ProgressBar progressBar;
-    private TimelineDao timelineDao;
+    private TimelineDAO timelineDao;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,7 +80,7 @@ public abstract class TimelineFragment extends Fragment {
     }
 
     protected void loadTweets() {
-        List<Status> list = timelineDao.readList();
+        List<Status> list = timelineDao.fetchAll();
         if (list != null && !list.isEmpty()) {
             tweetListView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
@@ -102,7 +102,7 @@ public abstract class TimelineFragment extends Fragment {
         }
     }
     
-    protected void setTimelineDao(TimelineDao timelineDao) {
+    protected void setTimelineDao(TimelineDAO timelineDao) {
         this.timelineDao = timelineDao;
     }
 
@@ -135,10 +135,7 @@ public abstract class TimelineFragment extends Fragment {
                 tweetListView.setVisibility(View.VISIBLE);
                 if (result != null && !result.isEmpty()) {
                     tweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, result));
-                    timelineDao.beginTransaction()
-                        .deleteAll()
-                        .save(result)
-                        .commit();
+                    timelineDao.save(result);
                     Log.d(TAG, "Loaded");
                 } else if (getTwitterException() != null) {
                     Log.e(TAG, "Error while retrieving tweets", getTwitterException());

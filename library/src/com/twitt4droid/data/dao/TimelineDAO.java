@@ -13,27 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.twitt4droid.fragment;
+package com.twitt4droid.data.dao;
 
-import android.os.Bundle;
+import java.util.List;
 
-import com.twitt4droid.data.dao.impl.DAOFactory;
-
-import twitter4j.ResponseList;
 import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
 
-public class HomeTimelineFragment extends TimelineFragment {
+public interface TimelineDAO extends GenericDAO<Status, Long> { 
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setTimelineDao(new DAOFactory(getActivity().getApplicationContext()).getHomeTimelineDAO());
-    }
-
-    @Override
-    protected ResponseList<Status> getTweets(Twitter twitter) throws TwitterException {
-        return twitter.getHomeTimeline();
-    }
+    List<Status> fetchAll();
+    void save(List<Status> statuses);
+    void deleteAll();
 }

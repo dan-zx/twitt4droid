@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014 Daniel Pedraza-Arcega
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.twitt4droid.data.dao.impl.sqlite;
 
 import android.database.Cursor;
@@ -23,13 +38,13 @@ class UserCursorImpl implements User {
     private String location;
     
     public UserCursorImpl(Cursor cursor) {
-        id = Cursors.containsColumn(cursor, "id") ? cursor.getLong(cursor.getColumnIndex("id")) : -1;
-        name = Cursors.containsColumn(cursor, "name") ? cursor.getString(cursor.getColumnIndex("name")) : null;
-        screenName = Cursors.containsColumn(cursor, "screen_name") ? cursor.getString(cursor.getColumnIndex("screen_name")) : null;
-        profileImageURL = Cursors.containsColumn(cursor, "profile_image_url") ? cursor.getString(cursor.getColumnIndex("profile_image_url")) : null;
-        url = Cursors.containsColumn(cursor, "url") ? cursor.getString(cursor.getColumnIndex("url")) : null;
-        description = Cursors.containsColumn(cursor, "description") ? cursor.getString(cursor.getColumnIndex("description")) : null;
-        location = Cursors.containsColumn(cursor, "location") ? cursor.getString(cursor.getColumnIndex("location")) : null;
+        id = SQLiteUtils.containsColumn(cursor, "id") ? cursor.getLong(cursor.getColumnIndex("id")) : -1;
+        name = SQLiteUtils.containsColumn(cursor, "name") ? cursor.getString(cursor.getColumnIndex("name")) : null;
+        screenName = SQLiteUtils.containsColumn(cursor, "screen_name") ? cursor.getString(cursor.getColumnIndex("screen_name")) : null;
+        profileImageURL = SQLiteUtils.containsColumn(cursor, "profile_image_url") ? cursor.getString(cursor.getColumnIndex("profile_image_url")) : null;
+        url = SQLiteUtils.containsColumn(cursor, "url") ? cursor.getString(cursor.getColumnIndex("url")) : null;
+        description = SQLiteUtils.containsColumn(cursor, "description") ? cursor.getString(cursor.getColumnIndex("description")) : null;
+        location = SQLiteUtils.containsColumn(cursor, "location") ? cursor.getString(cursor.getColumnIndex("location")) : null;
     }
     
     @Override

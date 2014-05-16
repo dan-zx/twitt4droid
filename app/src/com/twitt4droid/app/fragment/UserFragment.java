@@ -26,18 +26,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.rtyley.android.sherlock.roboguice.fragment.RoboSherlockFragment;
-
 import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.activity.SignInActivity;
-import com.twitt4droid.data.dao.UserDao;
+import com.twitt4droid.data.dao.UserDAO;
+import com.twitt4droid.data.dao.impl.DAOFactory;
 import com.twitt4droid.task.ImageLoader;
 import com.twitt4droid.util.Strings;
 import com.twitt4droid.widget.LogInOutButton;
 
 import roboguice.inject.InjectView;
-
 import twitter4j.AsyncTwitter;
 import twitter4j.TwitterAdapter;
 import twitter4j.TwitterException;
@@ -57,14 +56,13 @@ public class UserFragment extends RoboSherlockFragment {
     @InjectView(R.id.logout_button)         private LogInOutButton logoutButton;
 
     private User user;
-    private UserDao userDao;
+    private UserDAO userDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        userDao = Twitt4droid.SQLiteDaoFactory(getActivity().getApplicationContext())
-                .getUserDao();
+        userDao = new DAOFactory(getActivity().getApplicationContext()).getUserDAO();
     }
 
     @Override
@@ -85,10 +83,7 @@ public class UserFragment extends RoboSherlockFragment {
             @Override
             public void verifiedCredentials(final User user) {
                 Log.d(TAG, "User: " + user);
-                userDao.beginTransaction()
-                        .deleteAll()
-                        .save(user)
-                        .commit();
+                userDao.update(user);
                 getActivity().runOnUiThread(new Runnable() {
                     
                     @Override
@@ -117,7 +112,7 @@ public class UserFragment extends RoboSherlockFragment {
         if (Resources.isConnectedToInternet(getActivity())) {
             twitter.verifyCredentials();
         } else {
-            user = userDao.readById(Twitt4droid.getCurrentUserId(getActivity()));
+            user = userDao.fetchById(Twitt4droid.getCurrentUserId(getActivity()));
             setUpLayout();
         }
     }

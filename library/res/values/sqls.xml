@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright 2014 Daniel Pedraza-Arcega
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+
+    <!-- TIMELINE SQL's -->
+    <string name="twitt4droid_fetch_all_statuses_sql">SELECT id, tweet_content, screen_name, name, created_at, profile_image_url FROM %s</string>
+    <string name="twitt4droid_insert_status_sql">INSERT INTO %s (id, tweet_content, screen_name, name, created_at, profile_image_url) VALUES (?, ?, ?, ?, ?, ?)</string>
+    <string name="twitt4droid_delete_all_statuses_sql">DELETE FROM %s</string>
+
+    <!-- USER SQL's -->
+    <string name="twitt4droid_fetch_user_by_id_sql">SELECT id, name, screen_name, profile_image_url, url, description, location FROM twitter_user WHERE id = ?</string>
+    <string name="twitt4droid_insert_user_sql">INSERT INTO twitter_user (id, name, screen_name, profile_image_url, url, description, location) VALUES (?, ?, ?, ?, ?, ?, ?)</string>
+    <string name="twitt4droid_update_user_sql">UPDATE twitter_user SET name = ?, screen_name = ?, profile_image_url = ?, url = ?, description = ?, location = ? WHERE id = ?</string>
+    <string name="twitt4droid_delete_user_by_id_sql">DELETE FROM twitter_user WHERE id = ?</string>
+
+</resources>

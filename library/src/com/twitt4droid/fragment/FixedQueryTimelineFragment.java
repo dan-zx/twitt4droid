@@ -17,7 +17,7 @@ package com.twitt4droid.fragment;
 
 import android.os.Bundle;
 
-import com.twitt4droid.Twitt4droid;
+import com.twitt4droid.data.dao.impl.DAOFactory;
 
 import twitter4j.Query;
 import twitter4j.QueryResult;
@@ -34,8 +34,7 @@ public abstract class FixedQueryTimelineFragment extends TimelineFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTimelineDao(Twitt4droid.SQLiteDaoFactory(getActivity().getApplicationContext())
-                .getFixedQueryTimelineDao());
+        setTimelineDao(new DAOFactory(getActivity().getApplicationContext()).getFixedQueryTimelineDAO());
     }
     
     @Override

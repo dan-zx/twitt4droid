@@ -36,7 +36,8 @@ import android.widget.ProgressBar;
 import com.twitt4droid.R;
 import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
-import com.twitt4droid.data.dao.UserDao;
+import com.twitt4droid.data.dao.UserDAO;
+import com.twitt4droid.data.dao.impl.DAOFactory;
 
 import twitter4j.AsyncTwitter;
 import twitter4j.TwitterAdapter;
@@ -81,7 +82,7 @@ public class WebLoginActivity extends Activity {
     private ProgressBar loadingBar;
     private MenuItem reloadCancelItem;
     private WebView webView;
-    private UserDao userDao;
+    private UserDAO userDao;
 
     /**
      * {@inheritDoc}
@@ -89,8 +90,7 @@ public class WebLoginActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userDao = Twitt4droid.SQLiteDaoFactory(getApplicationContext())
-        	.getUserDao();
+        userDao = new DAOFactory(getApplicationContext()).getUserDAO();
         if (Twitt4droid.areConsumerTokensAvailable(getApplicationContext())) {
             if (Resources.isConnectedToInternet(this)) {
                 setUpTwitter();
@@ -203,9 +203,7 @@ public class WebLoginActivity extends Activity {
             public void verifiedCredentials(User user) {
                 Log.i(TAG, "@" + user.getScreenName() + " was successfully authenticated");
                 twitter.addListener(null);
-                userDao.beginTransaction()
-                    .save(user)
-                    .commit();
+                userDao.save(user);
                 Intent data = getIntent();
                 data.putExtra(EXTRA_USER, user);
                 setResult(RESULT_OK, data);

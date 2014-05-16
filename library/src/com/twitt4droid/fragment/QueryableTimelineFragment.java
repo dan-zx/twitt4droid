@@ -32,8 +32,8 @@ import android.widget.Toast;
 
 import com.twitt4droid.R;
 import com.twitt4droid.Resources;
-import com.twitt4droid.Twitt4droid;
-import com.twitt4droid.data.dao.TimelineDao;
+import com.twitt4droid.data.dao.TimelineDAO;
+import com.twitt4droid.data.dao.impl.DAOFactory;
 import com.twitt4droid.task.TweetLoader;
 import com.twitt4droid.util.Strings;
 import com.twitt4droid.widget.RefreshableListView;
@@ -57,7 +57,7 @@ public abstract class QueryableTimelineFragment extends Fragment {
     private RefreshableListView searchedtweetListView;
     private ProgressBar progressBar;
     private String lastQuery;
-    private TimelineDao queryableTimelineDao;
+    private TimelineDAO queryableTimelineDao;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -71,8 +71,7 @@ public abstract class QueryableTimelineFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        queryableTimelineDao = Twitt4droid.SQLiteDaoFactory(getActivity().getApplicationContext())
-                .getQueryableTimelineDao();
+        queryableTimelineDao = new DAOFactory(getActivity().getApplicationContext()).getQueryableTimelineDAO();
     }
     
     @Override
@@ -86,7 +85,7 @@ public abstract class QueryableTimelineFragment extends Fragment {
     }
     
     protected void loadLocalTweets() {
-        List<Status> list = queryableTimelineDao.readList();
+        List<Status> list = queryableTimelineDao.fetchAll();
         if (list != null && !list.isEmpty()) {
             searchedtweetListView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
@@ -188,10 +187,7 @@ public abstract class QueryableTimelineFragment extends Fragment {
                 searchedtweetListView.setVisibility(View.VISIBLE);
                 if (result != null && !result.isEmpty()) {
                     searchedtweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, result));
-                    queryableTimelineDao.beginTransaction()
-                        .deleteAll()
-                        .save(result)
-                        .commit();
+                    queryableTimelineDao.save(result);
                     Resources.getPreferences(getActivity()).edit()
                         .putString(LAST_QUERY_KEY, lastQuery)
                         .commit();

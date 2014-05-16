@@ -124,10 +124,9 @@ public final class Images {
             bitmap = getFromDiskCache(context, key);
             if (bitmap != null) {
                 Log.d(TAG, "Image loaded from disk cache");
+                MEM_CACHE.put(key, bitmap);
             }
-        } else {
-            Log.d(TAG, "Image loaded from memory cache");
-        }
+        } else Log.d(TAG, "Image loaded from memory cache");
         return bitmap;
     }
     
@@ -144,16 +143,10 @@ public final class Images {
             snapshot = DISK_CACHE.get(key);
             BufferedInputStream in = new BufferedInputStream(snapshot.getInputStream(0));
             return BitmapFactory.decodeStream(in);
-        } catch (Exception ex) {
+        } catch (IOException | NullPointerException ex) {
             Log.e(TAG, "Couldn't get image from disk cache");
         } finally {
-            if (snapshot != null) {
-                try {
-                    snapshot.close();
-                } catch (Exception ex) {
-                    Log.e(TAG, "Couldn't close snapshot");
-                }
-            }
+            if (snapshot != null) snapshot.close();
         }
         
         return null;
