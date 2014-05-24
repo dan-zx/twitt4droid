@@ -77,6 +77,7 @@ public abstract class TimelineFragment extends Fragment {
                 loadRemoteTweetsIfPossible();
             }
         });
+        registerForContextMenu(tweetListView);
     }
 
     protected void loadTweets() {

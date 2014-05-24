@@ -15,11 +15,10 @@
  */
 package com.twitt4droid.widget;
 
-import java.util.List;
-
-import twitter4j.Status;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +30,10 @@ import android.widget.TextView;
 
 import com.twitt4droid.R;
 import com.twitt4droid.task.ImageLoader;
+
+import twitter4j.Status;
+
+import java.util.List;
 
 public class TweetAdapter extends ArrayAdapter<Status> {
 
@@ -80,7 +83,7 @@ public class TweetAdapter extends ArrayAdapter<Status> {
             return this;
         }
 
-        public void setContent(Status status) {
+        public void setContent(final Status status) {
             usernameTextView.setText(context.getString(R.string.twitt4droid_tweet_username_format, status.getUser().getScreenName(), status.getUser().getName()));
             tweetTextView.setText(status.getText());
             String dateText = context.getString(R.string.twitt4droid_tweet_date_format, 
@@ -91,6 +94,26 @@ public class TweetAdapter extends ArrayAdapter<Status> {
                 .setImageView(profileImage)
                 .setLoadingColorId(R.color.twitt4droid_no_image_background)
                 .execute(status.getUser().getProfileImageURL());
+            overflowButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    new AlertDialog.Builder(context)
+                        .setItems(R.array.twitt4droid_tweet_context_menu, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0: break;
+                                    case 1: break;
+                                    case 2: break;
+                                    case 3: break;
+                                }
+                            }
+                        })
+                        .setInverseBackgroundForced(true)
+                        .show();
+                }
+            });
         }
 
         public ViewHolder setProfileImage(ImageView profileImage) {

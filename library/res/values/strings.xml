@@ -49,7 +49,15 @@
     <string name="twitt4droid_tweet_username_format">\@%1$s (%2$s)</string>
     <string name="twitt4droid_tweet_date_format">%1$s %2$s</string>
     <string name="twitt4droid_tweet_overflow_label">More</string>
-    
+
+    <!-- TWEET CONTEXT MENU -->
+    <string-array name="twitt4droid_tweet_context_menu" >
+        <item>Replay</item>
+        <item>Retweet</item>
+        <item>Favorite</item>
+        <item>Share</item>
+    </string-array>
+
     <!-- HINTS -->
     <string name="twitt4droid_search">Search for tweets</string>
 
