@@ -187,6 +187,7 @@ public abstract class QueryableTimelineFragment extends Fragment {
                 searchedtweetListView.setVisibility(View.VISIBLE);
                 if (result != null && !result.isEmpty()) {
                     searchedtweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, result));
+                    queryableTimelineDao.deleteAll();
                     queryableTimelineDao.save(result);
                     Resources.getPreferences(getActivity()).edit()
                         .putString(LAST_QUERY_KEY, lastQuery)

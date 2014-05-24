@@ -135,6 +135,7 @@ public abstract class TimelineFragment extends Fragment {
                 tweetListView.setVisibility(View.VISIBLE);
                 if (result != null && !result.isEmpty()) {
                     tweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, result));
+                    timelineDao.deleteAll();
                     timelineDao.save(result);
                     Log.d(TAG, "Loaded");
                 } else if (getTwitterException() != null) {
