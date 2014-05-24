@@ -22,8 +22,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/twitt4droid_tweet_space"
-        android:layout_marginRight="@dimen/twitt4droid_tweet_space"
+        android:layout_margin="@dimen/twitt4droid_tweet_space"
         android:background="@color/twitt4droid_tweet_background" >
 
         <ImageView
