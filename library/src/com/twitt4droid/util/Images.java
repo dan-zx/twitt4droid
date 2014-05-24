@@ -87,7 +87,7 @@ public final class Images {
         } catch (MalformedURLException ex) {
             Log.e(TAG, "Invalid url " + url);
         } catch (IOException ex) {
-            Log.e(TAG, "Couldn't download image from " + url);
+            // Useless for now
         }
         
         return null;
