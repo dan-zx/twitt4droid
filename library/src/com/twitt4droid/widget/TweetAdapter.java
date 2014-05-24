@@ -27,11 +27,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.twitt4droid.R;
+import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.task.ImageLoader;
 
+import twitter4j.AsyncTwitter;
 import twitter4j.Status;
+import twitter4j.TwitterAdapter;
 
 import java.util.List;
 
@@ -102,11 +106,38 @@ public class TweetAdapter extends ArrayAdapter<Status> {
                         .setItems(R.array.twitt4droid_tweet_context_menu, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                final Context appContext = context.getApplicationContext();
+                                AsyncTwitter asyncTwitter = Twitt4droid.getAsyncTwitter(appContext);
+                                asyncTwitter.addListener(new TwitterAdapter() {
+                                    @Override
+                                    public void retweetedStatus(Status retweetedStatus) {
+                                        Toast.makeText(
+                                                appContext, 
+                                                R.string.twitt4droid_tweet_retweeted, 
+                                                Toast.LENGTH_SHORT)
+                                                .show();
+                                    }
+                                    
+                                    @Override
+                                    public void createdFavorite(Status status) {
+                                        Toast.makeText(
+                                                appContext, 
+                                                R.string.twitt4droid_tweet_favorited, 
+                                                Toast.LENGTH_SHORT)
+                                                .show();
+                                    }
+                                });
                                 switch (which) {
-                                    case 0: break;
-                                    case 1: break;
-                                    case 2: break;
-                                    case 3: break;
+                                    case 0:
+                                        // TODO: Open replay activity
+                                        Toast.makeText(appContext, "TODO: Open replay activity", Toast.LENGTH_SHORT).show();
+                                        break;
+                                    case 1:
+                                        asyncTwitter.retweetStatus(status.getId());
+                                        break;
+                                    case 2:
+                                        asyncTwitter.createFavorite(status.getId());
+                                        break;
                                 }
                             }
                         })
