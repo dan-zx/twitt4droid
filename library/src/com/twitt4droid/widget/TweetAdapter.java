@@ -89,7 +89,7 @@ public class TweetAdapter extends ArrayAdapter<Status> {
             tweetTimeTextView.setText(dateText);
             new ImageLoader(context)
                 .setImageView(profileImage)
-                .setLoadingResourceImageId(R.drawable.twitt4droid_no_profile_image)
+                .setLoadingColorId(R.color.twitt4droid_no_image_background)
                 .execute(status.getUser().getProfileImageURL());
         }
 

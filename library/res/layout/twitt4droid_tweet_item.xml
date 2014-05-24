@@ -16,83 +16,91 @@
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@color/twitt4droid_tweet_list_background" >
 
-    <ImageView
-        android:id="@+id/tweet_profile_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:contentDescription="@string/twitt4droid_profile_image_description"
-        android:scaleType="centerCrop"
-        android:src="@drawable/twitt4droid_no_profile_image" />
-
-    <LinearLayout
-        android:id="@+id/tweet_content_layout"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginTop="5dp"
-        android:layout_toLeftOf="@+id/tweet_options_button"
-        android:layout_toRightOf="@id/tweet_profile_image"
-        android:orientation="vertical" >
+        android:layout_marginLeft="@dimen/twitt4droid_tweet_space"
+        android:layout_marginRight="@dimen/twitt4droid_tweet_space"
+        android:background="@color/twitt4droid_tweet_background" >
 
-        <TextView
-            android:id="@+id/tweet_username_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/tweet_profile_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/twitt4droid_profile_image_description"
+            android:scaleType="centerCrop"
+            android:src="@color/twitt4droid_no_image_background" />
 
-        <TextView
-            android:id="@+id/tweet_content_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:autoLink="web"
-            android:linksClickable="true"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <RelativeLayout
-            android:id="@+id/tweet_time_layout"
+        <LinearLayout
+            android:id="@+id/tweet_content_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <ImageView
-                android:id="@+id/clock_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="-6dp"
-                android:contentDescription="@string/twitt4droid_clock_icon_description"
-                android:src="@drawable/twitt4droid_ic_clock_holo_light" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@+id/tweet_options_button"
+            android:layout_toRightOf="@id/tweet_profile_image"
+            android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/tweet_time_text"
+                android:id="@+id/tweet_username_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/clock_image" />
-        </RelativeLayout>
-    </LinearLayout>
+                android:layout_marginBottom="8dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold" />
 
-    <ImageButton
-        android:id="@id/tweet_options_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="2dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/twitt4droid_tweet_overflow_label"
-        android:src="@drawable/twitt4droid_ic_overflow_holo_light"
-        android:visibility="gone" />
+            <TextView
+                android:id="@+id/tweet_content_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:autoLink="web"
+                android:linksClickable="true"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <RelativeLayout
+                android:id="@+id/tweet_time_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <ImageView
+                    android:id="@+id/clock_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="-6dp"
+                    android:contentDescription="@string/twitt4droid_clock_icon_description"
+                    android:src="@drawable/twitt4droid_ic_clock_holo_light" />
+
+                <TextView
+                    android:id="@+id/tweet_time_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/clock_image" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@id/tweet_options_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="2dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/twitt4droid_tweet_overflow_label"
+            android:src="@drawable/twitt4droid_ic_overflow_holo_light" />
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -16,6 +16,12 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <color name="twitt4droid_no_image_background">#ffcccccc</color>
+    <color name="twitt4droid_tweet_background">#ffffffff</color>
+    <color name="twitt4droid_tweet_list_background">#ffcccccc</color>
+    
+    <dimen name="twitt4droid_tweet_space">10dp</dimen>
+
     <style name="Twitt4droid.Widget.ProgressBar.Horizontal" parent="android:Widget.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/twitt4droid_horizontal_progress_bar_holo_dark</item>
         <item name="android:minHeight">4dp</item>

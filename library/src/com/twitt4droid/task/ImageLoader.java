@@ -26,8 +26,9 @@ public class ImageLoader extends AsyncTask<String, Void, Bitmap> {
 
     private ImageView imageView;
     private Integer loadingResourceImageId;
+    private Integer loadingColorId;
     private Context context;
-    
+
     public ImageLoader(Context context) {
         this.context = context;
     }
@@ -36,15 +37,21 @@ public class ImageLoader extends AsyncTask<String, Void, Bitmap> {
         this.imageView = imageView;
         return this;
     }
-    
+
     public ImageLoader setLoadingResourceImageId(int loadingResourceImageId) {
         this.loadingResourceImageId = loadingResourceImageId;
+        return this;
+    }
+
+    public ImageLoader setLoadingColorId(int loadingColorId) {
+        this.loadingColorId = loadingColorId;
         return this;
     }
 
     @Override
     protected void onPreExecute() {
         if (loadingResourceImageId != null) imageView.setImageResource(loadingResourceImageId);
+        if (loadingColorId != null) imageView.setBackgroundColor(context.getResources().getColor(loadingColorId));
     }
 
     @Override
@@ -56,6 +63,8 @@ public class ImageLoader extends AsyncTask<String, Void, Bitmap> {
     protected void onPostExecute(Bitmap result) {
         if (result != null) imageView.setImageBitmap(result);
         imageView = null;
+        loadingResourceImageId = null;
+        loadingColorId = null;
         context = null;
     }
 }

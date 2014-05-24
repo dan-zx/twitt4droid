@@ -125,7 +125,7 @@ public class UserFragment extends RoboSherlockFragment {
             if (!Strings.isNullOrBlank(user.getProfileImageURL())) {
                 new ImageLoader(getActivity().getApplicationContext())
                     .setImageView(profileImageView)
-                    .setLoadingResourceImageId(R.drawable.twitt4droid_no_profile_image)
+                    .setLoadingColorId(R.color.twitt4droid_no_image_background)
                     .execute(user.getProfileImageURL());
                 profileImageView.setVisibility(View.VISIBLE);
             }

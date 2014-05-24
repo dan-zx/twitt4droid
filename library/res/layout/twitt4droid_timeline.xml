@@ -22,6 +22,9 @@
         android:id="@+id/tweets_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/twitt4droid_tweet_list_background"
+        android:divider="@color/twitt4droid_tweet_list_background"
+        android:dividerHeight="@dimen/twitt4droid_tweet_space"
         android:visibility="gone" />
 
     <ProgressBar

@@ -80,7 +80,6 @@ public final class Images {
         if (cachedBitmap != null) return cachedBitmap;
         
         try {
-            Log.d(TAG, "Loading image from " + url + " ...");
             InputStream stream = new URL(url).openConnection().getInputStream();
             Bitmap downloaded = BitmapFactory.decodeStream(stream);
             saveInCache(context, key, downloaded);
@@ -122,11 +121,8 @@ public final class Images {
         Bitmap bitmap = MEM_CACHE.get(key);
         if (bitmap == null) {
             bitmap = getFromDiskCache(context, key);
-            if (bitmap != null) {
-                Log.d(TAG, "Image loaded from disk cache");
-                MEM_CACHE.put(key, bitmap);
-            }
-        } else Log.d(TAG, "Image loaded from memory cache");
+            if (bitmap != null) MEM_CACHE.put(key, bitmap);
+        }
         return bitmap;
     }
     
@@ -141,12 +137,15 @@ public final class Images {
         
         try {
             snapshot = DISK_CACHE.get(key);
-            BufferedInputStream in = new BufferedInputStream(snapshot.getInputStream(0));
-            return BitmapFactory.decodeStream(in);
-        } catch (IOException | NullPointerException ex) {
+        } catch (IOException ex) {
             Log.e(TAG, "Couldn't get image from disk cache");
-        } finally {
-            if (snapshot != null) snapshot.close();
+        }
+        
+        if (snapshot != null) {
+            BufferedInputStream in = new BufferedInputStream(snapshot.getInputStream(0));
+            Bitmap bitmap = BitmapFactory.decodeStream(in);
+            snapshot.close();
+            return bitmap;
         }
         
         return null;
@@ -162,9 +161,7 @@ public final class Images {
             if (bitmap.compress(CompressFormat.JPEG, 100, out)) {
                 DISK_CACHE.flush();
                 editor.commit();
-            } else {
-                editor.abort();
-            }
+            } else editor.abort();
         } catch (IOException ex) {
             Log.e(TAG, "Couldn't save image in disk cache");
             if (editor != null) {
