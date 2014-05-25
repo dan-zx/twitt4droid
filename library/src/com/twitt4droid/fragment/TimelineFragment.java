@@ -17,10 +17,12 @@ package com.twitt4droid.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -28,7 +30,6 @@ import com.twitt4droid.R;
 import com.twitt4droid.Resources;
 import com.twitt4droid.data.dao.TimelineDAO;
 import com.twitt4droid.task.TweetLoader;
-import com.twitt4droid.widget.RefreshableListView;
 import com.twitt4droid.widget.TweetAdapter;
 
 import twitter4j.Status;
@@ -41,8 +42,9 @@ import java.util.List;
 public abstract class TimelineFragment extends Fragment {
     
     private static final String TAG = TimelineFragment.class.getSimpleName();
-    
-    private RefreshableListView tweetListView;
+
+    private SwipeRefreshLayout swipeLayout;
+    private ListView tweetListView;
     private ProgressBar progressBar;
     private TimelineDAO timelineDao;
 
@@ -69,23 +71,29 @@ public abstract class TimelineFragment extends Fragment {
     protected void onTwitterError(TwitterException ex) {}
 
     private void setUpLayout(View layout) {
-        tweetListView = (RefreshableListView) layout.findViewById(R.id.tweets_list);
+        swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
+        tweetListView = (ListView) layout.findViewById(R.id.tweets_list);
         progressBar = (ProgressBar) layout.findViewById(R.id.tweets_progress_bar);
-        tweetListView.setOnRefreshListener(new RefreshableListView.OnRefreshListener() {
+        swipeLayout.setColorScheme(R.color.twitt4droid_primary_color, 
+                R.color.twitt4droid_secundary_color_1,
+                R.color.twitt4droid_secundary_color_2,
+                R.color.twitt4droid_secundary_color_3);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            
             @Override
-            public void onRefresh(RefreshableListView refreshableListView) {
+            public void onRefresh() {
                 loadRemoteTweetsIfPossible();
             }
         });
-        registerForContextMenu(tweetListView);
     }
 
     protected void loadTweets() {
         List<Status> list = timelineDao.fetchAll();
         if (list != null && !list.isEmpty()) {
+            swipeLayout.setVisibility(View.VISIBLE);
             tweetListView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
-            Collections.reverse(list);
+            Collections.reverse(list); // TODO: retrieve in reverse order
             tweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, list));
         } else {
             loadRemoteTweetsIfPossible();
@@ -96,7 +104,7 @@ public abstract class TimelineFragment extends Fragment {
         if (Resources.isConnectedToInternet(getActivity())) {
             new TimelineLoader().execute();
         } else {
-            tweetListView.onRefreshComplete();
+            swipeLayout.setRefreshing(false);
             Toast.makeText(getActivity().getApplicationContext(), 
                     R.string.twitt4droid_is_offline_messege, 
                     Toast.LENGTH_SHORT).show();
@@ -117,6 +125,7 @@ public abstract class TimelineFragment extends Fragment {
         protected void onPreExecute() {
             if (getActivity() != null) {
                 if(tweetListView.getChildCount() == 0) {
+                    swipeLayout.setVisibility(View.GONE);
                     tweetListView.setVisibility(View.GONE);
                     progressBar.setVisibility(View.VISIBLE);
                 }
@@ -131,8 +140,9 @@ public abstract class TimelineFragment extends Fragment {
         @Override
         protected void onPostExecute(List<twitter4j.Status> result) {
             if (getActivity() != null) {
-                tweetListView.onRefreshComplete();
+                swipeLayout.setRefreshing(false);
                 progressBar.setVisibility(View.GONE);
+                swipeLayout.setVisibility(View.VISIBLE);
                 tweetListView.setVisibility(View.VISIBLE);
                 if (result != null && !result.isEmpty()) {
                     tweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, result));

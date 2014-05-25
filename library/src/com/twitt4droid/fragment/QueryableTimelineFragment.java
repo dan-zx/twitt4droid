@@ -18,6 +18,7 @@ package com.twitt4droid.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +38,6 @@ import com.twitt4droid.data.dao.TimelineDAO;
 import com.twitt4droid.data.dao.impl.DAOFactory;
 import com.twitt4droid.task.TweetLoader;
 import com.twitt4droid.util.Strings;
-import com.twitt4droid.widget.RefreshableListView;
 import com.twitt4droid.widget.TweetAdapter;
 
 import twitter4j.Query;
@@ -52,9 +53,10 @@ public abstract class QueryableTimelineFragment extends Fragment {
     private static final String TAG = QueryableTimelineFragment.class.getSimpleName();
     private static final String LAST_QUERY_KEY = "lastQuery";
 
+    private SwipeRefreshLayout swipeLayout;
     private InputMethodManager inputMethodManager;
     private EditText searchEditText;
-    private RefreshableListView searchedtweetListView;
+    private ListView searchedtweetListView;
     private ProgressBar progressBar;
     private String lastQuery;
     private TimelineDAO queryableTimelineDao;
@@ -87,6 +89,7 @@ public abstract class QueryableTimelineFragment extends Fragment {
     protected void loadLocalTweets() {
         List<Status> list = queryableTimelineDao.fetchAll();
         if (list != null && !list.isEmpty()) {
+            swipeLayout.setVisibility(View.VISIBLE);
             searchedtweetListView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
             Collections.reverse(list);
@@ -98,7 +101,7 @@ public abstract class QueryableTimelineFragment extends Fragment {
         if (Resources.isConnectedToInternet(getActivity())) {
             new TimelineLoader().execute(lastQuery);
         } else {
-            searchedtweetListView.onRefreshComplete();
+            swipeLayout.setRefreshing(false);
             Toast.makeText(getActivity().getApplicationContext(), 
                     R.string.twitt4droid_is_offline_messege, 
                     Toast.LENGTH_SHORT).show();
@@ -116,8 +119,9 @@ public abstract class QueryableTimelineFragment extends Fragment {
     protected void onTwitterError(Exception ex) {}
     
     private void setUpLayout(View layout) {
+        swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
         searchEditText = (EditText) layout.findViewById(R.id.search_edit_text);
-        searchedtweetListView = (RefreshableListView) layout.findViewById(R.id.searched_tweets_list);
+        searchedtweetListView = (ListView) layout.findViewById(R.id.searched_tweets_list);
         progressBar = (ProgressBar) layout.findViewById(R.id.searched_tweets_progress_bar);
         searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             
@@ -136,10 +140,14 @@ public abstract class QueryableTimelineFragment extends Fragment {
                 }
             }
         });
-        searchedtweetListView.setOnRefreshListener(new RefreshableListView.OnRefreshListener() {
+        swipeLayout.setColorScheme(R.color.twitt4droid_primary_color, 
+                R.color.twitt4droid_secundary_color_1,
+                R.color.twitt4droid_secundary_color_2,
+                R.color.twitt4droid_secundary_color_3);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             
             @Override
-            public void onRefresh(RefreshableListView refreshableListView) {
+            public void onRefresh() {
                 loadRemoteTweetsIfPossible();
             }
         });
@@ -163,6 +171,7 @@ public abstract class QueryableTimelineFragment extends Fragment {
         protected void onPreExecute() {
             if (getActivity() != null) {
                 if(searchedtweetListView.getChildCount() == 0) {
+                    swipeLayout.setVisibility(View.GONE);
                     searchedtweetListView.setVisibility(View.GONE);
                     progressBar.setVisibility(View.VISIBLE);
                 }
@@ -182,8 +191,9 @@ public abstract class QueryableTimelineFragment extends Fragment {
         @Override
         protected void onPostExecute(List<twitter4j.Status> result) {
             if (getActivity() != null) {
-                searchedtweetListView.onRefreshComplete();
+                swipeLayout.setRefreshing(false);
                 progressBar.setVisibility(View.GONE);
+                swipeLayout.setVisibility(View.VISIBLE);
                 searchedtweetListView.setVisibility(View.VISIBLE);
                 if (result != null && !result.isEmpty()) {
                     searchedtweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, result));
