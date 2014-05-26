@@ -67,7 +67,7 @@ public final class Images {
                         ? Files.getExternalCacheDir(context).getPath() 
                         : context.getCacheDir().getPath();
                 File file = new File(cachePath + File.separator + IMAGE_CACHE_DIR);
-                DISK_CACHE = DiskLruCache.open(file, 1, 1, size); // TODO: something is wrong here when is run on API 8
+                DISK_CACHE = DiskLruCache.open(file, 1, 1, size);
             } catch (IOException ex) {
                 Log.e(TAG, "Couldn't init disk cache", ex);
             }
