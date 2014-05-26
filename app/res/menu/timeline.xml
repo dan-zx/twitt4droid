@@ -18,10 +18,9 @@
     xmlns:twitt4droid="http://schemas.android.com/apk/res-auto" >
 
     <item
-        android:id="@+id/settings_item"
-        android:icon="@drawable/ic_settings_holo_light"
-        android:orderInCategory="999"
-        android:title="@string/settings"
-        twitt4droid:showAsAction="never"/>
+        android:id="@+id/new_tweet_item"
+        android:icon="@drawable/ic_tweet_holo_light"
+        android:title="@string/tweet"
+        twitt4droid:showAsAction="always"/>
 
 </menu>

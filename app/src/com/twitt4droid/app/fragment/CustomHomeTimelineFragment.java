@@ -15,9 +15,15 @@
  */
 package com.twitt4droid.app.fragment;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.twitt4droid.app.R;
+import com.twitt4droid.app.activity.TweetingActivity;
 import com.twitt4droid.fragment.HomeTimelineFragment;
 
 import twitter4j.TwitterException;
@@ -29,5 +35,27 @@ public class CustomHomeTimelineFragment extends HomeTimelineFragment {
         Toast.makeText(getActivity().getApplicationContext(), 
                 R.string.twitt4droid_error_message, 
                 Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.timeline, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.new_tweet_item:
+                startActivity(new Intent(getActivity(), TweetingActivity.class));
+                return true;
+            default: return super.onOptionsItemSelected(item);
+        }
     }
 }
