@@ -21,14 +21,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.view.KeyEvent;
-
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.Tab;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-
-import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.fragment.CustomHomeTimelineFragment;
@@ -36,16 +32,12 @@ import com.twitt4droid.app.fragment.CustomMentionsTimelineFragment;
 import com.twitt4droid.app.fragment.CustomQueryableTimelineFragment;
 import com.twitt4droid.app.fragment.UserFragment;
 
-import roboguice.inject.InjectView;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends RoboSherlockFragmentActivity {
+public class MainActivity extends ActionBarActivity {
 
-    @InjectView(R.id.view_pager) private ViewPager viewPager;
-
-    private Menu menu;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +46,7 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        viewPager = (ViewPager) findViewById(R.id.view_pager);
         SwipeFragmentPagerAdapter adapter = new SwipeFragmentPagerAdapter()
             .addFragment(new CustomHomeTimelineFragment())
             .addFragment(new CustomMentionsTimelineFragment())
@@ -70,12 +63,12 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()
                 .setContentDescription(R.string.home_tab_title)
-                .setIcon(R.drawable.dark_home_icon)
+                .setIcon(R.drawable.ic_home_holo_dark)
                 .setTabListener(adapter));
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()
                 .setContentDescription(R.string.mentions_tab_title)
-                .setIcon(R.drawable.dark_notifications_icon)
+                .setIcon(R.drawable.ic_notifications_holo_dark)
                 .setTabListener(adapter));
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()
@@ -85,14 +78,13 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()
                 .setContentDescription(R.string.user_tab_title)
-                .setIcon(R.drawable.dark_person_icon)
+                .setIcon(R.drawable.ic_person_holo_dark)
                 .setTabListener(adapter));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getSupportMenuInflater().inflate(R.menu.main, menu);
-        this.menu = menu;
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -106,16 +98,6 @@ public class MainActivity extends RoboSherlockFragmentActivity {
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             default: return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_MENU:
-                if (menu != null) menu.performIdentifierAction(R.id.overflow_item, 0);
-                return true;
-            default: return super.onKeyUp(keyCode, event);
         }
     }
 
@@ -146,14 +128,14 @@ public class MainActivity extends RoboSherlockFragmentActivity {
         }
         
         @Override
-        public void onTabSelected(Tab tab, FragmentTransaction ft) {
+        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
             viewPager.setCurrentItem(tab.getPosition());
         }
 
         @Override
-        public void onTabUnselected(Tab tab, FragmentTransaction ft) { }
+        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) { }
 
         @Override
-        public void onTabReselected(Tab tab, FragmentTransaction ft) { }
+        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) { }
     }
 }

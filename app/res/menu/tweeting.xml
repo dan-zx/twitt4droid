@@ -14,17 +14,18 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:twitt4droid="http://schemas.android.com/apk/res-auto" >
 
     <item
         android:id="@+id/tweet_char_count_item"
-        android:actionLayout="@layout/char_counter"
-        android:showAsAction="always"
-        android:title="@string/char_count"/>
+        android:title="@string/char_count"
+        twitt4droid:actionLayout="@layout/char_counter"
+        twitt4droid:showAsAction="always"/>
     <item
         android:id="@+id/send_tweet_item"
-        android:icon="@drawable/dark_send_icon"
-        android:showAsAction="always"
-        android:title="@string/send"/>
+        android:icon="@drawable/ic_send_holo_dark"
+        android:title="@string/send"
+        twitt4droid:showAsAction="always"/>
 
 </menu>

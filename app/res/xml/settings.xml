@@ -18,7 +18,7 @@
 
     <PreferenceCategory android:title="@string/about_preferences" >
         <PreferenceScreen
-            android:key="github_pref_key"
+            android:key="@string/github_key"
             android:summary="@string/github_pref_summary"
             android:title="@string/github_pref_title" >
             <intent
@@ -27,11 +27,11 @@
         </PreferenceScreen>
 
         <Preference
-            android:key="licences_pref_key"
+            android:key="@string/licences_key"
             android:summary="@string/licenses_pref_summary"
             android:title="@string/licenses_pref_title" />
         <Preference
-            android:key="version_pref_key"
+            android:key="@string/version_key"
             android:summary="@string/version_pref_summary"
             android:title="@string/version_pref_title" />
     </PreferenceCategory>

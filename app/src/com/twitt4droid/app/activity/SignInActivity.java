@@ -17,14 +17,13 @@ package com.twitt4droid.app.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.actionbarsherlock.app.SherlockActivity;
+import android.support.v7.app.ActionBarActivity;
 
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.activity.WebLoginActivity;
 import com.twitt4droid.app.R;
 
-public class SignInActivity extends SherlockActivity {
+public class SignInActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

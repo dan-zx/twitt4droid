@@ -17,25 +17,22 @@ package com.twitt4droid.app.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-
-import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
-
 import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.app.R;
 import com.twitt4droid.util.Strings;
-
-import roboguice.inject.InjectView;
 
 import twitter4j.AsyncTwitter;
 import twitter4j.Status;
@@ -43,18 +40,15 @@ import twitter4j.TwitterAdapter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterMethod;
 
-import javax.inject.Inject;
-
-public class TweetingActivity extends RoboSherlockActivity {
+public class TweetingActivity extends ActionBarActivity {
     
     private static final int TWEET_CHAR_LIMIT = 140;
     private static final int RED_COLOR = Color.parseColor("#FF0000");
     private static final String TWEET_BEFORE_RESTART = "TWEET_BEFORE_RESTART";
     private static final String TAG = TweetingActivity.class.getSimpleName();
     
-    @InjectView(R.id.new_message_edit_text) private EditText newTweetEditText;
-    @Inject                                 private InputMethodManager inputMethodManager; 
-    
+    private EditText newTweetEditText;
+    private InputMethodManager inputMethodManager; 
     private TextView characterCountTextView;
     private MenuItem sendMenuItem;
     private int defaultCharacterCountTextViewTextColor;
@@ -64,6 +58,7 @@ public class TweetingActivity extends RoboSherlockActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.texting);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         setUpLayout(savedInstanceState);
     }
 
@@ -75,9 +70,9 @@ public class TweetingActivity extends RoboSherlockActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getSupportMenuInflater().inflate(R.menu.tweeting, menu);
+        getMenuInflater().inflate(R.menu.tweeting, menu);
         sendMenuItem = menu.findItem(R.id.send_tweet_item);
-        characterCountTextView = (TextView)menu.findItem(R.id.tweet_char_count_item).getActionView();
+        characterCountTextView = (TextView) MenuItemCompat.getActionView(menu.findItem(R.id.tweet_char_count_item));
         characterCountTextView.setText(String.valueOf(TWEET_CHAR_LIMIT));
         defaultCharacterCountTextViewTextColor = characterCountTextView.getTextColors().getDefaultColor();
         onTweetTextChanged(newTweetEditText.getText().toString());
@@ -114,6 +109,7 @@ public class TweetingActivity extends RoboSherlockActivity {
     }
 
     private void setUpLayout(Bundle savedInstanceState) {
+        newTweetEditText = (EditText) findViewById(R.id.new_message_edit_text);
         newTweetEditText.addTextChangedListener(new TextWatcher() {
             
             @Override

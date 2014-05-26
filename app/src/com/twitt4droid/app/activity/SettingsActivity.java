@@ -15,28 +15,27 @@
  */
 package com.twitt4droid.app.activity;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
-
-import com.actionbarsherlock.view.MenuItem;
-
-import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockPreferenceActivity;
+import android.preference.PreferenceActivity;
+import android.view.MenuItem;
 
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.util.Dialogs;
 
-import roboguice.inject.InjectPreference;
+public class SettingsActivity extends PreferenceActivity {
 
-public class SettingsActivity extends RoboSherlockPreferenceActivity {
-
-    @InjectPreference("licences_pref_key") private Preference licencesPreference;
+    private Preference licencesPreference;
     
     @Override
     @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) displayHomeAsUp();
+        licencesPreference = findPreference(getString(R.string.licences_key));
         licencesPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             
             @Override
@@ -47,14 +46,18 @@ public class SettingsActivity extends RoboSherlockPreferenceActivity {
         });
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void displayHomeAsUp() {
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            default: return super.onOptionsItemSelected(item);
         }
     }
 }

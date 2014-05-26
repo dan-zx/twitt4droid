@@ -17,6 +17,7 @@ package com.twitt4droid.app.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.rtyley.android.sherlock.roboguice.fragment.RoboSherlockFragment;
 import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.app.R;
@@ -36,25 +36,23 @@ import com.twitt4droid.task.ImageLoader;
 import com.twitt4droid.util.Strings;
 import com.twitt4droid.widget.LogInOutButton;
 
-import roboguice.inject.InjectView;
 import twitter4j.AsyncTwitter;
 import twitter4j.TwitterAdapter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterMethod;
 import twitter4j.User;
 
-public class UserFragment extends RoboSherlockFragment {
+public class UserFragment extends Fragment {
 
     private static final String TAG = UserFragment.class.getSimpleName();
 
-    @InjectView(R.id.profile_image_view)    private ImageView profileImageView;
-    @InjectView(R.id.username_text_view)    private TextView usernameTextView;
-    @InjectView(R.id.name_text_view)        private TextView nameTextView;
-    @InjectView(R.id.location_text_view)    private TextView locationTextView;
-    @InjectView(R.id.web_site_text_view)    private TextView webSiteTextView;
-    @InjectView(R.id.description_text_view) private TextView descriptionTextView;
-    @InjectView(R.id.logout_button)         private LogInOutButton logoutButton;
-
+    private ImageView profileImageView;
+    private TextView usernameTextView;
+    private TextView nameTextView;
+    private TextView locationTextView;
+    private TextView webSiteTextView;
+    private TextView descriptionTextView;
+    private LogInOutButton logoutButton;
     private User user;
     private UserDAO userDao;
 
@@ -73,7 +71,15 @@ public class UserFragment extends RoboSherlockFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.user, container, false);
+        View layout = inflater.inflate(R.layout.user, container, false);
+        profileImageView = (ImageView) layout.findViewById(R.id.profile_image_view);
+        usernameTextView = (TextView) layout.findViewById(R.id.username_text_view);
+        nameTextView = (TextView) layout.findViewById(R.id.name_text_view);
+        locationTextView = (TextView) layout.findViewById(R.id.location_text_view);
+        webSiteTextView = (TextView) layout.findViewById(R.id.web_site_text_view);
+        descriptionTextView = (TextView) layout.findViewById(R.id.description_text_view);
+        logoutButton = (LogInOutButton) layout.findViewById(R.id.logout_button);
+        return layout;
     }
 
     private void setUpUser() {

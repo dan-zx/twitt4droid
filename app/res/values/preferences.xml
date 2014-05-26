@@ -14,19 +14,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:twitt4droid="http://schemas.android.com/apk/res-auto" >
+<resources>
 
-    <item
-        android:id="@+id/new_tweet_item"
-        android:icon="@drawable/ic_tweet_holo_dark"
-        android:title="@string/tweet"
-        twitt4droid:showAsAction="always"/>
-    <item
-        android:id="@+id/settings_item"
-        android:icon="@drawable/ic_settings_holo_dark"
-        android:orderInCategory="999"
-        android:title="@string/settings"
-        twitt4droid:showAsAction="never"/>
+    <string name="github_key">github_pref_key</string>
+    <string name="licences_key">licences_pref_key</string>
+    <string name="version_key">version_pref_key</string>
 
-</menu>
+</resources>
