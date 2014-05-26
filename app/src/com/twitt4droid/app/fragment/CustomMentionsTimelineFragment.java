@@ -15,7 +15,6 @@
  */
 package com.twitt4droid.app.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,8 +22,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.twitt4droid.app.R;
-import com.twitt4droid.app.activity.TweetingActivity;
 import com.twitt4droid.fragment.MentionsTimelineFragment;
+import com.twitt4droid.widget.TweetDialog;
 
 import twitter4j.TwitterException;
 
@@ -53,7 +52,7 @@ public class CustomMentionsTimelineFragment extends MentionsTimelineFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.new_tweet_item:
-                startActivity(new Intent(getActivity(), TweetingActivity.class));
+                new TweetDialog(getActivity()).show();
                 return true;
             default: return super.onOptionsItemSelected(item);
         }

@@ -19,7 +19,6 @@
     <string name="app_name">twitt4droid</string>
     
     <!-- ACTIVITY TITLES -->
-    <string name="tweeting_activity_title">Tweet</string>
     <string name="direct_messaging_activity_title">Direct message</string>
     <string name="settings_activity_title">Settings</string>
     
@@ -40,13 +39,6 @@
     <string name="loading">Wait&#8230;</string>
     <string name="licenses_dialog_tile">Open source licenses</string>
     <string name="todo_view_text">TODO view</string>
-    <string name="new_teet_hit">What\'s Going On?</string>
-    <string name="char_count">Char count</string>
-    <string name="tweet_sent">Tweet sent</string>
-    <string name="sending_tweet">Sending tweet&#8230;</string>
-    
-    <!-- IMAGE DESCRIPTION -->
-    <string name="map_image_description">Map image</string>
     
     <!-- TABS -->
     <string name="home_tab_title">Timeline</string>
@@ -57,10 +49,7 @@
     <!-- MENU -->
     <string name="tweet">Tweet</string>
     <string name="settings">Settings</string>
-    <string name="licenses">Licenses</string>
     <string name="overflow">More</string>
-    <string name="send">Send</string>
-    <string name="to_person">To</string>
 
     <string name="licenses_file">"file:///android_asset/licenses.html"</string>
     

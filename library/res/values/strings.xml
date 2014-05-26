@@ -33,18 +33,18 @@
     <string name="twitt4droid_is_offline_messege">No Internet connection was detected</string>
     <string name="twitt4droid_goto_settings">Go to settings</string>
     <string name="twitt4droid_no_tweets_found_message">No tweets found</string>
-    
-    <!-- PULL TO REFRESH -->
-    <string name="twitt4droid_pull_to_refresh_text">Pull to refresh&#8230;</string>
-    <string name="twitt4droid_release_to_refresh_text">Release to refresh&#8230;</string>
-    <string name="twitt4droid_refreshing_text">Refreshing&#8230;</string>
-    <string name="twitt4droid_refreshing_arrow_description">Refreshing arrow</string>
-    
+
     <!-- IMAGE DESCRIPTION -->
     <string name="twitt4droid_profile_image_description">Profile image</string>
     <string name="twitt4droid_generic_image_description">Generic Image</string>
     <string name="twitt4droid_clock_icon_description">Clock icon</string>
-    
+
+    <!-- NEW TWEET -->
+    <string name="twitt4droid_send_tweet">Tweet</string>
+    <string name="twitt4droid_new_tweet_hit">What\'s happening?</string>
+    <string name="twitt4droid_tweet_sent">Tweet sent</string>
+    <string name="twitt4droid_sending_tweet">Sending tweet&#8230;</string>
+
     <!-- TWEETS -->
     <string name="twitt4droid_tweet_username_format">\@%1$s (%2$s)</string>
     <string name="twitt4droid_tweet_date_format">%1$s %2$s</string>
@@ -53,7 +53,7 @@
     <string name="twitt4droid_tweet_favorited">Favorited</string>
 
     <!-- TWEET CONTEXT MENU -->
-    <string-array name="twitt4droid_tweet_context_menu" >
+    <string-array name="twitt4droid_tweet_context_menu">
         <item>Replay</item>
         <item>Retweet</item>
         <item>Favorite</item>
@@ -64,7 +64,7 @@
 
     <!-- SHARED PREFERENCES -->
     <string name="twitt4droid_preference_file_key">com.twitt4droid.PREFERENCES</string>
-    
+
     <!-- MISC -->
     <string name="twitt4droid_github_url">https://github.com/dan-zx/twitt4droid</string>
 

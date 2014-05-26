@@ -91,9 +91,6 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.new_tweet_item:
-                startActivity(new Intent(this, TweetingActivity.class));
-                return true;
             case R.id.settings_item:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;

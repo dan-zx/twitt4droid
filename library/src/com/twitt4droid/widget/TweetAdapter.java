@@ -129,8 +129,9 @@ public class TweetAdapter extends ArrayAdapter<Status> {
                                 });
                                 switch (which) {
                                     case 0:
-                                        // TODO: Open replay activity
-                                        Toast.makeText(appContext, "TODO: Open replay activity", Toast.LENGTH_SHORT).show();
+                                        new TweetDialog(context)
+                                            .setAsReplayTweet(status)
+                                            .show();
                                         break;
                                     case 1:
                                         asyncTwitter.retweetStatus(status.getId());

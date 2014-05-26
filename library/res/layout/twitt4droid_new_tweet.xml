@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/twitt4droid_button_white_active"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="58dp" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/user_profile_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="4dp"
+                android:contentDescription="@string/twitt4droid_profile_image_description"
+                android:src="@color/twitt4droid_no_image_background" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/user_screen_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:gravity="right"
+                    android:textAppearance="?android:attr/textAppearanceMediumInverse" />
+
+                <TextView
+                    android:id="@+id/user_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:gravity="right"
+                    android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/tweet_button"
+            style="@style/Twitt4droid.Widget.Blue.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="4dp"
+            android:enabled="false"
+            android:text="@string/twitt4droid_send_tweet" />
+
+        <TextView
+            android:id="@+id/char_counter_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tweet_button"
+            android:layout_alignBottom="@+id/tweet_button"
+            android:layout_margin="4dp"
+            android:layout_toLeftOf="@+id/tweet_button"
+            android:gravity="right"
+            android:text="@integer/twitt4droid_tweet_char_limit"
+            android:textAppearance="?android:attr/textAppearanceMediumInverse" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/tweet_content"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_margin="4dp"
+        android:gravity="top"
+        android:hint="@string/twitt4droid_new_tweet_hit"
+        android:inputType="textMultiLine"
+        android:orientation="vertical" >
+
+        <requestFocus />
+    </EditText>
+
+</LinearLayout>
