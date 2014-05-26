@@ -63,12 +63,12 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()
                 .setContentDescription(R.string.home_tab_title)
-                .setIcon(R.drawable.ic_home_holo_dark)
+                .setIcon(R.drawable.ic_home_holo_light)
                 .setTabListener(adapter));
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()
                 .setContentDescription(R.string.mentions_tab_title)
-                .setIcon(R.drawable.ic_notifications_holo_dark)
+                .setIcon(R.drawable.ic_notifications_holo_light)
                 .setTabListener(adapter));
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()
@@ -78,7 +78,7 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().addTab(getSupportActionBar()
                 .newTab()
                 .setContentDescription(R.string.user_tab_title)
-                .setIcon(R.drawable.ic_person_holo_dark)
+                .setIcon(R.drawable.ic_person_holo_light)
                 .setTabListener(adapter));
     }
 

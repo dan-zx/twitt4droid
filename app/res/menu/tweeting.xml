@@ -24,7 +24,7 @@
         twitt4droid:showAsAction="always"/>
     <item
         android:id="@+id/send_tweet_item"
-        android:icon="@drawable/ic_send_holo_dark"
+        android:icon="@drawable/ic_send_holo_light"
         android:title="@string/send"
         twitt4droid:showAsAction="always"/>
 
