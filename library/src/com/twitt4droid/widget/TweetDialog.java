@@ -9,8 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,10 +22,9 @@ import com.twitt4droid.data.dao.UserDAO;
 import com.twitt4droid.data.dao.impl.DAOFactory;
 import com.twitt4droid.task.ImageLoader;
 
-import twitter4j.TwitterException;
-
 import twitter4j.Status;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.User;
 
 public class TweetDialog extends Dialog {
@@ -37,7 +36,7 @@ public class TweetDialog extends Dialog {
     private TextView userScreenName;
     private TextView charCounterTextView;
     private EditText tweetEditText;
-    private Button tweetButton;
+    private ImageButton tweetButton;
     private InputMethodManager inputMethodManager;
     private int tweetCharLimit;
     private int redColor;
@@ -59,8 +58,10 @@ public class TweetDialog extends Dialog {
     }
     
     public TweetDialog setAsReplayTweet(Status statusToReplay) {
-        tweetEditText.setText("@" + statusToReplay.getUser().getScreenName());
-        onTweetContentChanged(tweetEditText.getText().toString());
+        if (statusToReplay != null) {
+            tweetEditText.setText("@" + statusToReplay.getUser().getScreenName());
+            onTweetContentChanged(tweetEditText.getText().toString());
+        }
         return this;
     }
 
@@ -82,7 +83,7 @@ public class TweetDialog extends Dialog {
         userScreenName = (TextView) findViewById(R.id.user_screen_name);
         charCounterTextView = (TextView) findViewById(R.id.char_counter_text);
         tweetEditText = (EditText) findViewById(R.id.tweet_content);
-        tweetButton = (Button) findViewById(R.id.tweet_button);
+        tweetButton = (ImageButton) findViewById(R.id.tweet_button);
     }
 
     private void initConsts() {
@@ -134,6 +135,7 @@ public class TweetDialog extends Dialog {
     }
     
     private void setUpTweetButton() {
+        tweetButton.setEnabled(false);
         tweetButton.setOnClickListener(new View.OnClickListener() {
             
             @Override

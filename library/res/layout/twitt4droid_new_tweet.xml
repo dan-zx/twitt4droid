@@ -33,7 +33,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:gravity="right"
-                    android:textAppearance="?android:attr/textAppearanceMediumInverse" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/black" />
 
                 <TextView
                     android:id="@+id/user_username"
@@ -41,11 +42,12 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:gravity="right"
-                    android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@android:color/darker_gray" />
             </LinearLayout>
         </LinearLayout>
 
-        <Button
+        <ImageButton
             android:id="@+id/tweet_button"
             style="@style/Twitt4droid.Widget.Blue.Button"
             android:layout_width="wrap_content"
@@ -53,20 +55,21 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_margin="4dp"
-            android:enabled="false"
-            android:text="@string/twitt4droid_send_tweet" />
+            android:contentDescription="@string/twitt4droid_send_tweet"
+            android:src="@drawable/twitt4droid_compose_tweet_holo_light" />
 
         <TextView
             android:id="@+id/char_counter_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/tweet_button"
-            android:layout_alignBottom="@+id/tweet_button"
+            android:layout_centerVertical="true"
             android:layout_margin="4dp"
             android:layout_toLeftOf="@+id/tweet_button"
             android:gravity="right"
             android:text="@integer/twitt4droid_tweet_char_limit"
-            android:textAppearance="?android:attr/textAppearanceMediumInverse" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/darker_gray" />
+
     </RelativeLayout>
 
     <EditText

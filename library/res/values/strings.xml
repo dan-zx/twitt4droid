@@ -40,7 +40,7 @@
     <string name="twitt4droid_clock_icon_description">Clock icon</string>
 
     <!-- NEW TWEET -->
-    <string name="twitt4droid_send_tweet">Tweet</string>
+    <string name="twitt4droid_send_tweet">Send tweet</string>
     <string name="twitt4droid_new_tweet_hit">What\'s happening?</string>
     <string name="twitt4droid_tweet_sent">Tweet sent</string>
     <string name="twitt4droid_sending_tweet">Sending tweet&#8230;</string>
