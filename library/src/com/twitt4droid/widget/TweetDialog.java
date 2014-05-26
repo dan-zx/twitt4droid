@@ -59,8 +59,9 @@ public class TweetDialog extends Dialog {
     
     public TweetDialog setAsReplayTweet(Status statusToReplay) {
         if (statusToReplay != null) {
-            tweetEditText.setText("@" + statusToReplay.getUser().getScreenName());
+            tweetEditText.setText(getContext().getString(R.string.twitt4droid_replay_tweet_format, statusToReplay.getUser().getScreenName()));
             onTweetContentChanged(tweetEditText.getText().toString());
+            tweetEditText.setSelection(tweetEditText.getText().length());
         }
         return this;
     }
@@ -140,9 +141,15 @@ public class TweetDialog extends Dialog {
             
             @Override
             public void onClick(View view) {
-                new TweetSender().execute(tweetEditText.getText().toString());
-                hideSoftKeyboard();
-                dismiss();
+                if (Resources.isConnectedToInternet(getContext())) {
+                    new TweetSender().execute(tweetEditText.getText().toString());
+                    hideSoftKeyboard();
+                    dismiss();
+                } else {
+                    Toast.makeText(getContext().getApplicationContext(),
+                            R.string.twitt4droid_is_offline_messege,
+                            Toast.LENGTH_LONG).show();
+                }
             }
         });
     }

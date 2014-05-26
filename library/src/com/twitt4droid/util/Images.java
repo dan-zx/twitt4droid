@@ -67,9 +67,9 @@ public final class Images {
                         ? Files.getExternalCacheDir(context).getPath() 
                         : context.getCacheDir().getPath();
                 File file = new File(cachePath + File.separator + IMAGE_CACHE_DIR);
-                DISK_CACHE = DiskLruCache.open(file, 1, 1, size);
+                DISK_CACHE = DiskLruCache.open(file, 1, 1, size); // TODO: something is wrong here when is run on API 8
             } catch (IOException ex) {
-                Log.e(TAG, "Couldn't disk cache");
+                Log.e(TAG, "Couldn't init disk cache", ex);
             }
         }
     }
@@ -85,7 +85,7 @@ public final class Images {
             saveInCache(context, key, downloaded);
             return downloaded;
         } catch (MalformedURLException ex) {
-            Log.e(TAG, "Invalid url " + url);
+            Log.e(TAG, "Invalid url " + url, ex);
         } catch (IOException ex) {
             // Useless for now
         }
@@ -100,7 +100,7 @@ public final class Images {
             byte[] data = digest.digest();
             return String.format("%0" + (data.length * 2) + 'x', new BigInteger(1, data));
         } catch (NoSuchAlgorithmException ex) { 
-            Log.e(TAG, "Couldn't encode url");
+            Log.e(TAG, "Couldn't encode url", ex);
         }
         
         return null;
@@ -111,8 +111,8 @@ public final class Images {
         if (DISK_CACHE != null) {
             try {
                 DISK_CACHE.delete();
-            } catch (IOException e) { 
-                Log.e(TAG, "Couldn't clear disk cache");
+            } catch (IOException ex) { 
+                Log.e(TAG, "Couldn't clear disk cache", ex);
             }
         }
     }
@@ -138,7 +138,7 @@ public final class Images {
         try {
             snapshot = DISK_CACHE.get(key);
         } catch (IOException ex) {
-            Log.e(TAG, "Couldn't get image from disk cache");
+            Log.e(TAG, "Couldn't get image from disk cache", ex);
         }
         
         if (snapshot != null) {
@@ -163,12 +163,12 @@ public final class Images {
                 editor.commit();
             } else editor.abort();
         } catch (IOException ex) {
-            Log.e(TAG, "Couldn't save image in disk cache");
+            Log.e(TAG, "Couldn't save image in disk cache", ex);
             if (editor != null) {
                 try {
                     editor.abort();
                 } catch (IOException ex2) {
-                    Log.e(TAG, "Couldn't abort saving");
+                    Log.e(TAG, "Couldn't abort saving", ex2);
                 }
             }
         } finally {
@@ -176,7 +176,7 @@ public final class Images {
                 try {
                     out.close();
                 } catch (IOException ex) {
-                    Log.e(TAG, "Couldn't close stream");
+                    Log.e(TAG, "Couldn't close stream", ex);
                 }
             }
         }

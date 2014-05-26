@@ -46,8 +46,6 @@
     <string name="twitt4droid_sending_tweet">Sending tweet&#8230;</string>
 
     <!-- TWEETS -->
-    <string name="twitt4droid_tweet_username_format">\@%1$s (%2$s)</string>
-    <string name="twitt4droid_tweet_date_format">%1$s %2$s</string>
     <string name="twitt4droid_tweet_overflow_label">More</string>
     <string name="twitt4droid_tweet_retweeted">Retweeted</string>
     <string name="twitt4droid_tweet_favorited">Favorited</string>
@@ -61,11 +59,5 @@
 
     <!-- HINTS -->
     <string name="twitt4droid_search">Search for tweets</string>
-
-    <!-- SHARED PREFERENCES -->
-    <string name="twitt4droid_preference_file_key">com.twitt4droid.PREFERENCES</string>
-
-    <!-- MISC -->
-    <string name="twitt4droid_github_url">https://github.com/dan-zx/twitt4droid</string>
 
 </resources>

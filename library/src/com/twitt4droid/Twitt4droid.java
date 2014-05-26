@@ -37,16 +37,6 @@ import twitter4j.conf.ConfigurationBuilder;
  */
 public final class Twitt4droid {
 
-    public static final long INVALID_USER_ID = -99;
-
-    private static final String CONSUMER_KEY_META_DATA = "com.twitt4droid.auth.CONSUMER_KEY";
-    private static final String CONSUMER_SECRET_META_DATA = "com.twitt4droid.auth.CONSUMER_SECRET";
-    private static final String ACCESS_TOKEN_KEY = "OAUTH_TOKEN";
-    private static final String ACCESS_TOKEN_SECRET_KEY = "OAUTH_SECRET";
-    private static final String SCREEN_NAME_KEY = "SCREEN_NAME";
-    private static final String USER_ID_KEY = "USER_ID";
-    private static final String IS_LOGGED_IN_KEY = "IS_LOGGED_IN";
-
     /**
      * Default constructor. Do NOT try to initialize this class, it is suppose
      * to be an static utility.
@@ -87,10 +77,10 @@ public final class Twitt4droid {
     private static Configuration getCurrentConfig(Context context) {
         SharedPreferences preferences = Resources.getPreferences(context);
         return new ConfigurationBuilder()
-                .setOAuthConsumerKey(Resources.getMetaData(context, CONSUMER_KEY_META_DATA, null))
-                .setOAuthConsumerSecret(Resources.getMetaData(context, CONSUMER_SECRET_META_DATA, null))
-                .setOAuthAccessToken(preferences.getString(ACCESS_TOKEN_KEY, null))
-                .setOAuthAccessTokenSecret(preferences.getString(ACCESS_TOKEN_SECRET_KEY, null))
+                .setOAuthConsumerKey(Resources.getMetaData(context, context.getString(R.string.twitt4droid_consumer_key_metadata), null))
+                .setOAuthConsumerSecret(Resources.getMetaData(context, context.getString(R.string.twitt4droid_consumer_secret_metadata), null))
+                .setOAuthAccessToken(preferences.getString(context.getString(R.string.twitt4droid_oauth_token_key), null))
+                .setOAuthAccessTokenSecret(preferences.getString(context.getString(R.string.twitt4droid_oauth_secret_key), null))
                 .build();
     }
 
@@ -103,12 +93,13 @@ public final class Twitt4droid {
      *         stored in this app; otherwise {@code false}.
      */
     public static boolean isUserLoggedIn(Context context) {
-        return Resources.getPreferences(context).getBoolean(IS_LOGGED_IN_KEY, false);
+        return Resources.getPreferences(context).getBoolean(
+                context.getString(R.string.twitt4droid_user_is_logged_in_key), false);
     }
     
     public static boolean areConsumerTokensAvailable(Context context) {
-        return Resources.getMetaData(context, CONSUMER_SECRET_META_DATA, null) != null && 
-               Resources.getMetaData(context, CONSUMER_KEY_META_DATA, null) != null;
+        return Resources.getMetaData(context, context.getString(R.string.twitt4droid_consumer_key_metadata), null) != null && 
+               Resources.getMetaData(context, context.getString(R.string.twitt4droid_consumer_secret_metadata), null) != null;
     }
 
     /**
@@ -121,11 +112,11 @@ public final class Twitt4droid {
     public static void saveAuthenticationInfo(Context context, AccessToken token) {
         Resources.getPreferences(context)
             .edit()
-            .putString(ACCESS_TOKEN_KEY, token.getToken())
-            .putString(ACCESS_TOKEN_SECRET_KEY, token.getTokenSecret())
-            .putString(SCREEN_NAME_KEY, token.getScreenName())
-            .putLong(USER_ID_KEY, token.getUserId())
-            .putBoolean(IS_LOGGED_IN_KEY, true)
+            .putString(context.getString(R.string.twitt4droid_oauth_token_key), token.getToken())
+            .putString(context.getString(R.string.twitt4droid_oauth_secret_key), token.getTokenSecret())
+            .putString(context.getString(R.string.twitt4droid_user_screen_name_key), token.getScreenName())
+            .putLong(context.getString(R.string.twitt4droid_user_id_key), token.getUserId())
+            .putBoolean(context.getString(R.string.twitt4droid_user_is_logged_in_key), true)
             .commit();
     }
 
@@ -137,11 +128,11 @@ public final class Twitt4droid {
     public static void deleteAuthenticationInfo(Context context) {
         Resources.getPreferences(context)
             .edit()
-            .putString(ACCESS_TOKEN_KEY, null)
-            .putString(ACCESS_TOKEN_SECRET_KEY, null)
-            .putString(SCREEN_NAME_KEY, null)
-            .putLong(USER_ID_KEY, INVALID_USER_ID)
-            .putBoolean(IS_LOGGED_IN_KEY, false)
+            .putString(context.getString(R.string.twitt4droid_oauth_token_key), null)
+            .putString(context.getString(R.string.twitt4droid_oauth_secret_key), null)
+            .putString(context.getString(R.string.twitt4droid_user_screen_name_key), null)
+            .putLong(context.getString(R.string.twitt4droid_user_id_key), Long.MIN_VALUE)
+            .putBoolean(context.getString(R.string.twitt4droid_user_is_logged_in_key), false)
             .commit();
     }
 
@@ -167,7 +158,7 @@ public final class Twitt4droid {
      * @return the current twitter user name if exists; otherwise {@code null}.
      */
     public static String getCurrentUserScreenName(Context context) {
-        return Resources.getPreferences(context).getString(SCREEN_NAME_KEY, null);
+        return Resources.getPreferences(context).getString(context.getString(R.string.twitt4droid_user_screen_name_key), null);
     }
 
     /**
@@ -175,9 +166,11 @@ public final class Twitt4droid {
      * 
      * @param context the application context.
      * @return the current twitter user id if exists; otherwise 
-     *         {@link #INVALID_USER_ID}.
+     *         {@link Long#MIN_VALUE}.
      */
     public static long getCurrentUserId(Context context) {
-        return Resources.getPreferences(context).getLong(USER_ID_KEY, INVALID_USER_ID);
+        return Resources.getPreferences(context).getLong(
+                context.getString(R.string.twitt4droid_user_id_key), 
+                Long.MIN_VALUE);
     }
 }
