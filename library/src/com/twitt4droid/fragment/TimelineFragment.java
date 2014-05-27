@@ -16,7 +16,6 @@
 package com.twitt4droid.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,14 +31,15 @@ import com.twitt4droid.data.dao.TimelineDAO;
 import com.twitt4droid.task.TweetLoader;
 import com.twitt4droid.widget.TweetAdapter;
 
-import twitter4j.Status;
 import twitter4j.Twitter;
+
+import twitter4j.Status;
 import twitter4j.TwitterException;
 
 import java.util.Collections;
 import java.util.List;
 
-public abstract class TimelineFragment extends Fragment {
+public abstract class TimelineFragment extends BaseTimelineFragment {
     
     private static final String TAG = TimelineFragment.class.getSimpleName();
 
@@ -56,19 +56,10 @@ public abstract class TimelineFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         loadTweets();
     }
-
-    protected abstract List<Status> getTweets(Twitter twitter) throws TwitterException;
-    protected void onTwitterError(TwitterException ex) {}
 
     private void setUpLayout(View layout) {
         swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
@@ -110,7 +101,9 @@ public abstract class TimelineFragment extends Fragment {
                     Toast.LENGTH_SHORT).show();
         }
     }
-    
+
+    protected abstract List<Status> getTweets(Twitter twitter) throws TwitterException;
+
     protected void setTimelineDao(TimelineDAO timelineDao) {
         this.timelineDao = timelineDao;
     }

@@ -50,6 +50,12 @@
     <string name="twitt4droid_tweet_retweeted">Retweeted</string>
     <string name="twitt4droid_tweet_favorited">Favorited</string>
 
+    <!-- FRAGMENT TITLES -->
+    <string name="twitt4droid_queryable_timeline_fragment_title">SEARCH</string>
+    <string name="twitt4droid_home_timeline_fragment_title">HOME</string>
+    <string name="twitt4droid_mentions_timeline_fragment_title">MENTIONS</string>
+    <string name="twitt4droid_user_timeline_fragment_title">ME</string>
+    
     <!-- TWEET CONTEXT MENU -->
     <string-array name="twitt4droid_tweet_context_menu">
         <item>Replay</item>

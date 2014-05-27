@@ -17,6 +17,7 @@ package com.twitt4droid.fragment;
 
 import android.os.Bundle;
 
+import com.twitt4droid.R;
 import com.twitt4droid.data.dao.impl.DAOFactory;
 
 import twitter4j.ResponseList;
@@ -35,5 +36,21 @@ public class HomeTimelineFragment extends TimelineFragment {
     @Override
     protected ResponseList<Status> getTweets(Twitter twitter) throws TwitterException {
         return twitter.getHomeTimeline();
+    }
+    
+    @Override
+    public int getResourceTitle() {
+        return R.string.twitt4droid_home_timeline_fragment_title;
+    }
+
+    @Override
+    public int getResourceHoloLightIcon() {
+        return R.drawable.twitt4droid_ic_search_holo_light;
+    }
+
+    @Override
+    public int getResourceHoloDarkIcon() {
+        // TODO Holo dark icon
+        return 0;
     }
 }

@@ -16,70 +16,82 @@
 package com.twitt4droid.app.activity;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.fragment.CustomHomeTimelineFragment;
 import com.twitt4droid.app.fragment.CustomMentionsTimelineFragment;
 import com.twitt4droid.app.fragment.CustomQueryableTimelineFragment;
-import com.twitt4droid.app.fragment.UserFragment;
+import com.twitt4droid.app.fragment.CustomUserTimelineFragment;
+import com.twitt4droid.fragment.BaseTimelineFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
-    private ViewPager viewPager;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle drawerToggle;
+    private FrameLayout contentLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        viewPager = (ViewPager) findViewById(R.id.view_pager);
-        SwipeFragmentPagerAdapter adapter = new SwipeFragmentPagerAdapter()
-            .addFragment(new CustomHomeTimelineFragment())
-            .addFragment(new CustomMentionsTimelineFragment())
-            .addFragment(new CustomQueryableTimelineFragment())
-            .addFragment(new UserFragment());
+        findViews();
+        setUpDrawer();
+        setUpTimelines();
+    }
+
+    private void findViews() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        contentLayout = (FrameLayout) findViewById(R.id.content_frame);
+    }
+
+    private void setUpDrawer() {
+        drawerToggle = new ActionBarDrawerToggle(
+                this,                
+                drawerLayout,         
+                R.drawable.ic_drawer,
+                R.string.drawer_open,
+                R.string.drawer_close); 
+        drawerLayout.setDrawerListener(drawerToggle);
+        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+    }
+
+    private void setUpTimelines() {
+        SwipeTimelineFragmentPagerAdapter adapter = new SwipeTimelineFragmentPagerAdapter();
+        adapter.addFragment(new CustomHomeTimelineFragment());
+        adapter.addFragment(new CustomMentionsTimelineFragment());
+        adapter.addFragment(new CustomUserTimelineFragment());
+        adapter.addFragment(new CustomQueryableTimelineFragment());
+        ViewPager viewPager = new ViewPager(this);
         viewPager.setAdapter(adapter);
-        viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                getSupportActionBar().setSelectedNavigationItem(position);
-            }
-        });
-        getSupportActionBar().addTab(getSupportActionBar()
-                .newTab()
-                .setContentDescription(R.string.home_tab_title)
-                .setIcon(R.drawable.ic_home_holo_light)
-                .setTabListener(adapter));
-        getSupportActionBar().addTab(getSupportActionBar()
-                .newTab()
-                .setContentDescription(R.string.mentions_tab_title)
-                .setIcon(R.drawable.ic_notifications_holo_light)
-                .setTabListener(adapter));
-        getSupportActionBar().addTab(getSupportActionBar()
-                .newTab()
-                .setContentDescription(R.string.query_tab_title)
-                .setIcon(R.drawable.twitt4droid_ic_search_holo_light)
-                .setTabListener(adapter));
-        getSupportActionBar().addTab(getSupportActionBar()
-                .newTab()
-                .setContentDescription(R.string.user_tab_title)
-                .setIcon(R.drawable.ic_person_holo_light)
-                .setTabListener(adapter));
+        viewPager.setId(R.id.view_pager);
+        PagerTabStrip pagerTabStrip = new PagerTabStrip(this);
+        pagerTabStrip.setId(R.id.pager_strip);
+        pagerTabStrip.setDrawFullUnderline(false);
+        pagerTabStrip.setTabIndicatorColor(getResources().getColor(R.color.twitt4droid_primary_color));
+        ViewPager.LayoutParams layoutParams = new ViewPager.LayoutParams();
+        layoutParams.height = ViewPager.LayoutParams.WRAP_CONTENT;
+        layoutParams.width = ViewPager.LayoutParams.MATCH_PARENT;
+        layoutParams.gravity = Gravity.TOP;
+        viewPager.addView(pagerTabStrip, layoutParams);
+        contentLayout.addView(viewPager);
     }
 
     @Override
@@ -90,6 +102,8 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (drawerToggle.onOptionsItemSelected(item)) return true;
+
         switch (item.getItemId()) {
             case R.id.settings_item:
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -98,19 +112,30 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    private class SwipeFragmentPagerAdapter extends FragmentPagerAdapter implements ActionBar.TabListener {
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
 
-        private final List<Fragment> fragments;
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
+    }
+    
+    private class SwipeTimelineFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
-        public SwipeFragmentPagerAdapter() {
+        private final List<BaseTimelineFragment> fragments;
+
+        private SwipeTimelineFragmentPagerAdapter() {
             super(getSupportFragmentManager());
-            fragments = new ArrayList<Fragment>();
+            fragments = new ArrayList<>();
         }
-        
-        public SwipeFragmentPagerAdapter addFragment(Fragment fragment) {
+
+        private void addFragment(BaseTimelineFragment fragment) {
             fragments.add(fragment);
             notifyDataSetChanged();
-            return this;
         }
 
         @Override
@@ -125,14 +150,11 @@ public class MainActivity extends ActionBarActivity {
         }
         
         @Override
-        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-            viewPager.setCurrentItem(tab.getPosition());
+        public CharSequence getPageTitle(int position) {
+            if (!fragments.isEmpty() && position >= 0) {
+                return getString(fragments.get(position).getResourceTitle());
+            }
+            else return null;
         }
-
-        @Override
-        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) { }
-
-        @Override
-        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) { }
     }
 }

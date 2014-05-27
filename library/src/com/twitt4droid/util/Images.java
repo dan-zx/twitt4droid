@@ -127,8 +127,10 @@ public final class Images {
     }
     
     public static void saveInCache(Context context, String key, Bitmap bitmap) {
-        MEM_CACHE.put(key, bitmap);
-        saveInDiskCache(context, key, bitmap);
+        if (!Strings.isNullOrBlank(key) && bitmap != null) {
+            MEM_CACHE.put(key, bitmap);
+            saveInDiskCache(context, key, bitmap);
+        }
     }
 
     private static Bitmap getFromDiskCache(Context context, String key) {

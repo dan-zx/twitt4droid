@@ -17,7 +17,6 @@ package com.twitt4droid.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -48,7 +47,7 @@ import twitter4j.TwitterException;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class QueryableTimelineFragment extends Fragment {
+public class QueryableTimelineFragment extends BaseTimelineFragment {
 
     private static final String TAG = QueryableTimelineFragment.class.getSimpleName();
     private static final String LAST_QUERY_KEY = "lastQuery";
@@ -72,7 +71,6 @@ public abstract class QueryableTimelineFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
         queryableTimelineDao = new DAOFactory(getActivity().getApplicationContext()).getQueryableTimelineDAO();
     }
     
@@ -116,8 +114,6 @@ public abstract class QueryableTimelineFragment extends Fragment {
         }
     }
     
-    protected void onTwitterError(Exception ex) {}
-    
     private void setUpLayout(View layout) {
         swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
         searchEditText = (EditText) layout.findViewById(R.id.search_edit_text);
@@ -160,7 +156,22 @@ public abstract class QueryableTimelineFragment extends Fragment {
                     0);
         }
     }
-    
+
+    @Override
+    public int getResourceTitle() {
+        return R.string.twitt4droid_queryable_timeline_fragment_title;
+    }
+
+    @Override
+    public int getResourceHoloLightIcon() {
+        return R.drawable.twitt4droid_ic_search_holo_light;
+    }
+
+    @Override
+    public int getResourceHoloDarkIcon() {
+        return R.drawable.twitt4droid_ic_search_holo_dark;
+    }
+
     private class TimelineLoader extends TweetLoader<String> {
 
         public TimelineLoader() {
@@ -181,10 +192,7 @@ public abstract class QueryableTimelineFragment extends Fragment {
         @Override
         protected List<twitter4j.Status> loadTweetsInBackground(String... params) throws TwitterException {
             QueryResult result = getTwitter().search(new Query(params[0]));
-            if (result != null) {
-                return result.getTweets();
-            }
-            
+            if (result != null) return result.getTweets();
             return null;
         }
         
