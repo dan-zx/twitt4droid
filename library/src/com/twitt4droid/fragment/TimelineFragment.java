@@ -27,8 +27,8 @@ import android.widget.Toast;
 
 import com.twitt4droid.R;
 import com.twitt4droid.Resources;
+import com.twitt4droid.Twitt4droidAsyncTasks;
 import com.twitt4droid.data.dao.TimelineDAO;
-import com.twitt4droid.task.TweetLoader;
 import com.twitt4droid.widget.TweetAdapter;
 
 import twitter4j.Status;
@@ -108,7 +108,7 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
         this.timelineDao = timelineDao;
     }
 
-    private class TimelineLoader extends TweetLoader<Void> {
+    private class TimelineLoader extends Twitt4droidAsyncTasks.TweetFetcher<Void> {
         
         public TimelineLoader() {
             super(getActivity());
@@ -127,7 +127,12 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
         
         @Override
         protected List<twitter4j.Status> loadTweetsInBackground(Void... params) throws TwitterException {
-            return getTweets(getTwitter());
+            List<twitter4j.Status> result = getTweets(getTwitter());
+            if (result != null && !result.isEmpty()) {
+                timelineDao.deleteAll();
+                timelineDao.save(result);
+            }
+            return result;
         }
         
         @Override
@@ -137,15 +142,11 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
                 progressBar.setVisibility(View.GONE);
                 swipeLayout.setVisibility(View.VISIBLE);
                 tweetListView.setVisibility(View.VISIBLE);
-                if (result != null && !result.isEmpty()) {
-                    listAdapter.set(result);
-                    timelineDao.deleteAll();
-                    timelineDao.save(result);
-                    Log.d(TAG, "Loaded");
-                } else if (getTwitterException() != null) {
+                if (getTwitterException() != null) {
                     Log.e(TAG, "Error while retrieving tweets", getTwitterException());
                     onTwitterError(getTwitterException());
-                } else {
+                } else if (result != null && !result.isEmpty()) listAdapter.set(result);
+                else {
                     Toast.makeText(getActivity().getApplicationContext(),
                             R.string.twitt4droid_no_tweets_found_message,
                             Toast.LENGTH_SHORT).show();

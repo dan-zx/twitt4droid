@@ -22,7 +22,6 @@ import twitter4j.Status;
 import twitter4j.URLEntity;
 import twitter4j.User;
 
-import java.net.URL;
 import java.util.Date;
 
 class UserCursorImpl implements User {
@@ -176,12 +175,6 @@ class UserCursorImpl implements User {
     }
 
     @Override
-    public String getProfileBackgroundImageUrl() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public String getProfileBackgroundImageUrlHttps() {
         // TODO Auto-generated method stub
         return null;
@@ -230,12 +223,6 @@ class UserCursorImpl implements User {
 
     @Override
     public String getProfileImageURLHttps() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public URL getProfileImageUrlHttps() {
         // TODO Auto-generated method stub
         return null;
     }

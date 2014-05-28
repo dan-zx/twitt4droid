@@ -147,12 +147,6 @@ class StatusCursorImpl implements Status {
     }
 
     @Override
-    public String getIsoLanguageCode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public String getLang() {
         // TODO Auto-generated method stub
         return null;

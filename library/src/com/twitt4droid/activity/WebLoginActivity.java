@@ -36,13 +36,12 @@ import android.widget.ProgressBar;
 import com.twitt4droid.R;
 import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
+import com.twitt4droid.Twitt4droidAsyncTasks;
 import com.twitt4droid.data.dao.UserDAO;
 import com.twitt4droid.data.dao.impl.DAOFactory;
 
-import twitter4j.AsyncTwitter;
-import twitter4j.TwitterAdapter;
+import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterMethod;
 import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
@@ -63,14 +62,10 @@ import twitter4j.auth.RequestToken;
  */
 public class WebLoginActivity extends Activity {
 
-    /**
-     * The request code for this activity.
-     */
+    /** The request code for this activity. */
     public static final int REQUEST_CODE = 340;
 
-    /**
-     * The name of the Intent-extra used to indicate the twitter user returned.
-     */
+    /** The name of the Intent-extra used to indicate the twitter user returned. */
     public static final String EXTRA_USER = "com.twitt4droid.extra.user";
      
     private static final String TAG = WebLoginActivity.class.getSimpleName();
@@ -78,28 +73,40 @@ public class WebLoginActivity extends Activity {
     private static final String DENIED_CALLBACK_PARAMETER = "denied";
     private static final String CALLBACK_URL = "oauth://twitt4droid";
 
-    private AsyncTwitter twitter;
     private ProgressBar loadingBar;
     private MenuItem reloadCancelItem;
     private WebView webView;
     private UserDAO userDao;
+    private RequestToken requestToken;
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userDao = new DAOFactory(getApplicationContext()).getUserDAO();
         if (Twitt4droid.areConsumerTokensAvailable(getApplicationContext())) {
             if (Resources.isConnectedToInternet(this)) {
-                setUpTwitter();
                 if (Twitt4droid.isUserLoggedIn(getApplicationContext())) {
-                    twitter.verifyCredentials();
+                    new Twitt4droidAsyncTasks.VerifyCredentialsTask(this) {
+
+                        @Override
+                        protected void onPostExecute(User user) {
+                            if (getTwitterException() != null) handleError(getTwitterException());
+                            else handleUserValidation(user);
+                        }
+                    }.execute();
                 } else {
                     setContentView(R.layout.twitt4droid_web_browser);
                     setUpView();
-                    twitter.getOAuthRequestTokenAsync(CALLBACK_URL);
+                    new Twitt4droidAsyncTasks.GetOAuthRequestTokenTask(this) {
+
+                        @Override
+                        protected void onPostExecute(RequestToken token) {
+                            requestToken = token;
+                            if (getTwitterException() != null) handleError(getTwitterException());
+                            else webView.loadUrl(token.getAuthenticationURL());
+                        }
+                    }.execute(CALLBACK_URL);
                 }
             } else {
                 Log.w(TAG, "No Internet connection detected");
@@ -112,9 +119,7 @@ public class WebLoginActivity extends Activity {
         }
     }
 
-    /**
-     * Shows a network error alert dialog.
-     */
+    /** Shows a network error alert dialog. */
     private void showNetworkAlertDialog() {
         new AlertDialog.Builder(this)
             .setIcon(android.R.drawable.ic_dialog_alert)
@@ -141,9 +146,7 @@ public class WebLoginActivity extends Activity {
             .show();
     }
 
-    /**
-     * Sets up views.
-     */
+    /** Sets up views. */
     @SuppressWarnings("deprecation")
     private void setUpView() {
         loadingBar = (ProgressBar) findViewById(R.id.loading_bar);
@@ -162,9 +165,7 @@ public class WebLoginActivity extends Activity {
                         reloadCancelItem.setTitle(R.string.twitt4droid_refresh_menu_title);
                         reloadCancelItem.setIcon(R.drawable.twitt4droid_ic_refresh_holo_dark);
                     }
-                } else {
-                    loadingBar.setVisibility(View.VISIBLE);
-                }
+                } else loadingBar.setVisibility(View.VISIBLE);
                 loadingBar.setProgress(progress);
             }
         });
@@ -175,15 +176,40 @@ public class WebLoginActivity extends Activity {
                     Uri uri = Uri.parse(url);
                     if (uri.getQueryParameter(DENIED_CALLBACK_PARAMETER) != null) {
                         Log.i(TAG, "Authentication process was denied");
-                        twitter.addListener(null);
                         setResult(RESULT_CANCELED, getIntent());
                         finish();
                         return true;
                     }
                     if (uri.getQueryParameter(OAUTH_VERIFIER_CALLBACK_PARAMETER) != null) {
                         String oauthVerifier = uri.getQueryParameter(OAUTH_VERIFIER_CALLBACK_PARAMETER);
-                        twitter.getOAuthAccessTokenAsync(oauthVerifier);
-                        twitter.verifyCredentials();
+                        new Twitt4droidAsyncTasks.AsyncTwitterFetcher<String, Object[]>(WebLoginActivity.this) {
+
+                            @Override
+                            protected Object[] doInBackground(String... params) {
+                                try {
+                                    Object[] results = new Object[2];
+                                    Twitter twitter = getTwitter();
+                                    results[0] = twitter.getOAuthAccessToken(requestToken, params[0]);
+                                    results[1] = twitter.verifyCredentials();
+                                    return results;
+                                } catch (TwitterException ex) {
+                                    setTwitterException(ex);
+                                }
+                                
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Object[] tokenAndUser) {
+                                if (getTwitterException() != null) handleError(getTwitterException());
+                                else {
+                                    AccessToken token = (AccessToken) tokenAndUser[0];
+                                    User user = (User) tokenAndUser[1];
+                                    Twitt4droid.saveAuthenticationInfo(getApplicationContext(), token);
+                                    handleUserValidation(user);
+                                }
+                            }
+                        }.execute(oauthVerifier);
                         return true;
                     }
                 }
@@ -194,54 +220,30 @@ public class WebLoginActivity extends Activity {
     }
 
     /**
-     * Sets up Twitter async listeners.
+     * Properly handles twitter errors.
+     * 
+     * @param ex a {@link TwitterException}.
      */
-    private void setUpTwitter() { 
-        twitter = Twitt4droid.getAsyncTwitter(getApplicationContext());
-        twitter.addListener(new TwitterAdapter() {
-            @Override
-            public void verifiedCredentials(User user) {
-                Log.i(TAG, "@" + user.getScreenName() + " was successfully authenticated");
-                twitter.addListener(null);
-                userDao.save(user);
-                Intent data = getIntent();
-                data.putExtra(EXTRA_USER, user);
-                setResult(RESULT_OK, data);
-                finish();
-            }
-
-            @Override
-            public void gotOAuthRequestToken(final RequestToken token) {
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        Log.d(TAG, "Loading authentication page...");
-                        webView.loadUrl(token.getAuthenticationURL());
-                    }
-                });
-            }
-
-            @Override
-            public void gotOAuthAccessToken(AccessToken token) {
-                Log.d(TAG, "Saving access tokens...");
-                Twitt4droid.saveAuthenticationInfo(getApplicationContext(), token);
-            }
-
-            @Override
-            public void onException(TwitterException te, TwitterMethod method) {
-                Log.e(TAG, "Twitter error", te);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        showErrorAlertDialog();
-                    }
-                });
-            }
-        });
+    private void handleError(TwitterException ex) {
+        Log.e(TAG, "Twitter error", ex);
+        showErrorAlertDialog();
     }
 
     /**
-     * Shows a generic alert dialog.
+     * Handles user validation.
+     * 
+     * @param user the validated user.
      */
+    private void handleUserValidation(User user) {
+        Log.i(TAG, "@" + user.getScreenName() + " was successfully authenticated");
+        userDao.save(user);
+        Intent data = getIntent();
+        data.putExtra(EXTRA_USER, user);
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
+    /** Shows a generic alert dialog. */
     private void showErrorAlertDialog() {
         new AlertDialog.Builder(WebLoginActivity.this)
             .setTitle(R.string.twitt4droid_error_title)
@@ -252,7 +254,6 @@ public class WebLoginActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.i(TAG, "User canceled authentication process due to an error");
-                        twitter.addListener(null);
                         setResult(RESULT_CANCELED, getIntent());
                         finish();
                     }
@@ -261,9 +262,8 @@ public class WebLoginActivity extends Activity {
             .setCancelable(false)
             .show();
     }
-    /**
-     * {@inheritDoc}
-     */
+
+    /** {@inheritDoc}*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.twitt4droid_web_browser, menu);
@@ -275,9 +275,7 @@ public class WebLoginActivity extends Activity {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.reload_cancel_item) {
@@ -296,15 +294,10 @@ public class WebLoginActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public void onBackPressed() {
-        if (webView != null && webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            super.onBackPressed();
-        }
+        if (webView != null && webView.canGoBack()) webView.goBack();
+        else super.onBackPressed();
     }
 }

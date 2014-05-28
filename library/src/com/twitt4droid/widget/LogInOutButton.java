@@ -22,7 +22,6 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -39,8 +38,6 @@ import com.twitt4droid.activity.WebLoginActivity;
  */
 public class LogInOutButton extends Button {
 
-    private static final String TAG = LogInOutButton.class.getName();
-    
     private String loginText;
     private String logoutText;
     private DefaultOnClickListener clickListener;
@@ -240,13 +237,11 @@ public class LogInOutButton extends Button {
         @Override
         public void onClick(View v) {
             if (Twitt4droid.isUserLoggedIn(getContext())) {
-                Log.d(TAG, "Deleting twitt4droid data...");
                 Twitt4droid.resetData(getContext());
                 LogInOutButton button = (LogInOutButton)v;
                 button.setButtonLabel();
                 if (logoutListener != null) logoutListener.OnLogout(button);
             } else {
-                Log.d(TAG, "Starting WebLoginActivity...");
                 Intent intent = new Intent(getContext(), WebLoginActivity.class);
                 ((Activity) getContext()).startActivityForResult(intent, WebLoginActivity.REQUEST_CODE);
                 //TODO: setButtonLabel() after completing authentication process

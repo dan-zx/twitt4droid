@@ -18,13 +18,13 @@ import android.widget.Toast;
 import com.twitt4droid.R;
 import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
+import com.twitt4droid.Twitt4droidAsyncTasks;
 import com.twitt4droid.data.dao.UserDAO;
 import com.twitt4droid.data.dao.impl.DAOFactory;
 import com.twitt4droid.task.ImageLoader;
 
 import twitter4j.Status;
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import twitter4j.User;
 
 public class TweetDialog extends Dialog {
@@ -142,7 +142,7 @@ public class TweetDialog extends Dialog {
             @Override
             public void onClick(View view) {
                 if (Resources.isConnectedToInternet(getContext())) {
-                    new TweetSender().execute(tweetEditText.getText().toString());
+                    new Twitt4droidAsyncTasks.TweetTask(getContext()).execute(tweetEditText.getText().toString());
                     hideSoftKeyboard();
                     dismiss();
                 } else {
@@ -194,43 +194,6 @@ public class TweetDialog extends Dialog {
             } else {
                 Toast.makeText(getContext().getApplicationContext(), 
                         R.string.twitt4droid_error_message, 
-                        Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-    
-    private class TweetSender extends AsyncTask<String, Void, Status> {
-
-        private Twitter twitter;
-        
-        @Override
-        protected void onPreExecute() {
-            twitter = Twitt4droid.getTwitter(getContext().getApplicationContext());
-            Toast.makeText(getContext().getApplicationContext(),
-                    R.string.twitt4droid_sending_tweet,
-                    Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        protected twitter4j.Status doInBackground(String... params) {
-            try {
-                return twitter.updateStatus(params[0]);
-            } catch (TwitterException ex) {
-                Log.e(TAG, "Error while sending tweet [" + params[0] + "]", ex);
-            }
-            
-            return null;
-        }
-        
-        @Override
-        protected void onPostExecute(twitter4j.Status result) {
-            if (result != null) {
-                Toast.makeText(getContext().getApplicationContext(),
-                        R.string.twitt4droid_tweet_sent,
-                        Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(getContext().getApplicationContext(),
-                        R.string.twitt4droid_error_message,
                         Toast.LENGTH_LONG).show();
             }
         }

@@ -21,8 +21,6 @@ import android.content.SharedPreferences;
 import com.twitt4droid.data.source.Twitt4droidDatabaseHelper;
 import com.twitt4droid.util.Images;
 
-import twitter4j.AsyncTwitter;
-import twitter4j.AsyncTwitterFactory;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
@@ -53,18 +51,6 @@ public final class Twitt4droid {
      */
     public static Twitter getTwitter(Context context) {
         return new TwitterFactory(getCurrentConfig(context)).getInstance();
-    }
-
-
-    /**
-     * Gets the current AsyncTwitter with consumer and access tokens 
-     * pre-initialized.
-     * 
-     * @param context the application context.
-     * @return an AsyncTwitter object.
-     */
-    public static AsyncTwitter getAsyncTwitter(Context context) {
-        return new AsyncTwitterFactory(getCurrentConfig(context)).getInstance();
     }
 
     /**

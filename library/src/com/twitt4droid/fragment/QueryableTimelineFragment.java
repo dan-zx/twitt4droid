@@ -33,9 +33,9 @@ import android.widget.Toast;
 
 import com.twitt4droid.R;
 import com.twitt4droid.Resources;
+import com.twitt4droid.Twitt4droidAsyncTasks;
 import com.twitt4droid.data.dao.TimelineDAO;
 import com.twitt4droid.data.dao.impl.DAOFactory;
-import com.twitt4droid.task.TweetLoader;
 import com.twitt4droid.util.Strings;
 import com.twitt4droid.widget.TweetAdapter;
 
@@ -173,7 +173,7 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
         return R.drawable.twitt4droid_ic_search_holo_dark;
     }
 
-    private class TimelineLoader extends TweetLoader<String> {
+    private class TimelineLoader extends Twitt4droidAsyncTasks.TweetFetcher<String> {
 
         public TimelineLoader() {
             super(getActivity());
@@ -193,7 +193,14 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
         @Override
         protected List<twitter4j.Status> loadTweetsInBackground(String... params) throws TwitterException {
             QueryResult result = getTwitter().search(new Query(params[0]));
-            if (result != null) return result.getTweets();
+            if (result != null) {
+                List<twitter4j.Status> resultList = result.getTweets();
+                if (resultList != null && !resultList.isEmpty()) {
+                    queryableTimelineDao.deleteAll();
+                    queryableTimelineDao.save(resultList);
+                }
+                return resultList;
+            }
             return null;
         }
         
@@ -204,17 +211,15 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
                 progressBar.setVisibility(View.GONE);
                 swipeLayout.setVisibility(View.VISIBLE);
                 searchedtweetListView.setVisibility(View.VISIBLE);
-                if (result != null && !result.isEmpty()) {
+                if (getTwitterException() != null) {
+                    Log.e(TAG, "Error while retrieving tweets", getTwitterException());
+                    onTwitterError(getTwitterException());
+                } else if (result != null && !result.isEmpty()) {
                     listAdapter.set(result);
-                    queryableTimelineDao.deleteAll();
-                    queryableTimelineDao.save(result);
                     Resources.getPreferences(getActivity()).edit()
                         .putString(LAST_QUERY_KEY, lastQuery)
                         .commit();
                     Log.d(TAG, "Loaded");
-                } else if (getTwitterException() != null) {
-                    Log.e(TAG, "Error while retrieving tweets", getTwitterException());
-                    onTwitterError(getTwitterException());
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), 
                             R.string.twitt4droid_no_tweets_found_message, 
