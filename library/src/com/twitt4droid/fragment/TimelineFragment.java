@@ -31,9 +31,8 @@ import com.twitt4droid.data.dao.TimelineDAO;
 import com.twitt4droid.task.TweetLoader;
 import com.twitt4droid.widget.TweetAdapter;
 
-import twitter4j.Twitter;
-
 import twitter4j.Status;
+import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import java.util.Collections;
@@ -45,6 +44,7 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
 
     private SwipeRefreshLayout swipeLayout;
     private ListView tweetListView;
+    private TweetAdapter listAdapter;
     private ProgressBar progressBar;
     private TimelineDAO timelineDao;
 
@@ -65,6 +65,9 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
         swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
         tweetListView = (ListView) layout.findViewById(R.id.tweets_list);
         progressBar = (ProgressBar) layout.findViewById(R.id.tweets_progress_bar);
+        listAdapter = new TweetAdapter(getActivity());
+        listAdapter.setUseDarkTheme(isUsingDarkTheme());
+        tweetListView.setAdapter(listAdapter);
         swipeLayout.setColorScheme(R.color.twitt4droid_primary_color, 
                 R.color.twitt4droid_secundary_color_1,
                 R.color.twitt4droid_secundary_color_2,
@@ -85,22 +88,13 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
             tweetListView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
             Collections.reverse(list); // TODO: retrieve in reverse order
-            setUpTweetAdapter(list);
-        } else {
-            loadRemoteTweetsIfPossible();
-        }
-    }
-    
-    private void setUpTweetAdapter(List<Status> data) {
-        TweetAdapter listAdapter = new TweetAdapter(getActivity(), data);
-        listAdapter.setUseDarkTheme(isUsingDarkTheme());
-        tweetListView.setAdapter(listAdapter);
+            listAdapter.set(list);
+        } else loadRemoteTweetsIfPossible();
     }
 
     private void loadRemoteTweetsIfPossible() {
-        if (Resources.isConnectedToInternet(getActivity())) {
-            new TimelineLoader().execute();
-        } else {
+        if (Resources.isConnectedToInternet(getActivity())) new TimelineLoader().execute();
+        else {
             swipeLayout.setRefreshing(false);
             Toast.makeText(getActivity().getApplicationContext(), 
                     R.string.twitt4droid_is_offline_messege, 
@@ -144,7 +138,7 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
                 swipeLayout.setVisibility(View.VISIBLE);
                 tweetListView.setVisibility(View.VISIBLE);
                 if (result != null && !result.isEmpty()) {
-                    setUpTweetAdapter(result);
+                    listAdapter.set(result);
                     timelineDao.deleteAll();
                     timelineDao.save(result);
                     Log.d(TAG, "Loaded");

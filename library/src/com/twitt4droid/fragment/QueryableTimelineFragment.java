@@ -56,6 +56,7 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
     private InputMethodManager inputMethodManager;
     private EditText searchEditText;
     private ListView searchedtweetListView;
+    private TweetAdapter listAdapter;
     private ProgressBar progressBar;
     private String lastQuery;
     private TimelineDAO queryableTimelineDao;
@@ -91,20 +92,13 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
             searchedtweetListView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
             Collections.reverse(list); // TODO: retrieve in reverse order
-            setUpTweetAdapter(list);
+            listAdapter.set(list);
         }
     }
     
-    private void setUpTweetAdapter(List<Status> data) {
-        TweetAdapter listAdapter = new TweetAdapter(getActivity(), data);
-        listAdapter.setUseDarkTheme(isUsingDarkTheme());
-        searchedtweetListView.setAdapter(listAdapter);
-    }
-    
     private void loadRemoteTweetsIfPossible() {
-        if (Resources.isConnectedToInternet(getActivity())) {
-            new TimelineLoader().execute(lastQuery);
-        } else {
+        if (Resources.isConnectedToInternet(getActivity())) new TimelineLoader().execute(lastQuery);
+        else {
             swipeLayout.setRefreshing(false);
             Toast.makeText(getActivity().getApplicationContext(), 
                     R.string.twitt4droid_is_offline_messege, 
@@ -115,9 +109,7 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (!isVisibleToUser) {
-            hideSoftKeyboard();
-        }
+        if (!isVisibleToUser) hideSoftKeyboard();
     }
     
     private void setUpLayout(View layout) {
@@ -125,6 +117,9 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
         searchEditText = (EditText) layout.findViewById(R.id.search_edit_text);
         searchedtweetListView = (ListView) layout.findViewById(R.id.searched_tweets_list);
         progressBar = (ProgressBar) layout.findViewById(R.id.searched_tweets_progress_bar);
+        listAdapter = new TweetAdapter(getActivity());
+        listAdapter.setUseDarkTheme(isUsingDarkTheme());
+        searchedtweetListView.setAdapter(listAdapter);
         searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             
             @Override
@@ -210,7 +205,7 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
                 swipeLayout.setVisibility(View.VISIBLE);
                 searchedtweetListView.setVisibility(View.VISIBLE);
                 if (result != null && !result.isEmpty()) {
-                    setUpTweetAdapter(result);
+                    listAdapter.set(result);
                     queryableTimelineDao.deleteAll();
                     queryableTimelineDao.save(result);
                     Resources.getPreferences(getActivity()).edit()

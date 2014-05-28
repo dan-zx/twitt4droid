@@ -23,7 +23,7 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -38,18 +38,39 @@ import twitter4j.AsyncTwitter;
 import twitter4j.Status;
 import twitter4j.TwitterAdapter;
 
+import java.util.Collections;
 import java.util.List;
 
-public class TweetAdapter extends ArrayAdapter<Status> {
+public class TweetAdapter extends BaseAdapter {
+    
+    private final Context context;
 
+    private List<Status> data;
     private boolean isUsingDarkTheme;
 
     public TweetAdapter(Context context) {
-        super(context, R.layout.twitt4droid_tweet_item);
+        this.context = context;
+        this.data = Collections.emptyList();
     }
 
-    public TweetAdapter(Context context, List<Status> objects) {
-        super(context, R.layout.twitt4droid_tweet_item, objects);
+    public void set(List<Status> data) {
+        this.data = data;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public int getCount() {
+        return data.size();
+    }
+
+    @Override
+    public Status getItem(int position) {
+        return data.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     public void setUseDarkTheme(boolean useDarkTheme) {
@@ -60,12 +81,12 @@ public class TweetAdapter extends ArrayAdapter<Status> {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         Status rowItem = getItem(position);
-        LayoutInflater mInflater = (LayoutInflater) getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.twitt4droid_tweet_item, null);
             holder = new ViewHolder()
-                    .setContext(getContext())
+                    .setContext(context)
                     .setContentLayout((RelativeLayout) convertView.findViewById(R.id.content_layout))
                     .setProfileImage((ImageView) convertView.findViewById(R.id.tweet_profile_image))
                     .setClockImage((ImageView) convertView.findViewById(R.id.clock_image))
