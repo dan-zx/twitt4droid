@@ -85,12 +85,18 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
             tweetListView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
             Collections.reverse(list); // TODO: retrieve in reverse order
-            tweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, list));
+            setUpTweetAdapter(list);
         } else {
             loadRemoteTweetsIfPossible();
         }
     }
     
+    private void setUpTweetAdapter(List<Status> data) {
+        TweetAdapter listAdapter = new TweetAdapter(getActivity(), data);
+        listAdapter.setUseDarkTheme(isUsingDarkTheme());
+        tweetListView.setAdapter(listAdapter);
+    }
+
     private void loadRemoteTweetsIfPossible() {
         if (Resources.isConnectedToInternet(getActivity())) {
             new TimelineLoader().execute();
@@ -138,7 +144,7 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
                 swipeLayout.setVisibility(View.VISIBLE);
                 tweetListView.setVisibility(View.VISIBLE);
                 if (result != null && !result.isEmpty()) {
-                    tweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, result));
+                    setUpTweetAdapter(result);
                     timelineDao.deleteAll();
                     timelineDao.save(result);
                     Log.d(TAG, "Loaded");

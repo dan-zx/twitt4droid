@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,12 +42,18 @@ import java.util.List;
 
 public class TweetAdapter extends ArrayAdapter<Status> {
 
-    public TweetAdapter(Context context, int resource) {
-        super(context, resource);
+    private boolean isUsingDarkTheme;
+
+    public TweetAdapter(Context context) {
+        super(context, R.layout.twitt4droid_tweet_item);
     }
-    
-    public TweetAdapter(Context context, int resource, List<Status> objects) {
-        super(context, resource, objects);
+
+    public TweetAdapter(Context context, List<Status> objects) {
+        super(context, R.layout.twitt4droid_tweet_item, objects);
+    }
+
+    public void setUseDarkTheme(boolean useDarkTheme) {
+        isUsingDarkTheme = useDarkTheme;
     }
 
     @Override
@@ -59,11 +66,14 @@ public class TweetAdapter extends ArrayAdapter<Status> {
             convertView = mInflater.inflate(R.layout.twitt4droid_tweet_item, null);
             holder = new ViewHolder()
                     .setContext(getContext())
+                    .setContentLayout((RelativeLayout) convertView.findViewById(R.id.content_layout))
                     .setProfileImage((ImageView) convertView.findViewById(R.id.tweet_profile_image))
+                    .setClockImage((ImageView) convertView.findViewById(R.id.clock_image))
                     .setTweetTextView((TextView) convertView.findViewById(R.id.tweet_content_text))
                     .setUsernameTextView((TextView) convertView.findViewById(R.id.tweet_username_text))
                     .setTweetTimeTextView((TextView) convertView.findViewById(R.id.tweet_time_text))
-                    .setOverflowButton((ImageButton) convertView.findViewById(R.id.tweet_options_button));
+                    .setOverflowButton((ImageButton) convertView.findViewById(R.id.tweet_options_button))
+                    .setUseDarkTheme(isUsingDarkTheme);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -76,18 +86,22 @@ public class TweetAdapter extends ArrayAdapter<Status> {
     private static class ViewHolder {
         
         private Context context;
+        private RelativeLayout contentLayout;
         private ImageView profileImage;
+        private ImageView clockImage;
         private TextView usernameTextView;
         private TextView tweetTextView;
         private TextView tweetTimeTextView;
         private ImageButton overflowButton;
+        private boolean isUsingDarkTheme;
 
-        public ViewHolder setContext(Context context) {
+        private ViewHolder setContext(Context context) {
             this.context = context;
             return this;
         }
 
-        public void setContent(final Status status) {
+        private void setContent(final Status status) {
+            setUpThemeIfNeed();
             usernameTextView.setText(context.getString(R.string.twitt4droid_tweet_username_format, status.getUser().getScreenName(), status.getUser().getName()));
             tweetTextView.setText(status.getText());
             String dateText = context.getString(R.string.twitt4droid_tweet_date_format, 
@@ -147,28 +161,51 @@ public class TweetAdapter extends ArrayAdapter<Status> {
                 }
             });
         }
+        
+        private void setUpThemeIfNeed() {
+            if (isUsingDarkTheme) {
+                contentLayout.setBackgroundResource(R.color.twitt4droid_tweet_background_holo_dark);
+                overflowButton.setImageResource(R.drawable.twitt4droid_ic_overflow_holo_dark);
+                clockImage.setImageResource(R.drawable.twitt4droid_ic_clock_holo_dark);
+            }
+        }
 
-        public ViewHolder setProfileImage(ImageView profileImage) {
+        private ViewHolder setUseDarkTheme(boolean useDarkTheme) {
+            isUsingDarkTheme = useDarkTheme;
+            return this;
+        }
+
+        private ViewHolder setContentLayout(RelativeLayout contentLayout) {
+            this.contentLayout = contentLayout;
+            return this;
+        }
+
+        private ViewHolder setProfileImage(ImageView profileImage) {
             this.profileImage = profileImage;
             return this;
         }
 
-        public ViewHolder setUsernameTextView(TextView usernameTextView) {
+        private ViewHolder setClockImage(ImageView clockImage) {
+            this.clockImage = clockImage;
+            return this;
+        }
+
+        private ViewHolder setUsernameTextView(TextView usernameTextView) {
             this.usernameTextView = usernameTextView;
             return this;
         }
         
-        public ViewHolder setTweetTextView(TextView tweetTextView) {
+        private ViewHolder setTweetTextView(TextView tweetTextView) {
             this.tweetTextView = tweetTextView;
             return this;
         }
         
-        public ViewHolder setTweetTimeTextView(TextView tweetTimeTextView) {
+        private ViewHolder setTweetTimeTextView(TextView tweetTimeTextView) {
             this.tweetTimeTextView = tweetTimeTextView;
             return this;
         }
         
-        public ViewHolder setOverflowButton(ImageButton overflowButton) {
+        private ViewHolder setOverflowButton(ImageButton overflowButton) {
             this.overflowButton = overflowButton;
             return this;
         }

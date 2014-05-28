@@ -17,15 +17,15 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <color name="twitt4droid_no_image_background">#ffcccccc</color>
-    <color name="twitt4droid_tweet_background">#ffffffff</color>
+    <color name="twitt4droid_tweet_background_holo_dark">#ff000000</color>
+    <color name="twitt4droid_tweet_background_holo_light">#ffffffff</color>
     <color name="twitt4droid_tweet_list_background">#ffcccccc</color>
     <color name="twitt4droid_error_color">#ffff0000</color>
-    
     <color name="twitt4droid_primary_color">#ff55acee</color>
     <color name="twitt4droid_secundary_color_1">#ff292f33</color>
     <color name="twitt4droid_secundary_color_2">#ff66757f</color>
     <color name="twitt4droid_secundary_color_3">#ff8899a6</color>
-    
+
     <dimen name="twitt4droid_tweet_v_space">5dp</dimen>
     <dimen name="twitt4droid_tweet_h_space">10dp</dimen>
 

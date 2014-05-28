@@ -7,6 +7,8 @@ import twitter4j.TwitterException;
 
 public abstract class BaseTimelineFragment extends Fragment {
 
+    private boolean isUsingDarkTheme;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,4 +20,12 @@ public abstract class BaseTimelineFragment extends Fragment {
     public abstract int getResourceTitle();
     public abstract int getResourceHoloLightIcon();
     public abstract int getResourceHoloDarkIcon();
+
+    protected boolean isUsingDarkTheme() {
+        return isUsingDarkTheme;
+    }
+
+    public void setUseDarkTheme(boolean useDarkTheme) {
+        isUsingDarkTheme = useDarkTheme;
+    }
 }

@@ -20,13 +20,14 @@
     android:background="@color/twitt4droid_tweet_list_background" >
 
     <RelativeLayout
+        android:id="@+id/content_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/twitt4droid_tweet_v_space"
         android:layout_marginLeft="@dimen/twitt4droid_tweet_h_space"
         android:layout_marginRight="@dimen/twitt4droid_tweet_h_space"
         android:layout_marginTop="@dimen/twitt4droid_tweet_v_space"
-        android:background="@color/twitt4droid_tweet_background" >
+        android:background="@color/twitt4droid_tweet_background_holo_light" >
 
         <ImageView
             android:id="@+id/tweet_profile_image"

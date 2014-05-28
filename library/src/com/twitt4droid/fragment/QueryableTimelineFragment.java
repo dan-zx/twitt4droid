@@ -90,9 +90,15 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
             swipeLayout.setVisibility(View.VISIBLE);
             searchedtweetListView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
-            Collections.reverse(list);
-            searchedtweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, list));
+            Collections.reverse(list); // TODO: retrieve in reverse order
+            setUpTweetAdapter(list);
         }
+    }
+    
+    private void setUpTweetAdapter(List<Status> data) {
+        TweetAdapter listAdapter = new TweetAdapter(getActivity(), data);
+        listAdapter.setUseDarkTheme(isUsingDarkTheme());
+        searchedtweetListView.setAdapter(listAdapter);
     }
     
     private void loadRemoteTweetsIfPossible() {
@@ -204,7 +210,7 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
                 swipeLayout.setVisibility(View.VISIBLE);
                 searchedtweetListView.setVisibility(View.VISIBLE);
                 if (result != null && !result.isEmpty()) {
-                    searchedtweetListView.setAdapter(new TweetAdapter(getActivity(), R.layout.twitt4droid_tweet_item, result));
+                    setUpTweetAdapter(result);
                     queryableTimelineDao.deleteAll();
                     queryableTimelineDao.save(result);
                     Resources.getPreferences(getActivity()).edit()
