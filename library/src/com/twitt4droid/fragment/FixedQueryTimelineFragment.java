@@ -17,6 +17,7 @@ package com.twitt4droid.fragment;
 
 import android.os.Bundle;
 
+import com.twitt4droid.R;
 import com.twitt4droid.data.dao.impl.DAOFactory;
 
 import twitter4j.Query;
@@ -27,10 +28,10 @@ import twitter4j.TwitterException;
 
 import java.util.List;
 
-public abstract class FixedQueryTimelineFragment extends TimelineFragment {
+public class FixedQueryTimelineFragment extends TimelineFragment {
 
-    protected abstract String getQuery();
-    
+    private String query;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,5 +46,29 @@ public abstract class FixedQueryTimelineFragment extends TimelineFragment {
         }
 
         return null;
+    }
+
+    @Override
+    @Deprecated
+    public int getResourceTitle() {
+        return -1; 
+    }
+
+    @Override
+    public int getResourceHoloLightIcon() {
+        return R.drawable.twitt4droid_ic_search_holo_light;
+    }
+
+    @Override
+    public int getResourceHoloDarkIcon() {
+        return R.drawable.twitt4droid_ic_search_holo_dark;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 }

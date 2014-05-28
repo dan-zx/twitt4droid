@@ -50,7 +50,6 @@ public class MentionsTimelineFragment extends TimelineFragment {
 
     @Override
     public int getResourceHoloDarkIcon() {
-        // TODO Holo dark icon
-        return 0;
+        return R.drawable.twitt4droid_ic_notifications_holo_dark;
     }
 }

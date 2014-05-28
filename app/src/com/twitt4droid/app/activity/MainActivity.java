@@ -31,11 +31,13 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.twitt4droid.app.R;
+import com.twitt4droid.app.fragment.CustomFixedQueryTimelineFragment;
 import com.twitt4droid.app.fragment.CustomHomeTimelineFragment;
 import com.twitt4droid.app.fragment.CustomMentionsTimelineFragment;
 import com.twitt4droid.app.fragment.CustomQueryableTimelineFragment;
 import com.twitt4droid.app.fragment.CustomUserTimelineFragment;
 import com.twitt4droid.fragment.BaseTimelineFragment;
+import com.twitt4droid.fragment.FixedQueryTimelineFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +80,7 @@ public class MainActivity extends ActionBarActivity {
         adapter.addFragment(new CustomHomeTimelineFragment());
         adapter.addFragment(new CustomMentionsTimelineFragment());
         adapter.addFragment(new CustomUserTimelineFragment());
+        adapter.addFragment(new CustomFixedQueryTimelineFragment());
         adapter.addFragment(new CustomQueryableTimelineFragment());
         ViewPager viewPager = new ViewPager(this);
         viewPager.setAdapter(adapter);
@@ -152,7 +155,9 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             if (!fragments.isEmpty() && position >= 0) {
-                return getString(fragments.get(position).getResourceTitle());
+                BaseTimelineFragment fragment = fragments.get(position);
+                if (fragment instanceof FixedQueryTimelineFragment) return ((FixedQueryTimelineFragment)fragment).getQuery();
+                return getString(fragment.getResourceTitle());
             }
             else return null;
         }

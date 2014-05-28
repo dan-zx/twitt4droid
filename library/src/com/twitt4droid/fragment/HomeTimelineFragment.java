@@ -45,12 +45,11 @@ public class HomeTimelineFragment extends TimelineFragment {
 
     @Override
     public int getResourceHoloLightIcon() {
-        return R.drawable.twitt4droid_ic_search_holo_light;
+        return R.drawable.twitt4droid_ic_home_holo_light;
     }
 
     @Override
     public int getResourceHoloDarkIcon() {
-        // TODO Holo dark icon
-        return 0;
+        return R.drawable.twitt4droid_ic_home_holo_dark;
     }
 }
