@@ -14,6 +14,10 @@ import twitter4j.TwitterException;
 
 public class CustomFixedQueryTimelineFragment extends FixedQueryTimelineFragment {
 
+    public CustomFixedQueryTimelineFragment() {
+        setQuery("#WorldCup");
+    }
+
     @Override
     protected void onTwitterError(TwitterException ex) {
         Toast.makeText(getActivity().getApplicationContext(), 
@@ -25,7 +29,6 @@ public class CustomFixedQueryTimelineFragment extends FixedQueryTimelineFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        setQuery("#WorldCup");
     }
 
     @Override
