@@ -67,7 +67,7 @@ public final class Images {
                         ? Files.getExternalCacheDir(context).getPath() 
                         : context.getCacheDir().getPath();
                 File file = new File(cachePath + File.separator + IMAGE_CACHE_DIR);
-                DISK_CACHE = DiskLruCache.open(file, 1, 1, size);
+                DISK_CACHE = DiskLruCache.open(file, 1, 1, size); // Froyo sometimes fails to initialize
             } catch (IOException ex) {
                 Log.e(TAG, "Couldn't init disk cache", ex);
             }
@@ -159,11 +159,13 @@ public final class Images {
         OutputStream out = null;
         try {
             editor = DISK_CACHE.edit(key);
-            out = new BufferedOutputStream(editor.newOutputStream(0));
-            if (bitmap.compress(CompressFormat.JPEG, 100, out)) {
-                DISK_CACHE.flush();
-                editor.commit();
-            } else editor.abort();
+            if (editor != null) { // Froyo fix
+                out = new BufferedOutputStream(editor.newOutputStream(0));
+                if (bitmap.compress(CompressFormat.JPEG, 100, out)) {
+                    DISK_CACHE.flush();
+                    editor.commit();
+                } else editor.abort();
+            }
         } catch (IOException ex) {
             Log.e(TAG, "Couldn't save image in disk cache", ex);
             if (editor != null) {
