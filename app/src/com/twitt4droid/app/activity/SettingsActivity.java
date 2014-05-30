@@ -16,10 +16,12 @@
 package com.twitt4droid.app.activity;
 
 import android.annotation.TargetApi;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.twitt4droid.app.R;
@@ -27,7 +29,10 @@ import com.twitt4droid.app.util.Dialogs;
 
 public class SettingsActivity extends PreferenceActivity {
 
+    private static final String TAG = SettingsActivity.class.getSimpleName();
+
     private Preference licencesPreference;
+    private Preference versionPreference;
     
     @Override
     @SuppressWarnings("deprecation")
@@ -35,7 +40,23 @@ public class SettingsActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) displayHomeAsUp();
+        findPreferences();
+        setUpLicencesPreference();
+        setUpVersionPreference();
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void displayHomeAsUp() {
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @SuppressWarnings("deprecation")
+    private void findPreferences() {
         licencesPreference = findPreference(getString(R.string.licences_key));
+        versionPreference = findPreference(getString(R.string.version_key));
+    }
+
+    private void setUpLicencesPreference() {
         licencesPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             
             @Override
@@ -46,9 +67,13 @@ public class SettingsActivity extends PreferenceActivity {
         });
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void displayHomeAsUp() {
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+    private void setUpVersionPreference() {
+        try {
+            String versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+            versionPreference.setSummary(versionName);
+        } catch (NameNotFoundException ex) {
+            Log.e(TAG, "Couldn't find version name", ex);
+        }
     }
 
     @Override

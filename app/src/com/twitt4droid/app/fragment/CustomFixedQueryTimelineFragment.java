@@ -14,10 +14,6 @@ import twitter4j.TwitterException;
 
 public class CustomFixedQueryTimelineFragment extends FixedQueryTimelineFragment {
 
-    public CustomFixedQueryTimelineFragment() {
-        setQuery("#WorldCup");
-    }
-
     @Override
     protected void onTwitterError(TwitterException ex) {
         Toast.makeText(getActivity().getApplicationContext(), 

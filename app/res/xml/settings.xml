@@ -31,8 +31,8 @@
             android:summary="@string/licenses_pref_summary"
             android:title="@string/licenses_pref_title" />
         <Preference
+            android:enabled="false"
             android:key="@string/version_key"
-            android:summary="@string/version_pref_summary"
             android:title="@string/version_pref_title" />
     </PreferenceCategory>
 

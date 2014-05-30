@@ -51,7 +51,7 @@ public class FixedQueryTimelineFragment extends TimelineFragment {
     @Override
     @Deprecated
     public int getResourceTitle() {
-        return -1; 
+        return R.string.twitt4droid_queryable_timeline_fragment_title; 
     }
 
     @Override
@@ -68,7 +68,8 @@ public class FixedQueryTimelineFragment extends TimelineFragment {
         return query;
     }
 
-    public void setQuery(String query) {
+    public FixedQueryTimelineFragment setQuery(String query) {
         this.query = query;
+        return this;
     }
 }

@@ -27,6 +27,8 @@ import twitter4j.TwitterException;
 
 public class UserTimelineFragment extends TimelineFragment {
 
+    private String username;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,10 +37,11 @@ public class UserTimelineFragment extends TimelineFragment {
 
     @Override
     protected ResponseList<Status> getTweets(Twitter twitter) throws TwitterException {
-        return twitter.getUserTimeline();
+        return twitter.getUserTimeline(username);
     }
 
     @Override
+    @Deprecated
     public int getResourceTitle() {
         return R.string.twitt4droid_user_timeline_fragment_title;
     }
@@ -51,5 +54,14 @@ public class UserTimelineFragment extends TimelineFragment {
     @Override
     public int getResourceHoloDarkIcon() {
         return R.drawable.twitt4droid_ic_person_holo_dark;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public UserTimelineFragment setUsername(String username) {
+        this.username = username;
+        return this;
     }
 }
