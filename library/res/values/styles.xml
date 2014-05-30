@@ -52,4 +52,14 @@
         <item name="android:textColor">@color/twitt4droid_white_button</item>
     </style>
 
+    <style name="Twitt4droid.TextAppearance.Overlay" parent="android:TextAppearance.Medium">
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">1</item>
+    </style>
+
 </resources>

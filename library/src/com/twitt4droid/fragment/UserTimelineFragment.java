@@ -16,14 +16,21 @@
 package com.twitt4droid.fragment;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.twitt4droid.R;
+import com.twitt4droid.Twitt4droidAsyncTasks;
 import com.twitt4droid.data.dao.impl.DAOFactory;
+import com.twitt4droid.task.ImageLoader;
 
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.User;
 
 public class UserTimelineFragment extends TimelineFragment {
 
@@ -33,8 +40,37 @@ public class UserTimelineFragment extends TimelineFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTimelineDao(new DAOFactory(getActivity().getApplicationContext()).getUserTimelineDAO());
+        setLayoutResource(R.layout.twitt4droid_user_timeline);
     }
 
+    @Override
+    protected void setUpLayout(View layout) {
+        super.setUpLayout(layout);
+        final RelativeLayout userInfoLayout = (RelativeLayout) layout.findViewById(R.id.user_info_layout);
+        final ImageView userBannerImage =(ImageView) layout.findViewById(R.id.user_banner_image);
+        final ImageView userProfileImage =(ImageView) layout.findViewById(R.id.user_profile_image);
+        final TextView userUsername = (TextView) layout.findViewById(R.id.user_username);
+        final TextView userScreenName =(TextView) layout.findViewById(R.id.user_screen_name);
+
+        new Twitt4droidAsyncTasks.UserInfoFetcher(getActivity()) {
+
+            @Override
+            protected void onPostExecute(User result) {
+                userInfoLayout.setVisibility(View.VISIBLE);
+                userUsername.setText("@" + result.getScreenName());
+                userScreenName.setText(result.getName());
+                new ImageLoader(getContext())
+                    .setLoadingColorId(R.color.twitt4droid_no_image_background)
+                    .setImageView(userBannerImage)
+                    .execute(result.getProfileBannerURL());
+                new ImageLoader(getContext())
+                    .setLoadingColorId(R.color.twitt4droid_no_image_background)
+                    .setImageView(userProfileImage)
+                    .execute(result.getProfileImageURL());
+            }
+        }.execute(username);
+    }
+    
     @Override
     protected ResponseList<Status> getTweets(Twitter twitter) throws TwitterException {
         return twitter.getUserTimeline(username);

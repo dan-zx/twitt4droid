@@ -47,10 +47,11 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
     private TweetAdapter listAdapter;
     private ProgressBar progressBar;
     private TimelineDAO timelineDao;
+    private int layoutResource = R.layout.twitt4droid_timeline;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.twitt4droid_timeline, container, false);
+        View layout = inflater.inflate(layoutResource, container, false);
         setUpLayout(layout);
         return layout;
     }
@@ -59,9 +60,9 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         loadTweets();
-    }
+    } 
 
-    private void setUpLayout(View layout) {
+    protected void setUpLayout(View layout) {
         swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
         tweetListView = (ListView) layout.findViewById(R.id.tweets_list);
         progressBar = (ProgressBar) layout.findViewById(R.id.tweets_progress_bar);
@@ -106,6 +107,10 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
 
     protected void setTimelineDao(TimelineDAO timelineDao) {
         this.timelineDao = timelineDao;
+    }
+
+    public void setLayoutResource(int layoutResource) {
+        this.layoutResource = layoutResource;
     }
 
     private class TimelineLoader extends Twitt4droidAsyncTasks.TweetFetcher<Void> {

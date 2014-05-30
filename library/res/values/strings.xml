@@ -36,6 +36,7 @@
 
     <!-- IMAGE DESCRIPTION -->
     <string name="twitt4droid_profile_image_description">Profile image</string>
+    <string name="twitt4droid_banner_image_description">Banner image</string>
     <string name="twitt4droid_generic_image_description">Generic Image</string>
     <string name="twitt4droid_clock_icon_description">Clock icon</string>
 

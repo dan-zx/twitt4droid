@@ -217,7 +217,6 @@ public final class Twitt4droidAsyncTasks {
 
         public TweetFetcher(Context context) {
             super(context);
-            // TODO Auto-generated constructor stub
         }
 
         @Override
@@ -234,5 +233,23 @@ public final class Twitt4droidAsyncTasks {
         
         @SuppressWarnings("unchecked")
         protected abstract List<twitter4j.Status> loadTweetsInBackground (Params... params) throws TwitterException;
+    }
+    
+    public static class UserInfoFetcher extends AsyncTwitterFetcher<String, User> {
+
+        public UserInfoFetcher(Context context) {
+            super(context);
+        }
+        
+        @Override
+        protected User doInBackground(String... params) {
+            try {
+                return getTwitter().showUser(params[0]);
+            } catch (TwitterException ex) {
+                setTwitterException(ex);
+            }
+            
+            return null;
+        }
     }
 }
