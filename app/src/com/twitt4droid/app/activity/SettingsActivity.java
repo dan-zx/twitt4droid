@@ -16,6 +16,7 @@
 package com.twitt4droid.app.activity;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,9 +24,9 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.webkit.WebView;
 
 import com.twitt4droid.app.R;
-import com.twitt4droid.app.util.Dialogs;
 
 public class SettingsActivity extends PreferenceActivity {
 
@@ -61,7 +62,13 @@ public class SettingsActivity extends PreferenceActivity {
             
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Dialogs.getLicencesAlertDialog(SettingsActivity.this).show();
+                WebView webView = new WebView(SettingsActivity.this);
+                webView.loadUrl(getString(R.string.licenses_file));
+                new AlertDialog.Builder(SettingsActivity.this)
+                    .setTitle(R.string.licenses_dialog_tile)
+                    .setView(webView)
+                    .setCancelable(true)
+                    .show();
                 return true;
             }
         });
