@@ -19,6 +19,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +33,7 @@ import android.widget.TextView;
 
 import com.twitt4droid.R;
 import com.twitt4droid.Twitt4droidAsyncTasks;
+import com.twitt4droid.activity.UserProfileActivity;
 import com.twitt4droid.task.ImageLoader;
 
 import twitter4j.Status;
@@ -130,6 +133,17 @@ public class TweetAdapter extends BaseAdapter {
                 .setImageView(profileImage)
                 .setLoadingColorId(R.color.twitt4droid_no_image_background)
                 .execute(status.getUser().getProfileImageURL());
+            profileImage.setOnClickListener(new View.OnClickListener() {
+                
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, UserProfileActivity.class);
+                    Bundle b = new Bundle();
+                    b.putString(UserProfileActivity.EXTRA_USER_USERNAME, status.getUser().getScreenName());
+                    intent.putExtras(b);
+                    context.startActivity(intent);
+                }
+            });
             overflowButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override

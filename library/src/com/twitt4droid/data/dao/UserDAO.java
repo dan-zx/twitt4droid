@@ -20,7 +20,7 @@ import twitter4j.User;
 public interface UserDAO extends GenericDAO<User, Long> {
 
     User fetchById(Long id);
+    User fetchByScreenName(String screenName);
     void save(User user);
-    void update(User user);
     void delete(User user);
 }

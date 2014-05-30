@@ -29,7 +29,7 @@ public class SignInActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (!Twitt4droid.isUserLoggedIn(this)) {
-            setContentView(R.layout.sign_in);
+            setContentView(R.layout.activity_sign_in);
         }
     }
 

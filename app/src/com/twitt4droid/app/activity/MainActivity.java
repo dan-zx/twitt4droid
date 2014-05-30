@@ -22,6 +22,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,9 +30,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.Twitt4droidAsyncTasks;
+import com.twitt4droid.activity.UserProfileActivity;
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.fragment.TimelinesFragment;
 import com.twitt4droid.task.ImageLoader;
@@ -40,13 +43,15 @@ import twitter4j.User;
 
 public class MainActivity extends ActionBarActivity {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.activity_main);
         setUpDrawer();
         setUpFragment(new TimelinesFragment());
     }
@@ -78,18 +83,37 @@ public class MainActivity extends ActionBarActivity {
             @Override
             protected void onPostExecute(User result) {
                 userInfoLayout.setVisibility(View.VISIBLE);
-                userUsername.setText("@" + result.getScreenName());
-                userScreenName.setText(result.getName());
-                new ImageLoader(getContext())
-                    .setLoadingColorId(R.color.twitt4droid_no_image_background)
-                    .setImageView(userBannerImage)
-                    .execute(result.getProfileBannerURL());
-                new ImageLoader(getContext())
-                    .setLoadingColorId(R.color.twitt4droid_no_image_background)
-                    .setImageView(userProfileImage)
-                    .execute(result.getProfileImageURL());
+                if (getTwitterException() != null) {
+                    Log.e(TAG, "Twitter error", getTwitterException());
+                    Toast.makeText(getContext().getApplicationContext(), 
+                            R.string.twitt4droid_error_message, 
+                            Toast.LENGTH_LONG)
+                            .show();
+                } else if (result != null) {
+                    userUsername.setText(getString(R.string.twitt4droid_username_format, result.getScreenName()));
+                    userScreenName.setText(result.getName());
+                    new ImageLoader(getContext())
+                        .setLoadingColorId(R.color.twitt4droid_no_image_background)
+                        .setImageView(userBannerImage)
+                        .execute(result.getProfileBannerURL());
+                    new ImageLoader(getContext())
+                        .setLoadingColorId(R.color.twitt4droid_no_image_background)
+                        .setImageView(userProfileImage)
+                        .execute(result.getProfileImageURL());
+                }
             }
-        }.execute(Twitt4droid.getCurrentUserScreenName(this));
+        }.execute(Twitt4droid.getCurrentUserUsername(this));
+        userProfileImage.setOnClickListener(new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
+                Bundle b = new Bundle();
+                b.putString(UserProfileActivity.EXTRA_USER_USERNAME, Twitt4droid.getCurrentUserUsername(MainActivity.this));
+                intent.putExtras(b);
+                startActivity(intent);
+            }
+        });
     }
 
     private void setUpFragment(Fragment fragment) {
@@ -101,7 +125,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
 

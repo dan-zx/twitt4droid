@@ -100,7 +100,7 @@ public final class Twitt4droid {
             .edit()
             .putString(context.getString(R.string.twitt4droid_oauth_token_key), token.getToken())
             .putString(context.getString(R.string.twitt4droid_oauth_secret_key), token.getTokenSecret())
-            .putString(context.getString(R.string.twitt4droid_user_screen_name_key), token.getScreenName())
+            .putString(context.getString(R.string.twitt4droid_user_username_name_key), token.getScreenName())
             .putLong(context.getString(R.string.twitt4droid_user_id_key), token.getUserId())
             .putBoolean(context.getString(R.string.twitt4droid_user_is_logged_in_key), true)
             .commit();
@@ -116,7 +116,7 @@ public final class Twitt4droid {
             .edit()
             .putString(context.getString(R.string.twitt4droid_oauth_token_key), null)
             .putString(context.getString(R.string.twitt4droid_oauth_secret_key), null)
-            .putString(context.getString(R.string.twitt4droid_user_screen_name_key), null)
+            .putString(context.getString(R.string.twitt4droid_user_username_name_key), null)
             .putLong(context.getString(R.string.twitt4droid_user_id_key), Long.MIN_VALUE)
             .putBoolean(context.getString(R.string.twitt4droid_user_is_logged_in_key), false)
             .commit();
@@ -138,13 +138,15 @@ public final class Twitt4droid {
     }
 
     /**
-     * Gets the current twitter user name.
+     * Gets the current twitter user username.
      * 
      * @param context the application context.
-     * @return the current twitter user name if exists; otherwise {@code null}.
+     * @return the current twitter user username if exists; otherwise {@code null}.
      */
-    public static String getCurrentUserScreenName(Context context) {
-        return Resources.getPreferences(context).getString(context.getString(R.string.twitt4droid_user_screen_name_key), null);
+    public static String getCurrentUserUsername(Context context) {
+        return Resources.getPreferences(context).getString(
+                context.getString(R.string.twitt4droid_user_username_name_key),
+                null);
     }
 
     /**

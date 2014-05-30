@@ -16,6 +16,9 @@
 -->
 <resources>
 
+    <!-- ACTIVITY TITLES -->
+    <string name="twitt4droid_user_profile_activity_title">Profile</string>
+
     <!-- MENUS -->
     <string name="twitt4droid_refresh_menu_title">Refresh</string>
     <string name="twitt4droid_cancel_menu_title">Cancel</string>
@@ -55,7 +58,7 @@
     <string name="twitt4droid_queryable_timeline_fragment_title">SEARCH</string>
     <string name="twitt4droid_home_timeline_fragment_title">HOME</string>
     <string name="twitt4droid_mentions_timeline_fragment_title">MENTIONS</string>
-    <string name="twitt4droid_user_timeline_fragment_title">USER</string>
+    <string name="twitt4droid_user_timeline_fragment_title">PROFILE</string>
     
     <!-- TWEET CONTEXT MENU -->
     <string-array name="twitt4droid_tweet_context_menu">

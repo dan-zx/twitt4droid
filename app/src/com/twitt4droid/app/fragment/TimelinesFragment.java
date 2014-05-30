@@ -33,13 +33,13 @@ public class TimelinesFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.timelines, menu);
+        inflater.inflate(R.menu.fragment_timelines, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.timelines, container, false);
+        View layout = inflater.inflate(R.layout.fragment_timelines, container, false);
         setUpLayout(layout);
         return layout;
     }

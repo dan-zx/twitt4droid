@@ -32,18 +32,20 @@ class UserCursorImpl implements User {
     private String name;
     private String screenName;
     private String profileImageURL;
+    private String profileBannerURL;
     private String url;
     private String description;
     private String location;
     
     public UserCursorImpl(Cursor cursor) {
         id = SQLiteUtils.containsColumn(cursor, "id") ? cursor.getLong(cursor.getColumnIndex("id")) : -1;
-        name = SQLiteUtils.containsColumn(cursor, "name") ? cursor.getString(cursor.getColumnIndex("name")) : null;
-        screenName = SQLiteUtils.containsColumn(cursor, "screen_name") ? cursor.getString(cursor.getColumnIndex("screen_name")) : null;
-        profileImageURL = SQLiteUtils.containsColumn(cursor, "profile_image_url") ? cursor.getString(cursor.getColumnIndex("profile_image_url")) : null;
-        url = SQLiteUtils.containsColumn(cursor, "url") ? cursor.getString(cursor.getColumnIndex("url")) : null;
-        description = SQLiteUtils.containsColumn(cursor, "description") ? cursor.getString(cursor.getColumnIndex("description")) : null;
-        location = SQLiteUtils.containsColumn(cursor, "location") ? cursor.getString(cursor.getColumnIndex("location")) : null;
+        name = SQLiteUtils.getString(cursor, "name");
+        screenName = SQLiteUtils.getString(cursor, "screen_name");
+        profileImageURL = SQLiteUtils.getString(cursor, "profile_image_url");
+        profileBannerURL = SQLiteUtils.getString(cursor, "profile_banner_url");
+        url = SQLiteUtils.getString(cursor, "url");
+        description = SQLiteUtils.getString(cursor, "description");
+        location = SQLiteUtils.getString(cursor, "location");
     }
     
     @Override
@@ -212,8 +214,7 @@ class UserCursorImpl implements User {
 
     @Override
     public String getProfileBannerURL() {
-        // TODO Auto-generated method stub
-        return null;
+        return profileBannerURL;
     }
 
     @Override

@@ -40,17 +40,24 @@ public class UserSQLiteDAO extends SQLiteTemplate.DAOSupport implements UserDAO 
     }
 
     @Override
-    public void save(User user) {
-        getSQLiteTemplate().execute(
-                getSqlString(R.string.twitt4droid_insert_user_sql), 
-                new String[] { Objects.toString(user.getId()), user.getName(), user.getScreenName(), user.getProfileImageURL(), user.getURL(), user.getDescription(), user.getLocation() });
+    public User fetchByScreenName(String screenName) {
+        return getSQLiteTemplate().queryForSingleResult(
+                getSqlString(R.string.twitt4droid_fetch_user_by_scree_name_sql), 
+                new String[] { screenName }, 
+                new SQLiteTemplate.RowMapper<User>() {
+
+                    @Override
+                    public User mapRow(Cursor cursor, int rowNum) {
+                        return new UserCursorImpl(cursor);
+                    }
+                });
     }
 
     @Override
-    public void update(User user) {
+    public void save(User user) {
         getSQLiteTemplate().execute(
-                getSqlString(R.string.twitt4droid_update_user_sql), 
-                new String[] { user.getName(), user.getScreenName(), user.getProfileImageURL(), user.getURL(), user.getDescription(), user.getLocation(), Objects.toString(user.getId()) });
+                getSqlString(R.string.twitt4droid_insert_user_sql), 
+                new String[] { Objects.toString(user.getId()), user.getName(), user.getScreenName(), user.getProfileImageURL(), user.getProfileBannerURL(), user.getURL(), user.getDescription(), user.getLocation() });
     }
 
     @Override

@@ -59,7 +59,7 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadTweets();
+        new TimelineLoader().execute();
     } 
 
     protected void setUpLayout(View layout) {
@@ -77,23 +77,12 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
             
             @Override
             public void onRefresh() {
-                loadRemoteTweetsIfPossible();
+                reloadTweetsIfPossible();
             }
         });
     }
 
-    protected void loadTweets() {
-        List<Status> list = timelineDao.fetchAll();
-        if (list != null && !list.isEmpty()) {
-            swipeLayout.setVisibility(View.VISIBLE);
-            tweetListView.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
-            Collections.reverse(list); // TODO: retrieve in reverse order
-            listAdapter.set(list);
-        } else loadRemoteTweetsIfPossible();
-    }
-
-    private void loadRemoteTweetsIfPossible() {
+    private void reloadTweetsIfPossible() {
         if (Resources.isConnectedToInternet(getActivity())) new TimelineLoader().execute();
         else {
             swipeLayout.setRefreshing(false);
@@ -113,8 +102,14 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
         this.layoutResource = layoutResource;
     }
 
+    protected TimelineDAO getTimelineDao() {
+        return timelineDao;
+    }
+
     private class TimelineLoader extends Twitt4droidAsyncTasks.TweetFetcher<Void> {
-        
+
+        private boolean isConnectToInternet;
+
         public TimelineLoader() {
             super(getActivity());
         }
@@ -122,6 +117,7 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
         @Override
         protected void onPreExecute() {
             if (getActivity() != null) {
+                isConnectToInternet = Resources.isConnectedToInternet(getActivity());
                 if(tweetListView.getChildCount() == 0) {
                     swipeLayout.setVisibility(View.GONE);
                     tweetListView.setVisibility(View.GONE);
@@ -132,10 +128,14 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
         
         @Override
         protected List<twitter4j.Status> loadTweetsInBackground(Void... params) throws TwitterException {
-            List<twitter4j.Status> result = getTweets(getTwitter());
-            if (result != null && !result.isEmpty()) {
+            List<twitter4j.Status> result = null;
+            if (isConnectToInternet) {
+                result = getTweets(getTwitter());
                 timelineDao.deleteAll();
-                timelineDao.save(result);
+                if (result != null && !result.isEmpty()) timelineDao.save(result);
+            } else {
+                result = timelineDao.fetchAll();
+                Collections.reverse(result); // TODO: retrieve in reverse order
             }
             return result;
         }

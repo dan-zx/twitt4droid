@@ -5,6 +5,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.twitt4droid.data.dao.UserDAO;
+import com.twitt4droid.data.dao.impl.DAOFactory;
+
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -237,19 +240,33 @@ public final class Twitt4droidAsyncTasks {
     
     public static class UserInfoFetcher extends AsyncTwitterFetcher<String, User> {
 
+        private boolean isConnectedToInternet;
+        private UserDAO userDAO;
+        
         public UserInfoFetcher(Context context) {
             super(context);
         }
         
         @Override
+        protected void onPreExecute() {
+            isConnectedToInternet = Resources.isConnectedToInternet(getContext());
+            userDAO = new DAOFactory(getContext()).getUserDAO();
+        }
+        
+        @Override
         protected User doInBackground(String... params) {
-            try {
-                return getTwitter().showUser(params[0]);
-            } catch (TwitterException ex) {
-                setTwitterException(ex);
-            }
-            
-            return null;
+            User user = null;
+            if (isConnectedToInternet) {
+                try {
+                    user = getTwitter().showUser(params[0]);
+                    userDAO.delete(user);
+                    userDAO.save(user);
+                    return user;
+                } catch (TwitterException ex) {
+                    setTwitterException(ex);
+                }
+            } else user = userDAO.fetchByScreenName(params[0]);
+            return user;
         }
     }
 }

@@ -16,15 +16,19 @@
 package com.twitt4droid.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.twitt4droid.R;
 import com.twitt4droid.Twitt4droidAsyncTasks;
+import com.twitt4droid.data.dao.UserTimelineDAO;
 import com.twitt4droid.data.dao.impl.DAOFactory;
 import com.twitt4droid.task.ImageLoader;
+import com.twitt4droid.util.Strings;
 
 import twitter4j.ResponseList;
 import twitter4j.Status;
@@ -33,6 +37,8 @@ import twitter4j.TwitterException;
 import twitter4j.User;
 
 public class UserTimelineFragment extends TimelineFragment {
+
+    private static final String TAG = UserTimelineFragment.class.getSimpleName();
 
     private String username;
 
@@ -57,16 +63,26 @@ public class UserTimelineFragment extends TimelineFragment {
             @Override
             protected void onPostExecute(User result) {
                 userInfoLayout.setVisibility(View.VISIBLE);
-                userUsername.setText("@" + result.getScreenName());
-                userScreenName.setText(result.getName());
-                new ImageLoader(getContext())
-                    .setLoadingColorId(R.color.twitt4droid_no_image_background)
-                    .setImageView(userBannerImage)
-                    .execute(result.getProfileBannerURL());
-                new ImageLoader(getContext())
-                    .setLoadingColorId(R.color.twitt4droid_no_image_background)
-                    .setImageView(userProfileImage)
-                    .execute(result.getProfileImageURL());
+                if (getTwitterException() != null) {
+                    Log.e(TAG, "Twitter error", getTwitterException());
+                    Toast.makeText(getContext().getApplicationContext(), 
+                            R.string.twitt4droid_error_message, 
+                            Toast.LENGTH_LONG)
+                            .show();
+                } else if (getActivity() != null && result != null) {
+                    userUsername.setText(getString(R.string.twitt4droid_username_format, result.getScreenName()));
+                    userScreenName.setText(result.getName());
+                    if (!Strings.isNullOrBlank(result.getProfileBannerURL())) {
+                        new ImageLoader(getContext())
+                            .setLoadingColorId(R.color.twitt4droid_no_image_background)
+                            .setImageView(userBannerImage)
+                            .execute(result.getProfileBannerURL());
+                    }
+                    new ImageLoader(getContext())
+                        .setLoadingColorId(R.color.twitt4droid_no_image_background)
+                        .setImageView(userProfileImage)
+                        .execute(result.getProfileImageURL());
+                }
             }
         }.execute(username);
     }
@@ -77,7 +93,6 @@ public class UserTimelineFragment extends TimelineFragment {
     }
 
     @Override
-    @Deprecated
     public int getResourceTitle() {
         return R.string.twitt4droid_user_timeline_fragment_title;
     }
@@ -91,7 +106,7 @@ public class UserTimelineFragment extends TimelineFragment {
     public int getResourceHoloDarkIcon() {
         return R.drawable.twitt4droid_ic_person_holo_dark;
     }
-
+    
     public String getUsername() {
         return username;
     }
@@ -99,5 +114,10 @@ public class UserTimelineFragment extends TimelineFragment {
     public UserTimelineFragment setUsername(String username) {
         this.username = username;
         return this;
+    }
+    
+    @Override
+    protected UserTimelineDAO getTimelineDao() {
+        return (UserTimelineDAO) super.getTimelineDao();
     }
 }

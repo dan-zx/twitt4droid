@@ -41,7 +41,6 @@ import com.twitt4droid.widget.TweetAdapter;
 
 import twitter4j.Query;
 import twitter4j.QueryResult;
-import twitter4j.Status;
 import twitter4j.TwitterException;
 
 import java.util.Collections;
@@ -81,22 +80,11 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
         lastQuery = Resources.getPreferences(getActivity()).getString(LAST_QUERY_KEY, Strings.EMPTY);
         if (!Strings.isNullOrBlank(lastQuery)) {
             searchEditText.setText(lastQuery);
-            loadLocalTweets();
+            new TimelineLoader().execute(lastQuery);
         }
     }
     
-    protected void loadLocalTweets() {
-        List<Status> list = queryableTimelineDao.fetchAll();
-        if (list != null && !list.isEmpty()) {
-            swipeLayout.setVisibility(View.VISIBLE);
-            searchedtweetListView.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
-            Collections.reverse(list); // TODO: retrieve in reverse order
-            listAdapter.set(list);
-        }
-    }
-    
-    private void loadRemoteTweetsIfPossible() {
+    private void reloadTweetsIfPossible() {
         if (Resources.isConnectedToInternet(getActivity())) new TimelineLoader().execute(lastQuery);
         else {
             swipeLayout.setRefreshing(false);
@@ -130,7 +118,7 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
                         if (text.length() > 0) {
                             lastQuery = text;
                             hideSoftKeyboard();
-                            loadRemoteTweetsIfPossible();
+                            reloadTweetsIfPossible();
                         }
                         return true;
                     default: return false;
@@ -145,7 +133,7 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
             
             @Override
             public void onRefresh() {
-                loadRemoteTweetsIfPossible();
+                reloadTweetsIfPossible();
             }
         });
     }
@@ -175,6 +163,8 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
 
     private class TimelineLoader extends Twitt4droidAsyncTasks.TweetFetcher<String> {
 
+        private boolean isConnectToInternet;
+
         public TimelineLoader() {
             super(getActivity());
         }
@@ -182,6 +172,7 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
         @Override
         protected void onPreExecute() {
             if (getActivity() != null) {
+                isConnectToInternet = Resources.isConnectedToInternet(getActivity());
                 if(searchedtweetListView.getChildCount() == 0) {
                     swipeLayout.setVisibility(View.GONE);
                     searchedtweetListView.setVisibility(View.GONE);
@@ -192,16 +183,19 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
         
         @Override
         protected List<twitter4j.Status> loadTweetsInBackground(String... params) throws TwitterException {
-            QueryResult result = getTwitter().search(new Query(params[0]));
-            if (result != null) {
-                List<twitter4j.Status> resultList = result.getTweets();
-                if (resultList != null && !resultList.isEmpty()) {
+            List<twitter4j.Status> result = null;
+            if (isConnectToInternet) {
+                QueryResult queryResult = getTwitter().search(new Query(params[0]));
+                if (queryResult != null) {
+                    result = queryResult.getTweets();
                     queryableTimelineDao.deleteAll();
-                    queryableTimelineDao.save(resultList);
+                    if (result != null && !result.isEmpty()) queryableTimelineDao.save(result);
                 }
-                return resultList;
+            } else {
+                result = queryableTimelineDao.fetchAll();
+                Collections.reverse(result); // TODO: retrieve in reverse order
             }
-            return null;
+            return result;
         }
         
         @Override

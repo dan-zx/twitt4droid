@@ -28,7 +28,7 @@ import java.util.List;
 
 public class TimelineSQLiteDAO extends SQLiteTemplate.DAOSupport implements TimelineDAO {
 
-    public static enum Table { HOME, MENTION, MINE, FIXED_QUERY, QUERYABLE }
+    public static enum Table { HOME, MENTION, ANY_USER, FIXED_QUERY, QUERYABLE }
 
     private final String tableName;
 

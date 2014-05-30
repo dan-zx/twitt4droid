@@ -19,8 +19,10 @@ import android.content.Context;
 
 import com.twitt4droid.data.dao.TimelineDAO;
 import com.twitt4droid.data.dao.UserDAO;
+import com.twitt4droid.data.dao.UserTimelineDAO;
 import com.twitt4droid.data.dao.impl.sqlite.TimelineSQLiteDAO;
 import com.twitt4droid.data.dao.impl.sqlite.UserSQLiteDAO;
+import com.twitt4droid.data.dao.impl.sqlite.UserTimelineSQLiteDAO;
 import com.twitt4droid.data.source.Twitt4droidDatabaseHelper;
 
 public class DAOFactory {
@@ -45,8 +47,8 @@ public class DAOFactory {
         return dao;
     }
 
-    public TimelineDAO getUserTimelineDAO() {
-        TimelineSQLiteDAO dao = new TimelineSQLiteDAO(TimelineSQLiteDAO.Table.MINE);
+    public UserTimelineDAO getUserTimelineDAO() {
+        UserTimelineSQLiteDAO dao = new UserTimelineSQLiteDAO();
         dao.setContext(context);
         dao.setSQLiteOpenHelper(new Twitt4droidDatabaseHelper(context));
         return dao;

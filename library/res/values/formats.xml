@@ -16,10 +16,7 @@
 -->
 <resources>
 
-    <!-- NEW TWEET -->
-    <string name="twitt4droid_replay_tweet_format">\@%s </string>
-
-    <!-- TWEETS -->
+    <string name="twitt4droid_username_format">\@%s</string>
     <string name="twitt4droid_tweet_username_format">\@%1$s (%2$s)</string>
     <string name="twitt4droid_tweet_date_format">%1$s %2$s</string>
 
