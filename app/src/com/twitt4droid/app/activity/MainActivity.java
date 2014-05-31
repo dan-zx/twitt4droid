@@ -20,15 +20,18 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,12 +44,19 @@ import com.twitt4droid.task.ImageLoader;
 
 import twitter4j.User;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String FRAGMENT_TAG = "CURRENT_FRAGMENT";
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
+    private ListView drawerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +79,9 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         setUpUserEntry();
+        setUpListEntry();
     }
-    
+
     private void setUpUserEntry() {
         final RelativeLayout userInfoLayout = (RelativeLayout) drawerLayout.findViewById(R.id.user_info_layout);
         final ImageView userBannerImage =(ImageView) drawerLayout.findViewById(R.id.user_banner_image);
@@ -116,29 +127,39 @@ public class MainActivity extends ActionBarActivity {
         });
     }
 
-    private void setUpFragment(Fragment fragment) {
-        getSupportFragmentManager()
-            .beginTransaction()
-            .replace(R.id.content_frame, fragment)
-            .commit();
+    private void setUpListEntry() {
+        drawerList = (ListView) drawerLayout.findViewById(R.id.drawer_list);
+        String[] from = new String[] { "icon", "menu" };
+        int[] to = new int[] { R.id.icon_image, R.id.menu_text };
+        List<Map<String, Object>> data = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>();
+        map.put(from[0], R.drawable.twitt4droid_ic_clock_holo_dark);
+        map.put(from[1], getResources().getStringArray(R.array.drawer_options)[0]);
+        data.add(map);
+        map = new HashMap<>();
+        map.put(from[0], R.drawable.ic_settings);
+        map.put(from[1], getResources().getStringArray(R.array.drawer_options)[1]);
+        data.add(map);
+        SimpleAdapter drawerListAdapter = new SimpleAdapter(this, data, R.layout.drawer_item, from, to);
+        drawerList.setAdapter(drawerListAdapter);
+        drawerList.setOnItemClickListener(new DrawerItemClickListener());
+        drawerList.setItemChecked(0, true);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
+    private void setUpFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment currentFragment = fragmentManager.findFragmentByTag(FRAGMENT_TAG);
+        if (currentFragment == null || !currentFragment.getClass().equals(fragment.getClass())) {
+            fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment, FRAGMENT_TAG)
+                .commit();
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (drawerToggle.onOptionsItemSelected(item)) return true;
-
-        switch (item.getItemId()) {
-            case R.id.settings_item:
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-            default: return super.onOptionsItemSelected(item);
-        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -151,5 +172,22 @@ public class MainActivity extends ActionBarActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         drawerToggle.onConfigurationChanged(newConfig);
+    }
+    
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            switch(position) {
+                case 0: 
+                    setUpFragment(new TimelinesFragment());
+                    break;
+                case 1: 
+                    startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                    break;
+            }
+            drawerList.setItemChecked(position, true);
+            drawerLayout.closeDrawers();
+        }        
     }
 }
