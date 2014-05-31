@@ -42,7 +42,7 @@ public class UserSQLiteDAO extends SQLiteTemplate.DAOSupport implements UserDAO 
     @Override
     public User fetchByScreenName(String screenName) {
         return getSQLiteTemplate().queryForSingleResult(
-                getSqlString(R.string.twitt4droid_fetch_user_by_scree_name_sql), 
+                getSqlString(R.string.twitt4droid_fetch_user_by_screen_name_sql), 
                 new String[] { screenName }, 
                 new SQLiteTemplate.RowMapper<User>() {
 

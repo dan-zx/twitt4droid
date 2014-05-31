@@ -17,10 +17,10 @@ public class UserTimelineSQLiteDAO extends TimelineSQLiteDAO implements UserTime
     }
 
     @Override
-    public List<Status> fetchById(Long id) {
+    public List<Status> fetchListByScreenName(String screenName) {
         return getSQLiteTemplate().queryForList(
-                getSqlString(R.string.twitt4droid_fetch_all_statuses_by_id_sql), 
-                new String[] { Objects.toString(id) }, 
+                getSqlString(R.string.twitt4droid_fetch_statuses_by_screen_name_sql), 
+                new String[] { Objects.toString(screenName) }, 
                 new SQLiteTemplate.RowMapper<Status>() {
 
                     @Override

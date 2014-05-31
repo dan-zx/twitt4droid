@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface UserTimelineDAO extends TimelineDAO {
 
-    List<Status> fetchById(Long id);
+    List<Status> fetchListByScreenName(String screenName);
 }

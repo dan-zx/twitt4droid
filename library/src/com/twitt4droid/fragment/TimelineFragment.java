@@ -94,16 +94,16 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
 
     protected abstract List<Status> getTweets(Twitter twitter) throws TwitterException;
 
+    protected List<Status> getSavedTweets(TimelineDAO timelineDao) {
+        return timelineDao.fetchList();
+    }
+
     protected void setTimelineDao(TimelineDAO timelineDao) {
         this.timelineDao = timelineDao;
     }
 
     public void setLayoutResource(int layoutResource) {
         this.layoutResource = layoutResource;
-    }
-
-    protected TimelineDAO getTimelineDao() {
-        return timelineDao;
     }
 
     private class TimelineLoader extends Twitt4droidAsyncTasks.TweetFetcher<Void> {
@@ -134,7 +134,7 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
                 timelineDao.deleteAll();
                 if (result != null && !result.isEmpty()) timelineDao.save(result);
             } else {
-                result = timelineDao.fetchAll();
+                result = getSavedTweets(timelineDao);
                 Collections.reverse(result); // TODO: retrieve in reverse order
             }
             return result;

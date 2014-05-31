@@ -38,7 +38,7 @@ public class TimelineSQLiteDAO extends SQLiteTemplate.DAOSupport implements Time
     }
 
     @Override
-    public List<Status> fetchAll() {
+    public List<Status> fetchList() {
         return getSQLiteTemplate().queryForList(
                 String.format(getSqlString(R.string.twitt4droid_fetch_all_statuses_sql), tableName),
                 new SQLiteTemplate.RowMapper<Status>() {

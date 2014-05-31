@@ -25,10 +25,13 @@ import android.widget.Toast;
 
 import com.twitt4droid.R;
 import com.twitt4droid.Twitt4droidAsyncTasks;
+import com.twitt4droid.data.dao.TimelineDAO;
 import com.twitt4droid.data.dao.UserTimelineDAO;
 import com.twitt4droid.data.dao.impl.DAOFactory;
 import com.twitt4droid.task.ImageLoader;
 import com.twitt4droid.util.Strings;
+
+import java.util.List;
 
 import twitter4j.ResponseList;
 import twitter4j.Status;
@@ -93,6 +96,11 @@ public class UserTimelineFragment extends TimelineFragment {
     }
 
     @Override
+    protected List<Status> getSavedTweets(TimelineDAO timelineDao) {
+        return ((UserTimelineDAO)timelineDao).fetchListByScreenName(username);
+    }
+
+    @Override
     public int getResourceTitle() {
         return R.string.twitt4droid_user_timeline_fragment_title;
     }
@@ -114,10 +122,5 @@ public class UserTimelineFragment extends TimelineFragment {
     public UserTimelineFragment setUsername(String username) {
         this.username = username;
         return this;
-    }
-    
-    @Override
-    protected UserTimelineDAO getTimelineDao() {
-        return (UserTimelineDAO) super.getTimelineDao();
     }
 }

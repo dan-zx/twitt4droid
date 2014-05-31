@@ -192,7 +192,7 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
                     if (result != null && !result.isEmpty()) queryableTimelineDao.save(result);
                 }
             } else {
-                result = queryableTimelineDao.fetchAll();
+                result = queryableTimelineDao.fetchList();
                 Collections.reverse(result); // TODO: retrieve in reverse order
             }
             return result;

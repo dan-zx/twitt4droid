@@ -21,7 +21,7 @@ import twitter4j.Status;
 
 public interface TimelineDAO extends GenericDAO<Status, Long> { 
 
-    List<Status> fetchAll();
+    List<Status> fetchList();
     void save(List<Status> statuses);
     void deleteAll();
 }
