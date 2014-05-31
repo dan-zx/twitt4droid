@@ -43,7 +43,6 @@ import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.TwitterException;
 
-import java.util.Collections;
 import java.util.List;
 
 public class QueryableTimelineFragment extends BaseTimelineFragment {
@@ -191,10 +190,7 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
                     queryableTimelineDao.deleteAll();
                     if (result != null && !result.isEmpty()) queryableTimelineDao.save(result);
                 }
-            } else {
-                result = queryableTimelineDao.fetchList();
-                Collections.reverse(result); // TODO: retrieve in reverse order
-            }
+            } else result = queryableTimelineDao.fetchList();
             return result;
         }
         

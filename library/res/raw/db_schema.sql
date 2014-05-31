@@ -67,3 +67,9 @@ CREATE TABLE twitter_user (
     PRIMARY KEY (id),
     UNIQUE (screen_name)
 );
+
+CREATE INDEX home_created_at_idx ON home (created_at DESC);
+CREATE INDEX mention_created_at_idx ON mention (created_at DESC);
+CREATE INDEX fixed_query_created_at_idx ON fixed_query (created_at DESC);
+CREATE INDEX any_user_created_at_idx ON any_user (created_at DESC);
+CREATE INDEX queryable_created_at_idx ON queryable (created_at DESC);

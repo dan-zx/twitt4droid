@@ -35,7 +35,6 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import java.util.Collections;
 import java.util.List;
 
 public abstract class TimelineFragment extends BaseTimelineFragment {
@@ -133,10 +132,7 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
                 result = getTweets(getTwitter());
                 timelineDao.deleteAll();
                 if (result != null && !result.isEmpty()) timelineDao.save(result);
-            } else {
-                result = getSavedTweets(timelineDao);
-                Collections.reverse(result); // TODO: retrieve in reverse order
-            }
+            } else result = getSavedTweets(timelineDao);
             return result;
         }
         

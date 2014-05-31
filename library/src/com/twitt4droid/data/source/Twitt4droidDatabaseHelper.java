@@ -20,6 +20,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.twitt4droid.R;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -27,7 +29,6 @@ public class Twitt4droidDatabaseHelper extends SQLiteOpenHelper {
 
     private static final int CURRENT_VERSION = 1;
     private static final String TAG = Twitt4droidDatabaseHelper.class.getSimpleName();
-    private static final String SCHEMA_FILE_FORMAT = "db/schema-v%s.sql";
     private static final String NAME = "twitt4droid";
     
     private final int version;
@@ -41,16 +42,16 @@ public class Twitt4droidDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-        try {
-            Log.v(TAG, "Creating database version " + version + "...");
-            InputStream fileStream = context.getAssets().open(String.format(SCHEMA_FILE_FORMAT, version));
-            String[] statements = SQLFileParser.getSqlStatements(fileStream);
-            for (String statement : statements) {
-                Log.d(TAG, statement);
-                database.execSQL(statement);
+        Log.v(TAG, "Creating database version " + version + "...");
+        InputStream fileStream = context.getResources().openRawResource(R.raw.db_schema);
+        String[] statements = SQLFileParser.getSqlStatements(fileStream);
+        for (String statement : statements) database.execSQL(statement);
+        if (fileStream != null) {
+            try {
+                fileStream.close();
+            } catch (IOException ex) {
+                Log.e(TAG, "Couldn't close stream", ex);
             }
-        } catch (IOException ex) {
-            Log.e(TAG, "Unable read schema", ex);
         }
     }
 

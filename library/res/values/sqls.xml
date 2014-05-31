@@ -17,12 +17,12 @@
 <resources>
 
     <!-- TIMELINE SQL's -->
-    <string name="twitt4droid_fetch_all_statuses_sql">SELECT id, tweet_content, screen_name, name, created_at, profile_image_url FROM %s</string>
+    <string name="twitt4droid_fetch_all_statuses_sql">SELECT id, tweet_content, screen_name, name, created_at, profile_image_url FROM %s ORDER BY created_at DESC</string>
     <string name="twitt4droid_insert_status_sql">INSERT INTO %s (id, tweet_content, screen_name, name, created_at, profile_image_url) VALUES (?, ?, ?, ?, ?, ?)</string>
     <string name="twitt4droid_delete_all_statuses_sql">DELETE FROM %s</string>
 
     <!-- USER TIMELINE SQL's -->
-    <string name="twitt4droid_fetch_statuses_by_screen_name_sql">SELECT id, tweet_content, screen_name, name, created_at, profile_image_url FROM any_user WHERE screen_name = ?</string>
+    <string name="twitt4droid_fetch_statuses_by_screen_name_sql">SELECT id, tweet_content, screen_name, name, created_at, profile_image_url FROM any_user WHERE screen_name = ? ORDER BY created_at DESC</string>
 
     <!-- USER SQL's -->
     <string name="twitt4droid_fetch_user_by_id_sql">SELECT id, name, screen_name, profile_image_url, profile_banner_url, url, description, location FROM twitter_user WHERE id = ?</string>
