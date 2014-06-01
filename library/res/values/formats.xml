@@ -16,8 +16,8 @@
 -->
 <resources>
 
-    <string name="twitt4droid_username_format">\@%s</string>
-    <string name="twitt4droid_tweet_username_format">\@%1$s (%2$s)</string>
-    <string name="twitt4droid_tweet_date_format">%1$s %2$s</string>
+    <string name="twitt4droid_username_format" translatable="false">\@%s</string>
+    <string name="twitt4droid_tweet_username_format" translatable="false">\@%1$s (%2$s)</string>
+    <string name="twitt4droid_tweet_date_format" translatable="false">%1$s %2$s</string>
 
 </resources>

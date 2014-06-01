@@ -16,6 +16,6 @@
 -->
 <resources>
 
-    <string name="twitt4droid_github_url">https://github.com/dan-zx/twitt4droid</string>
+    <string name="twitt4droid_github_url" translatable="false">https://github.com/dan-zx/twitt4droid</string>
 
 </resources>
