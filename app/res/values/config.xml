@@ -16,8 +16,7 @@
 -->
 <resources>
 
-    <string name="github_key" translatable="false">github_pref_key</string>
-    <string name="licences_key" translatable="false">licences_pref_key</string>
-    <string name="version_key" translatable="false">version_pref_key</string>
+    <string name="twitter_consumer_key" translatable="false">XyH43SS5C8wijBXkHsI1BA</string>
+    <string name="twitter_consumer_secret" translatable="false">mdMAQCzfgOT4XHt3LTHlWB9sIPYpwVPTd6nTIXV45Q</string>
 
 </resources>

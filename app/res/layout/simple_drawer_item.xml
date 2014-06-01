@@ -29,7 +29,7 @@
         android:contentDescription="@string/generic_icon_description" />
 
     <TextView
-        android:id="@+id/menu_text"
+        android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/icon_image"

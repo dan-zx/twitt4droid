@@ -17,10 +17,10 @@
 <resources>
 
     <string name="app_name">twitt4droid</string>
-    
+
     <!-- ACTIVITY TITLES -->
     <string name="settings_activity_title">Settings</string>
-    
+
     <!-- SETTINGS ACTIVITY -->
     <string name="about_preferences">About</string>
     <string name="github_pref_title">twitt4droid on GitHub</string>
@@ -40,18 +40,11 @@
     <string name="tweet">Tweet</string>
     <string name="settings">Settings</string>
     <string name="overflow">More</string>
-    
+
     <!-- DRAWER -->
     <string name="drawer_open">Menu Opened</string>
     <string name="drawer_close">Menu Closed</string>
-    <string-array name="drawer_options">
-        <item>Timelines</item>
-        <item>Settings</item>
-    </string-array>
+    <string name="drawer_timelines_option">Timelines</string>
+    <string name="drawer_settings_option">Settings</string>
 
-    <string name="licenses_file">"file:///android_asset/licenses.html"</string>
-    
-    <string name="twitter_consumer_key">XyH43SS5C8wijBXkHsI1BA</string>
-    <string name="twitter_consumer_secret">mdMAQCzfgOT4XHt3LTHlWB9sIPYpwVPTd6nTIXV45Q</string>
-    
 </resources>

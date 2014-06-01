@@ -24,65 +24,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <LinearLayout
+    <ListView
         android:id="@+id/left_drawer"
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="#212021"
-        android:orientation="vertical" >
-
-        <RelativeLayout
-            android:id="@+id/user_info_layout"
-            android:layout_width="match_parent"
-            android:layout_height="100dp" >
-
-            <ImageView
-                android:id="@+id/user_banner_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/twitt4droid_banner_image_description"
-                android:scaleType="centerCrop"
-                android:src="@color/twitt4droid_no_image_background" />
-
-            <ImageView
-                android:id="@+id/user_profile_image"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_margin="8dp"
-                android:background="@drawable/twitt4droid_image_white_border"
-                android:contentDescription="@string/twitt4droid_profile_image_description"
-                android:src="@color/twitt4droid_no_image_background" />
-
-            <TextView
-                android:id="@+id/user_username"
-                style="@style/Twitt4droid.TextAppearance.Overlay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/user_profile_image"
-                android:layout_toRightOf="@+id/user_profile_image" />
-
-            <TextView
-                android:id="@+id/user_screen_name"
-                style="@style/Twitt4droid.TextAppearance.Overlay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/user_username"
-                android:layout_alignTop="@+id/user_profile_image"
-                android:textStyle="bold" />
-        </RelativeLayout>
-
-        <ListView
-            android:id="@+id/drawer_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:choiceMode="singleChoice"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="8dp" >
-        </ListView>
-    </LinearLayout>
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="8dp" />
 
 </android.support.v4.widget.DrawerLayout>

@@ -23,35 +23,22 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.twitt4droid.Twitt4droid;
-import com.twitt4droid.Twitt4droidAsyncTasks;
 import com.twitt4droid.activity.UserProfileActivity;
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.fragment.TimelinesFragment;
-import com.twitt4droid.task.ImageLoader;
-
-import twitter4j.User;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.twitt4droid.app.widget.DrawerItemAdapter;
+import com.twitt4droid.app.widget.HeaderDrawerItem;
+import com.twitt4droid.app.widget.SimpleDrawerItem;
 
 public class MainActivity extends ActionBarActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
     private static final String FRAGMENT_TAG = "CURRENT_FRAGMENT";
 
     private DrawerLayout drawerLayout;
@@ -78,72 +65,17 @@ public class MainActivity extends ActionBarActivity {
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        setUpUserEntry();
-        setUpListEntry();
+        setUpDrawerMenu();
     }
 
-    private void setUpUserEntry() {
-        final RelativeLayout userInfoLayout = (RelativeLayout) drawerLayout.findViewById(R.id.user_info_layout);
-        final ImageView userBannerImage =(ImageView) drawerLayout.findViewById(R.id.user_banner_image);
-        final ImageView userProfileImage =(ImageView) drawerLayout.findViewById(R.id.user_profile_image);
-        final TextView userUsername = (TextView) drawerLayout.findViewById(R.id.user_username);
-        final TextView userScreenName =(TextView) drawerLayout.findViewById(R.id.user_screen_name);
-
-        new Twitt4droidAsyncTasks.UserInfoFetcher(this) {
-
-            @Override
-            protected void onPostExecute(User result) {
-                userInfoLayout.setVisibility(View.VISIBLE);
-                if (getTwitterException() != null) {
-                    Log.e(TAG, "Twitter error", getTwitterException());
-                    Toast.makeText(getContext().getApplicationContext(), 
-                            R.string.twitt4droid_error_message, 
-                            Toast.LENGTH_LONG)
-                            .show();
-                } else if (result != null) {
-                    userUsername.setText(getString(R.string.twitt4droid_username_format, result.getScreenName()));
-                    userScreenName.setText(result.getName());
-                    new ImageLoader(getContext())
-                        .setLoadingColorId(R.color.twitt4droid_no_image_background)
-                        .setImageView(userBannerImage)
-                        .execute(result.getProfileBannerURL());
-                    new ImageLoader(getContext())
-                        .setLoadingColorId(R.color.twitt4droid_no_image_background)
-                        .setImageView(userProfileImage)
-                        .execute(result.getProfileImageURL());
-                }
-            }
-        }.execute(Twitt4droid.getCurrentUserUsername(this));
-        userProfileImage.setOnClickListener(new View.OnClickListener() {
-            
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
-                Bundle b = new Bundle();
-                b.putString(UserProfileActivity.EXTRA_USER_USERNAME, Twitt4droid.getCurrentUserUsername(MainActivity.this));
-                intent.putExtras(b);
-                startActivity(intent);
-            }
-        });
-    }
-
-    private void setUpListEntry() {
-        drawerList = (ListView) drawerLayout.findViewById(R.id.drawer_list);
-        String[] from = new String[] { "icon", "menu" };
-        int[] to = new int[] { R.id.icon_image, R.id.menu_text };
-        List<Map<String, Object>> data = new ArrayList<>();
-        Map<String, Object> map = new HashMap<>();
-        map.put(from[0], R.drawable.twitt4droid_ic_clock_holo_dark);
-        map.put(from[1], getResources().getStringArray(R.array.drawer_options)[0]);
-        data.add(map);
-        map = new HashMap<>();
-        map.put(from[0], R.drawable.ic_settings);
-        map.put(from[1], getResources().getStringArray(R.array.drawer_options)[1]);
-        data.add(map);
-        SimpleAdapter drawerListAdapter = new SimpleAdapter(this, data, R.layout.drawer_item, from, to);
-        drawerList.setAdapter(drawerListAdapter);
+    private void setUpDrawerMenu() {
+        drawerList = (ListView) drawerLayout.findViewById(R.id.left_drawer);
+        DrawerItemAdapter drawerMenuAdapter = new DrawerItemAdapter(this);
+        drawerMenuAdapter.add(new HeaderDrawerItem(this));
+        drawerMenuAdapter.add(new SimpleDrawerItem(R.drawable.twitt4droid_ic_clock_holo_dark, R.string.drawer_timelines_option));
+        drawerMenuAdapter.add(new SimpleDrawerItem(R.drawable.ic_settings, R.string.drawer_settings_option));
+        drawerList.setAdapter(drawerMenuAdapter);
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
-        drawerList.setItemChecked(0, true);
     }
 
     private void setUpFragment(Fragment fragment) {
@@ -179,15 +111,21 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             switch(position) {
-                case 0: 
+                case 0:
+                    Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
+                    Bundle b = new Bundle();
+                    b.putString(UserProfileActivity.EXTRA_USER_USERNAME, Twitt4droid.getCurrentUserUsername(MainActivity.this));
+                    intent.putExtras(b);
+                    startActivity(intent);
+                case 1: 
                     setUpFragment(new TimelinesFragment());
                     break;
-                case 1: 
+                case 2: 
                     startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                     break;
             }
             drawerList.setItemChecked(position, true);
-            drawerLayout.closeDrawers();
+            drawerLayout.closeDrawer(drawerList);
         }        
     }
 }
