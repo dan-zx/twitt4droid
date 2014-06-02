@@ -1,9 +1,31 @@
 package com.twitt4droid.app.widget;
 
-import android.content.Context;
-import android.view.View;
+import java.util.HashMap;
 
-public abstract class DrawerItem {
-    
-    public abstract View initView(View convertView, Context context); 
+public class DrawerItem {
+
+    public static enum Type { HEADER, SIMPLE }
+
+    private final Type type;
+
+    private HashMap<String, Object> data;
+
+    public DrawerItem(Type type) {
+        this.type = type;
+        this.data = new HashMap<>();
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T get(String key, Class<T> type) {
+        return (T) data.get(key);
+    }
+
+    public DrawerItem put(String key, Object value) {
+        data.put(key, value);
+        return this;
+    }
+
+    public Type getType() {
+        return type;
+    }
 }

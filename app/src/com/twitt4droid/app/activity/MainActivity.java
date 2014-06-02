@@ -33,9 +33,8 @@ import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.activity.UserProfileActivity;
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.fragment.TimelinesFragment;
+import com.twitt4droid.app.widget.DrawerItem;
 import com.twitt4droid.app.widget.DrawerItemAdapter;
-import com.twitt4droid.app.widget.HeaderDrawerItem;
-import com.twitt4droid.app.widget.SimpleDrawerItem;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -71,9 +70,14 @@ public class MainActivity extends ActionBarActivity {
     private void setUpDrawerMenu() {
         drawerList = (ListView) drawerLayout.findViewById(R.id.left_drawer);
         DrawerItemAdapter drawerMenuAdapter = new DrawerItemAdapter(this);
-        drawerMenuAdapter.add(new HeaderDrawerItem(this));
-        drawerMenuAdapter.add(new SimpleDrawerItem(R.drawable.twitt4droid_ic_clock_holo_dark, R.string.drawer_timelines_option));
-        drawerMenuAdapter.add(new SimpleDrawerItem(R.drawable.ic_settings, R.string.drawer_settings_option));
+        drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.HEADER)
+            .put("SCREEN_NAME", Twitt4droid.getCurrentUserUsername(this)));
+        drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.SIMPLE)
+            .put("ICON_RES", R.drawable.twitt4droid_ic_clock_holo_dark)
+            .put("TEXT_RES", R.string.drawer_timelines_option));
+        drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.SIMPLE)
+            .put("ICON_RES", R.drawable.ic_settings)
+            .put("TEXT_RES", R.string.drawer_settings_option));
         drawerList.setAdapter(drawerMenuAdapter);
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
     }
