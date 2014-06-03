@@ -32,6 +32,8 @@ import android.widget.ListView;
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.activity.UserProfileActivity;
 import com.twitt4droid.app.R;
+import com.twitt4droid.app.fragment.CustomFixedQueryTimelineFragment;
+import com.twitt4droid.app.fragment.CustomQueryableTimelineFragment;
 import com.twitt4droid.app.fragment.TimelinesFragment;
 import com.twitt4droid.app.widget.DrawerItem;
 import com.twitt4droid.app.widget.DrawerItemAdapter;
@@ -43,6 +45,7 @@ public class MainActivity extends ActionBarActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private ListView drawerList;
+    private int currentTitleId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         setUpDrawer();
         setUpFragment(new TimelinesFragment());
+        setTitle(R.string.drawer_timelines_option);
     }
 
     private void setUpDrawer() {
@@ -59,7 +63,23 @@ public class MainActivity extends ActionBarActivity {
                 drawerLayout,         
                 R.drawable.ic_drawer,
                 R.string.drawer_open,
-                R.string.drawer_close); 
+                R.string.drawer_close) {
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getSupportActionBar().setTitle(R.string.app_name);
+                supportInvalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                getSupportActionBar().setTitle(currentTitleId);
+                supportInvalidateOptionsMenu();
+            }
+        };
+
         drawerLayout.setDrawerListener(drawerToggle);
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -75,6 +95,12 @@ public class MainActivity extends ActionBarActivity {
         drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.SIMPLE)
             .put("ICON_RES", R.drawable.twitt4droid_ic_clock_holo_dark)
             .put("TEXT_RES", R.string.drawer_timelines_option));
+        drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.SIMPLE)
+            .put("ICON_RES", R.drawable.twitt4droid_ic_hashtag_holo_dark)
+            .put("TEXT_RES", R.string.drawer_fixed_search_option));
+        drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.SIMPLE)
+            .put("ICON_RES", R.drawable.twitt4droid_ic_search_holo_dark)
+            .put("TEXT_RES", R.string.drawer_search_option));
         drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.SIMPLE)
             .put("ICON_RES", R.drawable.ic_settings)
             .put("TEXT_RES", R.string.drawer_settings_option));
@@ -109,7 +135,13 @@ public class MainActivity extends ActionBarActivity {
         super.onConfigurationChanged(newConfig);
         drawerToggle.onConfigurationChanged(newConfig);
     }
-    
+
+    @Override
+    public void setTitle(int titleId) {
+        currentTitleId = titleId;
+        getSupportActionBar().setTitle(currentTitleId);
+    }
+
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
         @Override
@@ -123,8 +155,17 @@ public class MainActivity extends ActionBarActivity {
                     startActivity(intent);
                 case 1: 
                     setUpFragment(new TimelinesFragment());
+                    setTitle(R.string.drawer_timelines_option);
                     break;
-                case 2: 
+                case 2:
+                    setUpFragment(new CustomFixedQueryTimelineFragment().setQuery(getString(R.string.drawer_fixed_search_option)));
+                    setTitle(R.string.drawer_fixed_search_option);
+                    break;
+                case 3:
+                    setUpFragment(new CustomQueryableTimelineFragment());
+                    setTitle(R.string.drawer_search_option);
+                    break;
+                case 4: 
                     startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                     break;
             }

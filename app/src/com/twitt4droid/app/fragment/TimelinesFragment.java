@@ -17,7 +17,6 @@ import com.twitt4droid.fragment.BaseTimelineFragment;
 import com.twitt4droid.fragment.FixedQueryTimelineFragment;
 import com.twitt4droid.fragment.HomeTimelineFragment;
 import com.twitt4droid.fragment.MentionsTimelineFragment;
-import com.twitt4droid.fragment.QueryableTimelineFragment;
 import com.twitt4droid.widget.TweetDialog;
 
 import java.util.ArrayList;
@@ -50,8 +49,6 @@ public class TimelinesFragment extends Fragment {
         SwipeTimelineFragmentPagerAdapter adapter = new SwipeTimelineFragmentPagerAdapter();
         adapter.addFragment(new HomeTimelineFragment());
         adapter.addFragment(new MentionsTimelineFragment());
-        adapter.addFragment(new FixedQueryTimelineFragment().setQuery("#WorldCup"));
-        adapter.addFragment(new QueryableTimelineFragment());
         viewPager.setAdapter(adapter);
         pagerStrip.setDrawFullUnderline(false);
         pagerStrip.setTabIndicatorColor(getResources().getColor(R.color.twitt4droid_primary_color));

@@ -20,6 +20,10 @@ public class DrawerItem {
         return (T) data.get(key);
     }
 
+    public boolean isNotNull(String key) {
+        return data.get(key) != null;
+    }
+
     public DrawerItem put(String key, Object value) {
         data.put(key, value);
         return this;

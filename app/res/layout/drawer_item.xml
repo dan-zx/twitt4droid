@@ -67,26 +67,25 @@
         android:layout_height="match_parent"
         android:visibility="gone" >
 
-        <ImageView
-            android:id="@+id/icon_image"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/item_text"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:contentDescription="@string/generic_icon_description" />
-
-        <TextView
-            android:id="@+id/text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/icon_image"
-            android:layout_alignTop="@+id/icon_image"
-            android:layout_toRightOf="@id/icon_image"
-            android:gravity="center"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:paddingBottom="8dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@android:color/white" />
+
+        <View android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignLeft="@id/item_text"
+            android:layout_alignRight="@id/item_text"
+            android:layout_below="@id/item_text"
+            android:background="#8c888c" />
     </RelativeLayout>
 
 </RelativeLayout>

@@ -44,7 +44,9 @@
     <!-- DRAWER -->
     <string name="drawer_open">Menu Opened</string>
     <string name="drawer_close">Menu Closed</string>
-    <string name="drawer_timelines_option">Timelines</string>
+    <string name="drawer_timelines_option">My Timelines</string>
+    <string name="drawer_fixed_search_option">#WorldCup</string>
+    <string name="drawer_search_option">Search in Twitter</string>
     <string name="drawer_settings_option">Settings</string>
 
 </resources>

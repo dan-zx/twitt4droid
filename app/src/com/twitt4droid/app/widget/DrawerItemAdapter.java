@@ -80,15 +80,16 @@ public class DrawerItemAdapter extends BaseAdapter {
         holder.userScreenName = (TextView) convertView.findViewById(R.id.user_screen_name);
         holder.userName = (TextView) convertView.findViewById(R.id.user_name);
         holder.simpleItemLayout = (RelativeLayout) convertView.findViewById(R.id.simple_item_layout);
-        holder.iconImage = (ImageView) convertView.findViewById(R.id.icon_image);
-        holder.itemtext = (TextView) convertView.findViewById(R.id.text);
+        holder.itemtext = (TextView) convertView.findViewById(R.id.item_text);
         return holder;
     }
     
     private void setSimpleItemContent(DrawerItem item, ViewHolder holder) {
         holder.simpleItemLayout.setVisibility(View.VISIBLE);
         holder.headerItemLayout.setVisibility(View.GONE);
-        holder.iconImage.setImageResource(item.get("ICON_RES", int.class));
+        if (item.isNotNull("ICON_RES")) {
+            holder.itemtext.setCompoundDrawablesWithIntrinsicBounds(item.get("ICON_RES", int.class), 0, 0, 0);
+        }
         holder.itemtext.setText(item.get("TEXT_RES", int.class));
     }
 
@@ -129,7 +130,6 @@ public class DrawerItemAdapter extends BaseAdapter {
         private TextView userName;
 
         private RelativeLayout simpleItemLayout;
-        private ImageView iconImage;
         private TextView itemtext;
     }
 }
