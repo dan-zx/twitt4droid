@@ -16,8 +16,9 @@
 -->
 <resources>
 
-    <string name="github_key" translatable="false">github_pref_key</string>
-    <string name="licences_key" translatable="false">licences_pref_key</string>
-    <string name="version_key" translatable="false">version_pref_key</string>
+    <string name="github_key" translatable="false">GITHUB</string>
+    <string name="licences_key" translatable="false">LICENCES</string>
+    <string name="clear_cache_key" translatable="false">CLEAR_CACHE</string>
+    <string name="app_version_key" translatable="false">APP_VERSION</string>
 
 </resources>

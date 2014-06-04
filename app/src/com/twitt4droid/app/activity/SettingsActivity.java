@@ -25,7 +25,9 @@ import android.preference.PreferenceActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.webkit.WebView;
+import android.widget.Toast;
 
+import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.app.R;
 
 public class SettingsActivity extends PreferenceActivity {
@@ -33,6 +35,7 @@ public class SettingsActivity extends PreferenceActivity {
     private static final String TAG = SettingsActivity.class.getSimpleName();
 
     private Preference licencesPreference;
+    private Preference clearCachePreference;
     private Preference versionPreference;
     
     @Override
@@ -43,6 +46,7 @@ public class SettingsActivity extends PreferenceActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) displayHomeAsUp();
         findPreferences();
         setUpLicencesPreference();
+        setUpClearCachePreference();
         setUpVersionPreference();
     }
 
@@ -54,7 +58,8 @@ public class SettingsActivity extends PreferenceActivity {
     @SuppressWarnings("deprecation")
     private void findPreferences() {
         licencesPreference = findPreference(getString(R.string.licences_key));
-        versionPreference = findPreference(getString(R.string.version_key));
+        clearCachePreference = findPreference(getString(R.string.clear_cache_key));
+        versionPreference = findPreference(getString(R.string.app_version_key));
     }
 
     private void setUpLicencesPreference() {
@@ -69,6 +74,20 @@ public class SettingsActivity extends PreferenceActivity {
                     .setView(webView)
                     .setCancelable(true)
                     .show();
+                return true;
+            }
+        });
+    }
+
+    private void setUpClearCachePreference() {
+        clearCachePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Twitt4droid.clearCache(getApplicationContext());
+                Toast.makeText(getApplicationContext(), 
+                        R.string.cache_cleared_message, 
+                        Toast.LENGTH_SHORT).show();
                 return true;
             }
         });

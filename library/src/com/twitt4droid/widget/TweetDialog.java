@@ -82,7 +82,8 @@ public class TweetDialog extends Dialog {
                     Toast.makeText(getContext().getApplicationContext(), 
                             R.string.twitt4droid_error_message, 
                             Toast.LENGTH_LONG).show();
-                } else setUpUser(result);
+                } else if (result != null) setUpUser(result);
+                else setUpUser(Twitt4droid.getCurrentUser(getContext()));
             }
             
             private void setUpUser(User user) {
