@@ -23,6 +23,7 @@
 
     <!-- SETTINGS ACTIVITY -->
     <string name="about_preferences">About</string>
+    <string name="other_preferences">Other</string>
     <string name="github_title">twitt4droid on GitHub</string>
     <string name="github_summary">Library code and wikis</string>
     <string name="licenses_title">Licenses</string>
