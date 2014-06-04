@@ -17,6 +17,7 @@ package com.twitt4droid.app.activity;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ public class SettingsActivity extends PreferenceActivity {
 
     private Preference licencesPreference;
     private Preference clearCachePreference;
+    private Preference closeSessionPreference;
     private Preference versionPreference;
     
     @Override
@@ -47,6 +49,7 @@ public class SettingsActivity extends PreferenceActivity {
         findPreferences();
         setUpLicencesPreference();
         setUpClearCachePreference();
+        setUpCloseSessionPreference();
         setUpVersionPreference();
     }
 
@@ -59,6 +62,7 @@ public class SettingsActivity extends PreferenceActivity {
     private void findPreferences() {
         licencesPreference = findPreference(getString(R.string.licences_key));
         clearCachePreference = findPreference(getString(R.string.clear_cache_key));
+        closeSessionPreference  = findPreference(getString(R.string.close_session_key));
         versionPreference = findPreference(getString(R.string.app_version_key));
     }
 
@@ -88,6 +92,30 @@ public class SettingsActivity extends PreferenceActivity {
                 Toast.makeText(getApplicationContext(), 
                         R.string.cache_cleared_message, 
                         Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+    }
+
+    private void setUpCloseSessionPreference() {
+        closeSessionPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                new AlertDialog.Builder(SettingsActivity.this)
+                    .setTitle(R.string.close_session_title)
+                    .setMessage(R.string.close_session_alert_message)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Twitt4droid.resetData(getApplicationContext());
+                            dialog.dismiss();
+                            finish();
+                        }
+                    })
+                    .show();
                 return true;
             }
         });

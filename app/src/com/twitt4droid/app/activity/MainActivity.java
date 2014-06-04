@@ -56,6 +56,16 @@ public class MainActivity extends ActionBarActivity {
         setTitle(R.string.drawer_timelines_option);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!Twitt4droid.isUserLoggedIn(getApplicationContext())) {
+            Intent intent = new Intent(this, SignInActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
     private void setUpDrawer() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = new ActionBarDrawerToggle(
