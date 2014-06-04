@@ -11,9 +11,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.Twitt4droidAsyncTasks;
 import com.twitt4droid.app.R;
 import com.twitt4droid.task.ImageLoader;
+import com.twitt4droid.util.Strings;
 
 import twitter4j.User;
 
@@ -99,6 +101,12 @@ public class DrawerItemAdapter extends BaseAdapter {
         new Twitt4droidAsyncTasks.UserInfoFetcher(context) {
 
             @Override
+            protected void onPreExecute() { 
+                super.onPreExecute();
+                setUpUser(Twitt4droid.getCurrentUser(getContext()));
+            }
+
+            @Override
             protected void onPostExecute(User result) {
                 if (getTwitterException() != null) {
                     Log.e(TAG, "Twitter error", getTwitterException());
@@ -106,18 +114,20 @@ public class DrawerItemAdapter extends BaseAdapter {
                             R.string.twitt4droid_error_message, 
                             Toast.LENGTH_LONG)
                             .show();
-                } else if (result != null) {
-                    holder.userScreenName.setText(getContext().getString(R.string.twitt4droid_username_format, result.getScreenName()));
-                    holder.userName.setText(result.getName());
+                } else setUpUser(result);
+            }
+            
+            private void setUpUser(User user) {
+                holder.userScreenName.setText(getContext().getString(R.string.twitt4droid_username_format, user.getScreenName()));
+                holder.userName.setText(user.getName());
+                if (!Strings.isNullOrBlank(user.getProfileBannerURL())) {
                     new ImageLoader(getContext())
-                        .setLoadingColorId(R.color.twitt4droid_no_image_background)
                         .setImageView(holder.userProfileBannerImage)
-                        .execute(result.getProfileBannerURL());
-                    new ImageLoader(getContext())
-                        .setLoadingColorId(R.color.twitt4droid_no_image_background)
-                        .setImageView(holder.userProfileImage)
-                        .execute(result.getProfileImageURL());
+                        .execute(user.getProfileBannerURL());
                 }
+                new ImageLoader(getContext())
+                    .setImageView(holder.userProfileImage)
+                    .execute(user.getProfileImageURL());
             }
         }.execute(item.get("SCREEN_NAME", String.class));
     }

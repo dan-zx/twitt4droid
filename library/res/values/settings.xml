@@ -20,8 +20,7 @@
     <string name="twitt4droid_preference_file_key" translatable="false">com.twitt4droid.PREFERENCES</string>
     <string name="twitt4droid_oauth_token_key" translatable="false">OAUTH_TOKEN</string>
     <string name="twitt4droid_oauth_secret_key" translatable="false">OAUTH_SECRET</string>
-    <string name="twitt4droid_user_username_name_key" translatable="false">USER_USERNAME_NAME</string>
-    <string name="twitt4droid_user_id_key" translatable="false">USER_ID</string>
+    <string name="twitt4droid_user_key" translatable="false">USER</string>
     <string name="twitt4droid_user_is_logged_in_key" translatable="false">USER_IS_LOGGED_IN</string>
 
     <!-- META DATA -->

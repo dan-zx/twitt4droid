@@ -2,10 +2,8 @@ package com.twitt4droid.widget;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -19,17 +17,12 @@ import com.twitt4droid.R;
 import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.Twitt4droidAsyncTasks;
-import com.twitt4droid.data.dao.UserDAO;
-import com.twitt4droid.data.dao.impl.DAOFactory;
 import com.twitt4droid.task.ImageLoader;
 
 import twitter4j.Status;
-import twitter4j.Twitter;
 import twitter4j.User;
 
 public class TweetDialog extends Dialog {
-
-    private static final String TAG = TweetDialog.class.getSimpleName();
 
     private ImageView userProfileImage;
     private TextView userUsername;
@@ -75,7 +68,31 @@ public class TweetDialog extends Dialog {
         initConsts();
         setUpTweetEditText();
         setUpTweetButton();
-        new UserDataFetcher().execute();
+        new Twitt4droidAsyncTasks.UserInfoFetcher(getContext()) {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                setUpUser(Twitt4droid.getCurrentUser(getContext()));
+            }
+
+            @Override
+            protected void onPostExecute(User result) {
+                if (getTwitterException() != null) {
+                    Toast.makeText(getContext().getApplicationContext(), 
+                            R.string.twitt4droid_error_message, 
+                            Toast.LENGTH_LONG).show();
+                } else setUpUser(result);
+            }
+            
+            private void setUpUser(User user) {
+                userUsername.setText(getContext().getString(R.string.twitt4droid_username_format, user.getScreenName()));
+                userScreenName.setText(user.getName());
+                new ImageLoader(getContext())
+                    .setImageView(userProfileImage)
+                    .execute(user.getProfileImageURL());
+            }
+        }.execute(Twitt4droid.getCurrentUser(getContext()).getScreenName());
     }
 
     private void findViews() {
@@ -152,50 +169,5 @@ public class TweetDialog extends Dialog {
                 }
             }
         });
-    }
-
-    private class UserDataFetcher extends AsyncTask<Void, Void, User> {
-
-        private Twitter twitter;
-        private UserDAO userDao;
-        private long userId;
-        private boolean isConnectedToInternet;
-        
-        @Override
-        protected void onPreExecute() {
-            Context appContext = getContext().getApplicationContext();
-            isConnectedToInternet = Resources.isConnectedToInternet(appContext);
-            twitter = Twitt4droid.getTwitter(appContext);
-            userId = Twitt4droid.getCurrentUserId(appContext);
-            userDao = new DAOFactory(appContext).getUserDAO();
-        }
-        
-        @Override
-        protected User doInBackground(Void... params) {
-            try {
-                if (!isConnectedToInternet) return userDao.fetchById(userId);
-                else return twitter.verifyCredentials();
-            } catch (Exception ex) {
-                Log.e(TAG, "Error while retrieving user data", ex);
-            }
-
-            return null;
-        }
-        
-        @Override
-        protected void onPostExecute(User result) {
-            if (result != null) {
-                userUsername.setText("@" + result.getScreenName());
-                userScreenName.setText(result.getName());
-                new ImageLoader(getContext())
-                    .setImageView(userProfileImage)
-                    .setLoadingColorId(R.color.twitt4droid_no_image_background)
-                    .execute(result.getProfileImageURL());
-            } else {
-                Toast.makeText(getContext().getApplicationContext(), 
-                        R.string.twitt4droid_error_message, 
-                        Toast.LENGTH_LONG).show();
-            }
-        }
     }
 }

@@ -37,8 +37,6 @@ import com.twitt4droid.R;
 import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.Twitt4droidAsyncTasks;
-import com.twitt4droid.data.dao.UserDAO;
-import com.twitt4droid.data.dao.impl.DAOFactory;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -76,14 +74,12 @@ public class WebLoginActivity extends Activity {
     private ProgressBar loadingBar;
     private MenuItem reloadCancelItem;
     private WebView webView;
-    private UserDAO userDao;
     private RequestToken requestToken;
 
     /** {@inheritDoc} */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userDao = new DAOFactory(getApplicationContext()).getUserDAO();
         if (Twitt4droid.areConsumerTokensAvailable(getApplicationContext())) {
             if (Resources.isConnectedToInternet(this)) {
                 if (Twitt4droid.isUserLoggedIn(getApplicationContext())) {
@@ -236,7 +232,7 @@ public class WebLoginActivity extends Activity {
      */
     private void handleUserValidation(User user) {
         Log.i(TAG, "@" + user.getScreenName() + " was successfully authenticated");
-        userDao.save(user);
+        Twitt4droid.saveOrUpdateUser(user, getApplicationContext());
         Intent data = getIntent();
         data.putExtra(EXTRA_USER, user);
         setResult(RESULT_OK, data);

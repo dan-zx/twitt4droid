@@ -91,7 +91,7 @@ public class MainActivity extends ActionBarActivity {
         drawerList = (ListView) drawerLayout.findViewById(R.id.left_drawer);
         DrawerItemAdapter drawerMenuAdapter = new DrawerItemAdapter(this);
         drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.HEADER)
-            .put("SCREEN_NAME", Twitt4droid.getCurrentUserUsername(this)));
+            .put("SCREEN_NAME", Twitt4droid.getCurrentUser(this).getScreenName()));
         drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.SIMPLE)
             .put("ICON_RES", R.drawable.twitt4droid_ic_clock_holo_dark)
             .put("TEXT_RES", R.string.drawer_timelines_option));
@@ -150,7 +150,7 @@ public class MainActivity extends ActionBarActivity {
                 case 0:
                     Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
                     Bundle b = new Bundle();
-                    b.putString(UserProfileActivity.EXTRA_USER_USERNAME, Twitt4droid.getCurrentUserUsername(MainActivity.this));
+                    b.putString(UserProfileActivity.EXTRA_USER_USERNAME, Twitt4droid.getCurrentUser(MainActivity.this).getScreenName());
                     intent.putExtras(b);
                     startActivity(intent);
                 case 1: 

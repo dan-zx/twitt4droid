@@ -17,15 +17,25 @@ package com.twitt4droid;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.twitt4droid.data.source.Twitt4droidDatabaseHelper;
 import com.twitt4droid.util.Images;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import twitter4j.RateLimitStatus;
+import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
+import twitter4j.URLEntity;
+import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
+
+import java.util.Date;
 
 /**
  * Utility class for loading Twitter configurations.
@@ -100,8 +110,6 @@ public final class Twitt4droid {
             .edit()
             .putString(context.getString(R.string.twitt4droid_oauth_token_key), token.getToken())
             .putString(context.getString(R.string.twitt4droid_oauth_secret_key), token.getTokenSecret())
-            .putString(context.getString(R.string.twitt4droid_user_username_name_key), token.getScreenName())
-            .putLong(context.getString(R.string.twitt4droid_user_id_key), token.getUserId())
             .putBoolean(context.getString(R.string.twitt4droid_user_is_logged_in_key), true)
             .commit();
     }
@@ -114,12 +122,58 @@ public final class Twitt4droid {
     public static void deleteAuthenticationInfo(Context context) {
         Resources.getPreferences(context)
             .edit()
-            .putString(context.getString(R.string.twitt4droid_oauth_token_key), null)
-            .putString(context.getString(R.string.twitt4droid_oauth_secret_key), null)
-            .putString(context.getString(R.string.twitt4droid_user_username_name_key), null)
-            .putLong(context.getString(R.string.twitt4droid_user_id_key), Long.MIN_VALUE)
-            .putBoolean(context.getString(R.string.twitt4droid_user_is_logged_in_key), false)
+            .remove(context.getString(R.string.twitt4droid_oauth_token_key))
+            .remove(context.getString(R.string.twitt4droid_oauth_secret_key))
+            .remove(context.getString(R.string.twitt4droid_user_is_logged_in_key))
             .commit();
+    }
+
+    /**
+     * Saves a twitter user.
+     * 
+     * @param user the user to save.
+     * @param context the application context.
+     */
+    public static void saveOrUpdateUser(User user, Context context) {
+        Resources.getPreferences(context)
+            .edit()
+            .putString(context.getString(R.string.twitt4droid_user_key), UserJSONImpl.toJSON(user))
+            .commit();
+    }
+
+    /**
+     * Deletes the current twitter user.
+     *
+     * @param context the application context.
+     */
+    public static void deleteCurrentUser(Context context) {
+        Resources.getPreferences(context)
+            .edit()
+            .remove(context.getString(R.string.twitt4droid_user_key))
+            .commit();
+    }
+
+    /**
+     * Gets the current twitter user.
+     * 
+     * @param context the application context.
+     * @return the current twitter user if exists; otherwise {@code null}.
+     */
+    public static User getCurrentUser(Context context) {
+        String json = Resources.getPreferences(context).getString(
+                context.getString(R.string.twitt4droid_user_key),
+                null);
+        return UserJSONImpl.fromJSON(json);
+    }
+
+    /**
+     * Deletes all information stored in databases and image caches.
+     * 
+     * @param context the application context.
+     */
+    public static void clearCache(Context context) {
+        Twitt4droidDatabaseHelper.destroyDb(context);
+        Images.clearCache();
     }
 
     /**
@@ -137,28 +191,353 @@ public final class Twitt4droid {
         Images.clearCache();
     }
 
-    /**
-     * Gets the current twitter user username.
-     * 
-     * @param context the application context.
-     * @return the current twitter user username if exists; otherwise {@code null}.
-     */
-    public static String getCurrentUserUsername(Context context) {
-        return Resources.getPreferences(context).getString(
-                context.getString(R.string.twitt4droid_user_username_name_key),
-                null);
-    }
+    private static class UserJSONImpl implements User {
 
-    /**
-     * Gets the current twitter user id.
-     * 
-     * @param context the application context.
-     * @return the current twitter user id if exists; otherwise 
-     *         {@link Long#MIN_VALUE}.
-     */
-    public static long getCurrentUserId(Context context) {
-        return Resources.getPreferences(context).getLong(
-                context.getString(R.string.twitt4droid_user_id_key), 
-                Long.MIN_VALUE);
+        private static final String TAG = UserJSONImpl.class.getSimpleName();
+        private static final long serialVersionUID = -3838693829821915548L;
+
+        private long id;
+        private String name;
+        private String screenName;
+        private String profileImageURL;
+        private String profileBannerURL;
+        private String url;
+        private String description;
+        private String location;
+        
+        private UserJSONImpl() { }
+
+        private static String toJSON(User user) {
+            return new StringBuilder()
+                .append("{")
+                .append("\"id\": ").append(user.getId()).append(", ")
+                .append("\"name\": ").append("\"").append(user.getName()).append("\"").append(", ")
+                .append("\"screenName\": ").append("\"").append(user.getScreenName()).append("\"").append(", ")
+                .append("\"profileImageURL\": ").append("\"").append(user.getProfileImageURL()).append("\"").append(", ")
+                .append("\"profileBannerURL\": ").append("\"").append(user.getProfileBannerURL()).append("\"").append(", ")
+                .append("\"url\": ").append("\"").append(user.getURL()).append("\"").append(", ")
+                .append("\"description\": ").append("\"").append(user.getDescription()).append("\"").append(", ")
+                .append("\"location\": ").append("\"").append(user.getLocation()).append("\"")
+                .append("}")
+                .toString();
+        }
+        
+        private static UserJSONImpl fromJSON(String json) {
+            UserJSONImpl user = null;
+            try {
+                JSONObject obj = new JSONObject(json);
+                user = new UserJSONImpl();
+                user.id = obj.getLong("id");
+                user.name = obj.getString("name");
+                user.screenName = obj.getString("screenName");
+                user.profileImageURL = obj.getString("profileImageURL");
+                user.profileBannerURL = obj.getString("profileBannerURL");
+                user.url = obj.getString("url");
+                user.description = obj.getString("description");
+                user.location = obj.getString("location");
+            } catch (JSONException ex) {
+                Log.e(TAG, "Error while parsing user json string", ex);
+            }
+
+            return user;
+        }
+        
+        @Override
+        public int compareTo(User another) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public int getAccessLevel() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public RateLimitStatus getRateLimitStatus() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getBiggerProfileImageURL() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getBiggerProfileImageURLHttps() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public Date getCreatedAt() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return description;
+        }
+
+        @Override
+        public URLEntity[] getDescriptionURLEntities() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public int getFavouritesCount() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public int getFollowersCount() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public int getFriendsCount() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public long getId() {
+            return id;
+        }
+
+        @Override
+        public String getLang() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public int getListedCount() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public String getLocation() {
+            return location;
+        }
+
+        @Override
+        public String getMiniProfileImageURL() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getMiniProfileImageURLHttps() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public String getOriginalProfileImageURL() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getOriginalProfileImageURLHttps() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getProfileBackgroundColor() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getProfileBackgroundImageURL() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getProfileBackgroundImageUrlHttps() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getProfileBannerIPadRetinaURL() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getProfileBannerIPadURL() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getProfileBannerMobileRetinaURL() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getProfileBannerMobileURL() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getProfileBannerRetinaURL() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getProfileBannerURL() {
+            return profileBannerURL;
+        }
+
+        @Override
+        public String getProfileImageURL() {
+            return profileImageURL;
+        }
+
+        @Override
+        public String getProfileImageURLHttps() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getProfileLinkColor() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getProfileSidebarBorderColor() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getProfileSidebarFillColor() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getProfileTextColor() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getScreenName() {
+            return screenName;
+        }
+
+        @Override
+        public Status getStatus() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public int getStatusesCount() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public String getTimeZone() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String getURL() {
+            return url;
+        }
+
+        @Override
+        public URLEntity getURLEntity() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public int getUtcOffset() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public boolean isContributorsEnabled() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public boolean isFollowRequestSent() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public boolean isGeoEnabled() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public boolean isProfileBackgroundTiled() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public boolean isProfileUseBackgroundImage() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public boolean isProtected() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public boolean isShowAllInlineMedia() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public boolean isTranslator() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public boolean isVerified() {
+            // TODO Auto-generated method stub
+            return false;
+        }
     }
 }
