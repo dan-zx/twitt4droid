@@ -17,9 +17,11 @@ package com.twitt4droid.data.dao.impl;
 
 import android.content.Context;
 
+import com.twitt4droid.data.dao.ListTimelineDAO;
 import com.twitt4droid.data.dao.TimelineDAO;
 import com.twitt4droid.data.dao.UserDAO;
 import com.twitt4droid.data.dao.UserTimelineDAO;
+import com.twitt4droid.data.dao.impl.sqlite.ListSQLiteDAO;
 import com.twitt4droid.data.dao.impl.sqlite.TimelineSQLiteDAO;
 import com.twitt4droid.data.dao.impl.sqlite.UserSQLiteDAO;
 import com.twitt4droid.data.dao.impl.sqlite.UserTimelineSQLiteDAO;
@@ -63,6 +65,13 @@ public class DAOFactory {
 
     public TimelineDAO getQueryableTimelineDAO() {
         TimelineSQLiteDAO dao = new TimelineSQLiteDAO(TimelineSQLiteDAO.Table.QUERYABLE);
+        dao.setContext(context);
+        dao.setSQLiteOpenHelper(new Twitt4droidDatabaseHelper(context));
+        return dao;
+    }
+
+    public ListTimelineDAO getListTimelineDAO() {
+        ListSQLiteDAO dao = new ListSQLiteDAO();
         dao.setContext(context);
         dao.setSQLiteOpenHelper(new Twitt4droidDatabaseHelper(context));
         return dao;

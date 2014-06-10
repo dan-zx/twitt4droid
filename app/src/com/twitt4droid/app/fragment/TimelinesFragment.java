@@ -12,12 +12,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.twitt4droid.Twitt4droid;
+import com.twitt4droid.Twitt4droidAsyncTasks;
 import com.twitt4droid.app.R;
 import com.twitt4droid.fragment.BaseTimelineFragment;
 import com.twitt4droid.fragment.FixedQueryTimelineFragment;
 import com.twitt4droid.fragment.HomeTimelineFragment;
+import com.twitt4droid.fragment.ListTimelineFragment;
 import com.twitt4droid.fragment.MentionsTimelineFragment;
 import com.twitt4droid.widget.TweetDialog;
+
+import twitter4j.ResponseList;
+import twitter4j.UserList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,12 +52,28 @@ public class TimelinesFragment extends Fragment {
     private void setUpLayout(View layout) {
         ViewPager viewPager = (ViewPager) layout.findViewById(R.id.view_pager);
         PagerTabStrip pagerStrip = (PagerTabStrip) layout.findViewById(R.id.pager_strip);
-        SwipeTimelineFragmentPagerAdapter adapter = new SwipeTimelineFragmentPagerAdapter();
+        final SwipeTimelineFragmentPagerAdapter adapter = new SwipeTimelineFragmentPagerAdapter();
         adapter.addFragment(new HomeTimelineFragment());
         adapter.addFragment(new MentionsTimelineFragment());
         viewPager.setAdapter(adapter);
         pagerStrip.setDrawFullUnderline(false);
         pagerStrip.setTabIndicatorColor(getResources().getColor(R.color.twitt4droid_primary_color));
+
+        new Twitt4droidAsyncTasks.UserListsFetcher(getActivity()) {
+
+            @Override
+            protected void onPostExecute(ResponseList<UserList> result) {
+                if (getTwitterException() == null) {
+                    if (result != null) {
+                        for (UserList list : result) {
+                            ListTimelineFragment fragment = ListTimelineFragment.newInstance(list);
+                            adapter.addFragment(fragment);
+                        }
+                    }
+                }
+            }
+        }
+        .execute(Twitt4droid.getCurrentUser(getActivity()).getScreenName());
     }
     
     @Override
@@ -94,6 +116,7 @@ public class TimelinesFragment extends Fragment {
             if (!fragments.isEmpty() && position >= 0) {
                 BaseTimelineFragment fragment = fragments.get(position);
                 if (fragment instanceof FixedQueryTimelineFragment) return ((FixedQueryTimelineFragment)fragment).getQuery();
+                if (fragment instanceof ListTimelineFragment) return ((ListTimelineFragment)fragment).getListTitle();
                 return getString(fragment.getResourceTitle());
             }
             else return null;

@@ -59,6 +59,7 @@
     <string name="twitt4droid_home_timeline_fragment_title">HOME</string>
     <string name="twitt4droid_mentions_timeline_fragment_title">MENTIONS</string>
     <string name="twitt4droid_user_timeline_fragment_title">PROFILE</string>
+    <string name="twitt4droid_list_timeline_fragment_title">LIST</string>
     
     <!-- TWEET CONTEXT MENU -->
     <string-array name="twitt4droid_tweet_context_menu">

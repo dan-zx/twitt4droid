@@ -8,10 +8,12 @@ import android.widget.Toast;
 import com.twitt4droid.data.dao.UserDAO;
 import com.twitt4droid.data.dao.impl.DAOFactory;
 
+import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
+import twitter4j.UserList;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
@@ -267,6 +269,23 @@ public final class Twitt4droidAsyncTasks {
                 }
             } else user = userDAO.fetchByScreenName(params[0]);
             return user;
+        }
+    }
+
+    public static class UserListsFetcher extends AsyncTwitterFetcher<String, ResponseList<UserList>> {
+
+        public UserListsFetcher(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected ResponseList<UserList> doInBackground(String... args) {
+            try {
+                return getTwitter().getUserLists(args[0]);
+            } catch (TwitterException ex) {
+                setTwitterException(ex);
+            }
+            return null;
         }
     }
 }

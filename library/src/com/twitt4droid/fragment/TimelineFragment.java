@@ -58,7 +58,7 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        new TimelineLoader().execute();
+        getNewTimelineLoader().execute();
     } 
 
     protected void setUpLayout(View layout) {
@@ -82,7 +82,7 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
     }
 
     private void reloadTweetsIfPossible() {
-        if (Resources.isConnectedToInternet(getActivity())) new TimelineLoader().execute();
+        if (Resources.isConnectedToInternet(getActivity())) getNewTimelineLoader().execute();
         else {
             swipeLayout.setRefreshing(false);
             Toast.makeText(getActivity().getApplicationContext(), 
@@ -91,10 +91,19 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
         }
     }
 
+    protected TimelineLoader getNewTimelineLoader() {
+        return new TimelineLoader();
+    }
+    
     protected abstract List<Status> getTweets(Twitter twitter) throws TwitterException;
 
     protected List<Status> getSavedTweets(TimelineDAO timelineDao) {
         return timelineDao.fetchList();
+    }
+
+    protected void updateSavedTweets(TimelineDAO timelineDao, List<Status> newTweets) {
+        timelineDao.deleteAll();
+        if (newTweets != null && !newTweets.isEmpty()) timelineDao.save(newTweets);
     }
 
     protected void setTimelineDao(TimelineDAO timelineDao) {
@@ -105,7 +114,7 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
         this.layoutResource = layoutResource;
     }
 
-    private class TimelineLoader extends Twitt4droidAsyncTasks.TweetFetcher<Void> {
+    protected class TimelineLoader extends Twitt4droidAsyncTasks.TweetFetcher<Void> {
 
         private boolean isConnectToInternet;
 
@@ -130,8 +139,7 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
             List<twitter4j.Status> result = null;
             if (isConnectToInternet) {
                 result = getTweets(getTwitter());
-                timelineDao.deleteAll();
-                if (result != null && !result.isEmpty()) timelineDao.save(result);
+                updateSavedTweets(timelineDao, result);
             } else result = getSavedTweets(timelineDao);
             return result;
         }
@@ -153,6 +161,10 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
                             Toast.LENGTH_SHORT).show();
                 }
             }
+        }
+
+        protected boolean isConnectToInternet() {
+            return isConnectToInternet;
         }
     }
 }

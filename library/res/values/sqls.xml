@@ -16,15 +16,20 @@
 -->
 <resources>
 
-    <!-- TIMELINE SQL's -->
+    <!-- TIMELINE -->
     <string name="twitt4droid_fetch_all_statuses_sql" translatable="false">SELECT id, tweet_content, screen_name, name, created_at, profile_image_url FROM %s ORDER BY created_at DESC</string>
     <string name="twitt4droid_insert_status_sql" translatable="false">INSERT INTO %s (id, tweet_content, screen_name, name, created_at, profile_image_url) VALUES (?, ?, ?, ?, ?, ?)</string>
     <string name="twitt4droid_delete_all_statuses_sql" translatable="false">DELETE FROM %s</string>
 
-    <!-- USER TIMELINE SQL's -->
+    <!-- USER TIMELINE -->
     <string name="twitt4droid_fetch_statuses_by_screen_name_sql" translatable="false">SELECT id, tweet_content, screen_name, name, created_at, profile_image_url FROM any_user WHERE screen_name = ? ORDER BY created_at DESC</string>
 
-    <!-- USER SQL's -->
+    <!-- LIST TIMELINE -->
+    <string name="twitt4droid_fetch_list_all_statuses_by_list_id_sql" translatable="false">SELECT id, tweet_content, screen_name, name, created_at, profile_image_url FROM any_list WHERE list_id = ? ORDER BY created_at DESC</string>
+    <string name="twitt4droid_insert_list_status_sql" translatable="false">INSERT INTO any_list (id, list_id, tweet_content, screen_name, name, created_at, profile_image_url) VALUES (?, ?, ?, ?, ?, ?, ?)</string>
+    <string name="twitt4droid_delete_all_list_statuses_by_list_id_sql" translatable="false">DELETE FROM any_list WHERE list_id = ?</string>
+
+    <!-- USER -->
     <string name="twitt4droid_fetch_user_by_id_sql" translatable="false">SELECT id, name, screen_name, profile_image_url, profile_banner_url, url, description, location FROM twitter_user WHERE id = ?</string>
     <string name="twitt4droid_fetch_user_by_screen_name_sql" translatable="false">SELECT id, name, screen_name, profile_image_url, profile_banner_url, url, description, location FROM twitter_user WHERE screen_name = ?</string>
     <string name="twitt4droid_insert_user_sql" translatable="false">INSERT INTO twitter_user (id, name, screen_name, profile_image_url, profile_banner_url, url, description, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?)</string>
