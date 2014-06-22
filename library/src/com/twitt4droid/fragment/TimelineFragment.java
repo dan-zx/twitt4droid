@@ -66,7 +66,7 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
         tweetListView = (ListView) layout.findViewById(R.id.tweets_list);
         progressBar = (ProgressBar) layout.findViewById(R.id.tweets_progress_bar);
         listAdapter = new TweetAdapter(getActivity());
-        listAdapter.setUseDarkTheme(isUsingDarkTheme());
+        listAdapter.setUseDarkTheme(isDarkThemeEnabled());
         tweetListView.setAdapter(listAdapter);
         swipeLayout.setColorScheme(R.color.twitt4droid_primary_color, 
                 R.color.twitt4droid_secundary_color_1,

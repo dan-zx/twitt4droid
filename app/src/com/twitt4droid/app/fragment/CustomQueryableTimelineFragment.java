@@ -11,6 +11,14 @@ import com.twitt4droid.widget.TweetDialog;
 
 public class CustomQueryableTimelineFragment extends QueryableTimelineFragment {
 
+    public static CustomQueryableTimelineFragment newInstance() {
+        CustomQueryableTimelineFragment fragment = new CustomQueryableTimelineFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(ENABLE_DARK_THEME_ARG, false);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -34,7 +34,8 @@ import com.twitt4droid.activity.UserProfileActivity;
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.fragment.CustomFixedQueryTimelineFragment;
 import com.twitt4droid.app.fragment.CustomQueryableTimelineFragment;
-import com.twitt4droid.app.fragment.TimelinesFragment;
+import com.twitt4droid.app.fragment.ListsFragment;
+import com.twitt4droid.app.fragment.HomeFragment;
 import com.twitt4droid.app.widget.DrawerItem;
 import com.twitt4droid.app.widget.DrawerItemAdapter;
 
@@ -52,8 +53,8 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpDrawer();
-        setUpFragment(new TimelinesFragment());
-        setTitle(R.string.drawer_timelines_option);
+        setUpFragment(new HomeFragment());
+        setTitle(R.string.drawer_home_option);
     }
 
     @Override
@@ -103,8 +104,11 @@ public class MainActivity extends ActionBarActivity {
         drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.HEADER)
             .put("SCREEN_NAME", Twitt4droid.getCurrentUser(this).getScreenName()));
         drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.SIMPLE)
+            .put("ICON_RES", R.drawable.twitt4droid_ic_home_holo_dark)
+            .put("TEXT_RES", R.string.drawer_home_option));
+        drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.SIMPLE)
             .put("ICON_RES", R.drawable.twitt4droid_ic_clock_holo_dark)
-            .put("TEXT_RES", R.string.drawer_timelines_option));
+            .put("TEXT_RES", R.string.drawer_lists_option));
         drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.SIMPLE)
             .put("ICON_RES", R.drawable.twitt4droid_ic_hashtag_holo_dark)
             .put("TEXT_RES", R.string.drawer_fixed_search_option));
@@ -158,25 +162,27 @@ public class MainActivity extends ActionBarActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             switch(position) {
                 case 0:
-                    Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
-                    Bundle b = new Bundle();
-                    b.putString(UserProfileActivity.EXTRA_USER_USERNAME, Twitt4droid.getCurrentUser(MainActivity.this).getScreenName());
-                    intent.putExtras(b);
-                    startActivity(intent);
+                    Intent profileIntent = UserProfileActivity.buildIntent(MainActivity.this, Twitt4droid.getCurrentUser(MainActivity.this).getScreenName());
+                    startActivity(profileIntent);
                 case 1: 
-                    setUpFragment(new TimelinesFragment());
-                    setTitle(R.string.drawer_timelines_option);
+                    setUpFragment(new HomeFragment());
+                    setTitle(R.string.drawer_home_option);
                     break;
-                case 2:
-                    setUpFragment(new CustomFixedQueryTimelineFragment().setQuery(getString(R.string.drawer_fixed_search_option)));
-                    setTitle(R.string.drawer_fixed_search_option);
+                case 2: 
+                    setUpFragment(new ListsFragment());
+                    setTitle(R.string.drawer_lists_option);
                     break;
                 case 3:
-                    setUpFragment(new CustomQueryableTimelineFragment());
+                    setUpFragment(CustomFixedQueryTimelineFragment.newInstance(getString(R.string.drawer_fixed_search_option)));
+                    setTitle(R.string.drawer_fixed_search_option);
+                    break;
+                case 4:
+                    setUpFragment(CustomQueryableTimelineFragment.newInstance());
                     setTitle(R.string.drawer_search_option);
                     break;
-                case 4: 
-                    startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                case 5: 
+                    Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                    startActivity(settingsIntent);
                     break;
             }
             drawerList.setItemChecked(position, true);

@@ -11,6 +11,15 @@ import com.twitt4droid.widget.TweetDialog;
 
 public class CustomFixedQueryTimelineFragment extends FixedQueryTimelineFragment {
 
+    public static CustomFixedQueryTimelineFragment newInstance(String query) {
+        CustomFixedQueryTimelineFragment fragment = new CustomFixedQueryTimelineFragment();
+        Bundle args = new Bundle();
+        args.putString(QUERY_ARG, query);
+        args.putBoolean(ENABLE_DARK_THEME_ARG, false);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -16,16 +16,21 @@ import java.util.List;
 
 public class ListTimelineFragment extends TimelineFragment {
 
-    private static final String LIST_ARG = "LIST";
+    protected static final String LIST_ARG = "LIST";
     
     private ListTimelineDAO listTimelineDAO;
 
-    public static ListTimelineFragment newInstance(UserList userList) {
+    public static ListTimelineFragment newInstance(UserList userList, boolean enableDarkTheme) {
         ListTimelineFragment fragment = new ListTimelineFragment();
         Bundle args = new Bundle();
         args.putSerializable(LIST_ARG, userList);
+        args.putBoolean(ENABLE_DARK_THEME_ARG, enableDarkTheme);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static ListTimelineFragment newInstance(UserList userList) {
+        return newInstance(userList, false);
     }
 
     @Override

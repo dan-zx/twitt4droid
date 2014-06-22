@@ -20,7 +20,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -137,11 +136,8 @@ public class TweetAdapter extends BaseAdapter {
                 
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, UserProfileActivity.class);
-                    Bundle b = new Bundle();
-                    b.putString(UserProfileActivity.EXTRA_USER_USERNAME, status.getUser().getScreenName());
-                    intent.putExtras(b);
-                    context.startActivity(intent);
+                    Intent profileIntent = UserProfileActivity.buildIntent(context, status.getUser().getScreenName(), isUsingDarkTheme);
+                    context.startActivity(profileIntent);
                 }
             });
             overflowButton.setOnClickListener(new View.OnClickListener() {

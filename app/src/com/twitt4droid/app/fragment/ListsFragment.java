@@ -11,15 +11,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.Twitt4droidAsyncTasks;
 import com.twitt4droid.app.R;
-import com.twitt4droid.fragment.BaseTimelineFragment;
-import com.twitt4droid.fragment.FixedQueryTimelineFragment;
-import com.twitt4droid.fragment.HomeTimelineFragment;
 import com.twitt4droid.fragment.ListTimelineFragment;
-import com.twitt4droid.fragment.MentionsTimelineFragment;
 import com.twitt4droid.widget.TweetDialog;
 
 import twitter4j.ResponseList;
@@ -28,7 +25,7 @@ import twitter4j.UserList;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimelinesFragment extends Fragment {
+public class ListsFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,17 +45,14 @@ public class TimelinesFragment extends Fragment {
         setUpLayout(layout);
         return layout;
     }
-
+    
     private void setUpLayout(View layout) {
         ViewPager viewPager = (ViewPager) layout.findViewById(R.id.view_pager);
         PagerTabStrip pagerStrip = (PagerTabStrip) layout.findViewById(R.id.pager_strip);
         final SwipeTimelineFragmentPagerAdapter adapter = new SwipeTimelineFragmentPagerAdapter();
-        adapter.addFragment(new HomeTimelineFragment());
-        adapter.addFragment(new MentionsTimelineFragment());
         viewPager.setAdapter(adapter);
         pagerStrip.setDrawFullUnderline(false);
         pagerStrip.setTabIndicatorColor(getResources().getColor(R.color.twitt4droid_primary_color));
-
         new Twitt4droidAsyncTasks.UserListsFetcher(getActivity()) {
 
             @Override
@@ -70,6 +64,13 @@ public class TimelinesFragment extends Fragment {
                             adapter.addFragment(fragment);
                         }
                     }
+                } else {
+                    if (getActivity() != null) {
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                R.string.twitt4droid_error_message,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    
                 }
             }
         }
@@ -88,14 +89,14 @@ public class TimelinesFragment extends Fragment {
 
     private class SwipeTimelineFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
-        private final List<BaseTimelineFragment> fragments;
+        private final List<ListTimelineFragment> fragments;
 
         private SwipeTimelineFragmentPagerAdapter() {
             super(getFragmentManager());
             fragments = new ArrayList<>();
         }
 
-        private void addFragment(BaseTimelineFragment fragment) {
+        private void addFragment(ListTimelineFragment fragment) {
             fragments.add(fragment);
             notifyDataSetChanged();
         }
@@ -113,12 +114,7 @@ public class TimelinesFragment extends Fragment {
         
         @Override
         public CharSequence getPageTitle(int position) {
-            if (!fragments.isEmpty() && position >= 0) {
-                BaseTimelineFragment fragment = fragments.get(position);
-                if (fragment instanceof FixedQueryTimelineFragment) return ((FixedQueryTimelineFragment)fragment).getQuery();
-                if (fragment instanceof ListTimelineFragment) return ((ListTimelineFragment)fragment).getListTitle();
-                return getString(fragment.getResourceTitle());
-            }
+            if (!fragments.isEmpty() && position >= 0) return fragments.get(position).getListTitle();
             else return null;
         }
     }

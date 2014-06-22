@@ -30,7 +30,20 @@ import java.util.List;
 
 public class FixedQueryTimelineFragment extends TimelineFragment {
 
-    private String query;
+    protected static final String QUERY_ARG = "QUERY";
+
+    public static FixedQueryTimelineFragment newInstance(String query, boolean enableDarkTheme) {
+        FixedQueryTimelineFragment fragment = new FixedQueryTimelineFragment();
+        Bundle args = new Bundle();
+        args.putString(QUERY_ARG, query);
+        args.putBoolean(ENABLE_DARK_THEME_ARG, enableDarkTheme);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static FixedQueryTimelineFragment newInstance(String query) {
+        return newInstance(query, false);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,11 +78,6 @@ public class FixedQueryTimelineFragment extends TimelineFragment {
     }
 
     public String getQuery() {
-        return query;
-    }
-
-    public FixedQueryTimelineFragment setQuery(String query) {
-        this.query = query;
-        return this;
+        return getArguments().getString(QUERY_ARG);
     }
 }

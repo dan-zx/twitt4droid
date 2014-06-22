@@ -41,9 +41,22 @@ import twitter4j.User;
 
 public class UserTimelineFragment extends TimelineFragment {
 
+    protected static final String USERNAME_ARG = "USERNAME";
+
     private static final String TAG = UserTimelineFragment.class.getSimpleName();
 
-    private String username;
+    public static UserTimelineFragment newInstance(String username, boolean enableDarkTheme) {
+        UserTimelineFragment fragment = new UserTimelineFragment();
+        Bundle args = new Bundle();
+        args.putString(USERNAME_ARG, username);
+        args.putBoolean(ENABLE_DARK_THEME_ARG, enableDarkTheme);
+        fragment.setArguments(args);
+        return fragment;
+    }
+    
+    public static UserTimelineFragment newInstance(String username) {
+        return newInstance(username, false);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,17 +100,17 @@ public class UserTimelineFragment extends TimelineFragment {
                         .execute(result.getProfileImageURL());
                 }
             }
-        }.execute(username);
+        }.execute(getUsername());
     }
     
     @Override
     protected ResponseList<Status> getTweets(Twitter twitter) throws TwitterException {
-        return twitter.getUserTimeline(username);
+        return twitter.getUserTimeline(getUsername());
     }
 
     @Override
     protected List<Status> getSavedTweets(TimelineDAO timelineDao) {
-        return ((UserTimelineDAO)timelineDao).fetchListByScreenName(username);
+        return ((UserTimelineDAO)timelineDao).fetchListByScreenName(getUsername());
     }
 
     @Override
@@ -116,11 +129,6 @@ public class UserTimelineFragment extends TimelineFragment {
     }
     
     public String getUsername() {
-        return username;
-    }
-
-    public UserTimelineFragment setUsername(String username) {
-        this.username = username;
-        return this;
+        return getArguments().getString(USERNAME_ARG);
     }
 }

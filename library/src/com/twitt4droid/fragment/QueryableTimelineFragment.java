@@ -59,6 +59,18 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
     private String lastQuery;
     private TimelineDAO queryableTimelineDao;
 
+    public static QueryableTimelineFragment newInstance(boolean enableDarkTheme) {
+        QueryableTimelineFragment fragment = new QueryableTimelineFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(ENABLE_DARK_THEME_ARG, enableDarkTheme);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static QueryableTimelineFragment newInstance() {
+        return newInstance(false);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.twitt4droid_queryable_timeline, container, false);
@@ -105,7 +117,7 @@ public class QueryableTimelineFragment extends BaseTimelineFragment {
         searchedtweetListView = (ListView) layout.findViewById(R.id.searched_tweets_list);
         progressBar = (ProgressBar) layout.findViewById(R.id.searched_tweets_progress_bar);
         listAdapter = new TweetAdapter(getActivity());
-        listAdapter.setUseDarkTheme(isUsingDarkTheme());
+        listAdapter.setUseDarkTheme(isDarkThemeEnabled());
         searchedtweetListView.setAdapter(listAdapter);
         searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             

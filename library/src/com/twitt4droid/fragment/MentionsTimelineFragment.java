@@ -27,6 +27,18 @@ import twitter4j.TwitterException;
 
 public class MentionsTimelineFragment extends TimelineFragment {
 
+    public static MentionsTimelineFragment newInstance(boolean enableDarkTheme) {
+        MentionsTimelineFragment fragment = new MentionsTimelineFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(ENABLE_DARK_THEME_ARG, enableDarkTheme);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static MentionsTimelineFragment newInstance() {
+        return newInstance(false);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
