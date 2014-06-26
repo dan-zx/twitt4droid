@@ -7,8 +7,6 @@ import com.twitt4droid.data.dao.ListTimelineDAO;
 import com.twitt4droid.data.dao.impl.DAOFactory;
 
 import twitter4j.Paging;
-import twitter4j.Status;
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserList;
 
@@ -17,8 +15,6 @@ import java.util.List;
 public class ListTimelineFragment extends TimelineFragment {
 
     protected static final String LIST_ARG = "LIST";
-    
-    private ListTimelineDAO listTimelineDAO;
 
     public static ListTimelineFragment newInstance(UserList userList, boolean enableDarkTheme) {
         ListTimelineFragment fragment = new ListTimelineFragment();
@@ -34,20 +30,14 @@ public class ListTimelineFragment extends TimelineFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        listTimelineDAO = new DAOFactory(getActivity()).getListTimelineDAO();
+    protected ListStatusesLoaderTask initStatusesLoaderTask() {
+        return new ListStatusesLoaderTask(new DAOFactory(getActivity().getApplicationContext()).getListTimelineDAO(), getList().getId());
     }
 
     @Override
-    @Deprecated
-    protected List<Status> getTweets(Twitter twitter) throws TwitterException {
-        return null;
-    }
-
-    @Override
-    protected TimelineLoader getNewTimelineLoader() {
-        return new ListTimelineLoader();
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initStatusesLoaderTask().execute();
     }
     
     public String getListTitle() {
@@ -76,18 +66,27 @@ public class ListTimelineFragment extends TimelineFragment {
         return R.drawable.twitt4droid_ic_person_holo_dark;
     }
 
-    protected class ListTimelineLoader extends TimelineLoader {
+    private class ListStatusesLoaderTask extends StatusesLoaderTask {
+
+        private final long listId;
         
-        @Override
-        protected List<twitter4j.Status> loadTweetsInBackground(Void... params) throws TwitterException {
-            List<twitter4j.Status> result = null;
-            long listId = getList().getId();
-            if (isConnectToInternet()) {
-                result = getTwitter().getUserListStatuses(listId, new Paging(1));
-                listTimelineDAO.deleteAllByListId(listId);
-                if (result != null && !result.isEmpty()) listTimelineDAO.save(result, listId);
-            } else result = listTimelineDAO.fetchListByListId(listId);
-            return result;
+        protected ListStatusesLoaderTask(ListTimelineDAO timelineDao, long listId) {
+            super(timelineDao);
+            this.listId = listId;
         }
+
+        @Override
+        protected List<twitter4j.Status> loadTweetsInBackground() throws TwitterException {
+            ListTimelineDAO timelineDAO = (ListTimelineDAO) getDAO();
+            List<twitter4j.Status> statuses = null;
+            if (isConnectToInternet()) {
+                statuses = getTwitter().getUserListStatuses(listId, new Paging(1));
+                // TODO: update statuses instead of deleting all previous statuses and save new ones.
+                timelineDAO.deleteAllByListId(listId);
+                timelineDAO.save(statuses, listId);
+            } else statuses = timelineDAO.fetchListByListId(listId);
+            return statuses;
+        }
+        
     }
 }

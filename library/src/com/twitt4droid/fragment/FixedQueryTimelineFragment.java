@@ -18,12 +18,10 @@ package com.twitt4droid.fragment;
 import android.os.Bundle;
 
 import com.twitt4droid.R;
+import com.twitt4droid.data.dao.TimelineDAO;
 import com.twitt4droid.data.dao.impl.DAOFactory;
 
 import twitter4j.Query;
-import twitter4j.QueryResult;
-import twitter4j.Status;
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import java.util.List;
@@ -46,19 +44,14 @@ public class FixedQueryTimelineFragment extends TimelineFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setTimelineDao(new DAOFactory(getActivity().getApplicationContext()).getFixedQueryTimelineDAO());
+    protected QueryStatusesLoaderTask initStatusesLoaderTask() {
+        return new QueryStatusesLoaderTask(new DAOFactory(getActivity().getApplicationContext()).getFixedQueryTimelineDAO(), getQuery());
     }
-    
-    @Override
-    protected List<Status> getTweets(Twitter twitter) throws TwitterException {
-        QueryResult result = twitter.search(new Query(getQuery()));
-        if (result != null) {
-            return result.getTweets();
-        }
 
-        return null;
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initStatusesLoaderTask().execute();
     }
 
     @Override
@@ -79,5 +72,28 @@ public class FixedQueryTimelineFragment extends TimelineFragment {
 
     public String getQuery() {
         return getArguments().getString(QUERY_ARG);
+    }
+
+    private class QueryStatusesLoaderTask extends StatusesLoaderTask {
+
+        private final String query;
+        
+        protected QueryStatusesLoaderTask(TimelineDAO timelineDao, String query) {
+            super(timelineDao);
+            this.query = query;
+        }
+
+        @Override
+        protected List<twitter4j.Status> loadTweetsInBackground() throws TwitterException {
+            TimelineDAO timelineDAO = (TimelineDAO) getDAO();
+            List<twitter4j.Status> statuses = null;
+            if (isConnectToInternet()) {
+                statuses = getTwitter().search(new Query(query)).getTweets();
+                // TODO: update statuses instead of deleting all previous statuses and save new ones.
+                timelineDAO.deleteAll();
+                timelineDAO.save(statuses);
+            } else statuses = timelineDAO.fetchList();
+            return statuses;
+        }
     }
 }

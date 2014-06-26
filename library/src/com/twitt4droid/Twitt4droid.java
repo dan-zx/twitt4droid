@@ -25,6 +25,8 @@ import com.twitt4droid.util.Images;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import twitter4j.AsyncTwitter;
+import twitter4j.AsyncTwitterFactory;
 import twitter4j.RateLimitStatus;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -64,8 +66,18 @@ public final class Twitt4droid {
     }
 
     /**
-     * Gets the current twitter4j configuration with consumer and access tokens
-     * pre-initialized. You can use this method to build a Twitter objects.
+     * Gets the current AsyncTwitter with consumer and access tokens pre-initialized.
+     * 
+     * @param context the application context.
+     * @return an AsyncTwitter object.
+     */
+    public static AsyncTwitter getAsyncTwitter(Context context) {
+        return new AsyncTwitterFactory(getCurrentConfig(context)).getInstance();
+    }
+
+    /**
+     * Gets the current twitter4j configuration with consumer and access tokens pre-initialized. You
+     * can use this method to build a Twitter objects.
      * 
      * @param context the application context.
      * @return an Configuration object.
@@ -81,12 +93,11 @@ public final class Twitt4droid {
     }
 
     /**
-     * Checks if there is any user authentication information stored in this
-     * app.
+     * Checks if there is any user authentication information stored in this app.
      * 
      * @param context the application context.
-     * @return {@code true} if there is any user authentication information
-     *         stored in this app; otherwise {@code false}.
+     * @return {@code true} if there is any user authentication information stored in this app;
+     *         otherwise {@code false}.
      */
     public static boolean isUserLoggedIn(Context context) {
         return Resources.getPreferences(context).getBoolean(
@@ -99,8 +110,7 @@ public final class Twitt4droid {
     }
 
     /**
-     * Saves authentication information from the given AccessToken in
-     * {@code SharedPreferences}.
+     * Saves authentication information from the given AccessToken in {@code SharedPreferences}.
      * 
      * @param context the application context.
      * @param token an AccessToken.

@@ -38,7 +38,7 @@
         android:visibility="gone" >
 
         <ListView
-            android:id="@+id/searched_tweets_list"
+            android:id="@+id/tweets_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/twitt4droid_tweet_list_background"
@@ -47,7 +47,7 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <ProgressBar
-        android:id="@+id/searched_tweets_progress_bar"
+        android:id="@+id/tweets_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"

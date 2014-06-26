@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,31 +30,91 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.twitt4droid.R;
-import com.twitt4droid.Twitt4droidAsyncTasks;
+import com.twitt4droid.Resources;
+import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.activity.UserProfileActivity;
 import com.twitt4droid.task.ImageLoader;
 
+import twitter4j.AsyncTwitter;
 import twitter4j.Status;
+import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterMethod;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TweetAdapter extends BaseAdapter {
-    
+
+    private static final String TAG = TweetAdapter.class.getSimpleName();
+
     private final Context context;
 
+    private AsyncTwitter twitter;
     private List<Status> data;
     private boolean isUsingDarkTheme;
 
     public TweetAdapter(Context context) {
+        if (!Twitt4droid.isUserLoggedIn(context)) throw new IllegalStateException("User must be logged in in order to use TweetAdapter");
         this.context = context;
-        this.data = Collections.emptyList();
+        this.data = new ArrayList<Status>();
+        this.twitter = Twitt4droid.getAsyncTwitter(context);
+        setUpTwitter();
+    }
+
+    private void setUpTwitter() {
+        twitter.addListener(new TwitterAdapter() {
+
+            @Override
+            public void createdFavorite(Status status) {
+                ((Activity)context).runOnUiThread(new Runnable() {
+                    
+                    @Override
+                    public void run() {
+                        Toast.makeText(context.getApplicationContext(), 
+                                R.string.twitt4droid_tweet_favorited, 
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+            }
+            
+            @Override
+            public void retweetedStatus(Status retweetedStatus) {
+                ((Activity) context).runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Toast.makeText(context.getApplicationContext(), 
+                                R.string.twitt4droid_tweet_retweeted, 
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+            }
+
+            @Override
+            public void onException(TwitterException te, TwitterMethod method) {
+                Log.e(TAG, "Twitter error in" + method, te);
+                ((Activity) context).runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Toast.makeText(context.getApplicationContext(), 
+                                R.string.twitt4droid_error_message, 
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+            }
+        });
     }
 
     public void set(List<Status> data) {
-        this.data = data;
+        this.data = data == null ? new ArrayList<Status>() : data;
         notifyDataSetChanged();
     }
 
@@ -79,33 +140,30 @@ public class TweetAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
-        Status rowItem = getItem(position);
-        LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.twitt4droid_tweet_item, null);
-            holder = new ViewHolder()
-                    .setContext(context)
-                    .setContentLayout((RelativeLayout) convertView.findViewById(R.id.content_layout))
-                    .setProfileImage((ImageView) convertView.findViewById(R.id.tweet_profile_image))
-                    .setClockImage((ImageView) convertView.findViewById(R.id.clock_image))
-                    .setTweetTextView((TextView) convertView.findViewById(R.id.tweet_content_text))
-                    .setUsernameTextView((TextView) convertView.findViewById(R.id.tweet_username_text))
-                    .setTweetTimeTextView((TextView) convertView.findViewById(R.id.tweet_time_text))
-                    .setOverflowButton((ImageButton) convertView.findViewById(R.id.tweet_options_button))
-                    .setUseDarkTheme(isUsingDarkTheme);
+            LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            convertView = layoutInflater.inflate(R.layout.twitt4droid_tweet_item, null);
+            holder = new ViewHolder();
+            holder.context = context;
+            holder.twitter = twitter;
+            holder.isUsingDarkTheme = isUsingDarkTheme;
+            holder.contentLayout = (RelativeLayout) convertView.findViewById(R.id.content_layout);
+            holder.profileImage = (ImageView) convertView.findViewById(R.id.tweet_profile_image);
+            holder.clockImage = (ImageView) convertView.findViewById(R.id.clock_image);
+            holder.tweetTextView = (TextView) convertView.findViewById(R.id.tweet_content_text);
+            holder.usernameTextView = (TextView) convertView.findViewById(R.id.tweet_username_text);
+            holder.tweetTimeTextView = (TextView) convertView.findViewById(R.id.tweet_time_text);
+            holder.overflowButton = (ImageButton) convertView.findViewById(R.id.tweet_options_button);
             convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-
-        holder.setContent(rowItem);
+        } else holder = (ViewHolder) convertView.getTag();
+        holder.setContent(getItem(position));
         return convertView;
     }
     
     private static class ViewHolder {
-        
+
         private Context context;
+        private AsyncTwitter twitter;
         private RelativeLayout contentLayout;
         private ImageView profileImage;
         private ImageView clockImage;
@@ -114,11 +172,6 @@ public class TweetAdapter extends BaseAdapter {
         private TextView tweetTimeTextView;
         private ImageButton overflowButton;
         private boolean isUsingDarkTheme;
-
-        private ViewHolder setContext(Context context) {
-            this.context = context;
-            return this;
-        }
 
         private void setContent(final Status status) {
             setUpThemeIfNeed();
@@ -150,15 +203,24 @@ public class TweetAdapter extends BaseAdapter {
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-                                        new TweetDialog(context)
-                                            .setAsReplayTweet(status)
-                                            .show();
+                                        String text = context.getString(R.string.twitt4droid_username_format, status.getUser().getScreenName());
+                                        new TweetDialog(context).addTextToTweet(text).show();
                                         break;
                                     case 1:
-                                        new Twitt4droidAsyncTasks.RetweetTask(context).execute(status.getId());
+                                        if (Resources.isConnectedToInternet(context)) twitter.retweetStatus(status.getId());
+                                        else {
+                                            Toast.makeText(context.getApplicationContext(),
+                                                    R.string.twitt4droid_is_offline_messege,
+                                                    Toast.LENGTH_LONG).show();
+                                        }
                                         break;
                                     case 2:
-                                        new Twitt4droidAsyncTasks.CreateFavoriteTask(context).execute(status.getId());
+                                        if (Resources.isConnectedToInternet(context)) twitter.createFavorite(status.getId());
+                                        else {
+                                            Toast.makeText(context.getApplicationContext(),
+                                                    R.string.twitt4droid_is_offline_messege,
+                                                    Toast.LENGTH_LONG).show();
+                                        }
                                         break;
                                 }
                             }
@@ -175,46 +237,6 @@ public class TweetAdapter extends BaseAdapter {
                 overflowButton.setImageResource(R.drawable.twitt4droid_ic_overflow_holo_dark);
                 clockImage.setImageResource(R.drawable.twitt4droid_ic_clock_holo_dark);
             }
-        }
-
-        private ViewHolder setUseDarkTheme(boolean useDarkTheme) {
-            isUsingDarkTheme = useDarkTheme;
-            return this;
-        }
-
-        private ViewHolder setContentLayout(RelativeLayout contentLayout) {
-            this.contentLayout = contentLayout;
-            return this;
-        }
-
-        private ViewHolder setProfileImage(ImageView profileImage) {
-            this.profileImage = profileImage;
-            return this;
-        }
-
-        private ViewHolder setClockImage(ImageView clockImage) {
-            this.clockImage = clockImage;
-            return this;
-        }
-
-        private ViewHolder setUsernameTextView(TextView usernameTextView) {
-            this.usernameTextView = usernameTextView;
-            return this;
-        }
-        
-        private ViewHolder setTweetTextView(TextView tweetTextView) {
-            this.tweetTextView = tweetTextView;
-            return this;
-        }
-        
-        private ViewHolder setTweetTimeTextView(TextView tweetTimeTextView) {
-            this.tweetTimeTextView = tweetTimeTextView;
-            return this;
-        }
-        
-        private ViewHolder setOverflowButton(ImageButton overflowButton) {
-            this.overflowButton = overflowButton;
-            return this;
         }
     }
 }

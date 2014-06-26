@@ -15,7 +15,9 @@
  */
 package com.twitt4droid.fragment;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,8 +29,8 @@ import android.widget.Toast;
 
 import com.twitt4droid.R;
 import com.twitt4droid.Resources;
-import com.twitt4droid.Twitt4droidAsyncTasks;
-import com.twitt4droid.data.dao.TimelineDAO;
+import com.twitt4droid.Twitt4droid;
+import com.twitt4droid.data.dao.GenericDAO;
 import com.twitt4droid.widget.TweetAdapter;
 
 import twitter4j.Status;
@@ -37,29 +39,39 @@ import twitter4j.TwitterException;
 
 import java.util.List;
 
-public abstract class TimelineFragment extends BaseTimelineFragment {
+public abstract class TimelineFragment extends Fragment {
     
+    protected static final String ENABLE_DARK_THEME_ARG = "ENABLE_DARK_THEME";
+
     private static final String TAG = TimelineFragment.class.getSimpleName();
 
     private SwipeRefreshLayout swipeLayout;
     private ListView tweetListView;
     private TweetAdapter listAdapter;
     private ProgressBar progressBar;
-    private TimelineDAO timelineDao;
-    private int layoutResource = R.layout.twitt4droid_timeline;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View layout = inflater.inflate(layoutResource, container, false);
-        setUpLayout(layout);
-        return layout;
+    public abstract int getResourceTitle();
+    public abstract int getResourceHoloLightIcon();
+    public abstract int getResourceHoloDarkIcon();
+
+    protected abstract StatusesLoaderTask initStatusesLoaderTask();
+
+    protected boolean isDarkThemeEnabled() {
+        return getArguments().getBoolean(ENABLE_DARK_THEME_ARG, false);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        getNewTimelineLoader().execute();
-    } 
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View layout = inflater.inflate(R.layout.twitt4droid_timeline, container, false);
+        setUpLayout(layout);
+        return layout;
+    }
 
     protected void setUpLayout(View layout) {
         swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
@@ -81,8 +93,8 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
         });
     }
 
-    private void reloadTweetsIfPossible() {
-        if (Resources.isConnectedToInternet(getActivity())) getNewTimelineLoader().execute();
+    protected void reloadTweetsIfPossible() {
+        if (Resources.isConnectedToInternet(getActivity())) initStatusesLoaderTask().execute();
         else {
             swipeLayout.setRefreshing(false);
             Toast.makeText(getActivity().getApplicationContext(), 
@@ -91,80 +103,68 @@ public abstract class TimelineFragment extends BaseTimelineFragment {
         }
     }
 
-    protected TimelineLoader getNewTimelineLoader() {
-        return new TimelineLoader();
-    }
-    
-    protected abstract List<Status> getTweets(Twitter twitter) throws TwitterException;
+    protected abstract class StatusesLoaderTask extends AsyncTask<Void, Void, List<Status>> {
 
-    protected List<Status> getSavedTweets(TimelineDAO timelineDao) {
-        return timelineDao.fetchList();
-    }
+        private final boolean isConnectToInternet;
+        private final GenericDAO<?, ?> dao;
+        private final Twitter twitter;
 
-    protected void updateSavedTweets(TimelineDAO timelineDao, List<Status> newTweets) {
-        timelineDao.deleteAll();
-        if (newTweets != null && !newTweets.isEmpty()) timelineDao.save(newTweets);
-    }
+        private TwitterException error;
 
-    protected void setTimelineDao(TimelineDAO timelineDao) {
-        this.timelineDao = timelineDao;
-    }
-
-    public void setLayoutResource(int layoutResource) {
-        this.layoutResource = layoutResource;
-    }
-
-    protected class TimelineLoader extends Twitt4droidAsyncTasks.TweetFetcher<Void> {
-
-        private boolean isConnectToInternet;
-
-        public TimelineLoader() {
-            super(getActivity());
-        }
-
-        @Override
-        protected void onPreExecute() {
-            if (getActivity() != null) {
-                isConnectToInternet = Resources.isConnectedToInternet(getActivity());
-                if(tweetListView.getChildCount() == 0) {
-                    swipeLayout.setVisibility(View.GONE);
-                    tweetListView.setVisibility(View.GONE);
-                    progressBar.setVisibility(View.VISIBLE);
-                }
-            }
-        }
-        
-        @Override
-        protected List<twitter4j.Status> loadTweetsInBackground(Void... params) throws TwitterException {
-            List<twitter4j.Status> result = null;
-            if (isConnectToInternet) {
-                result = getTweets(getTwitter());
-                updateSavedTweets(timelineDao, result);
-            } else result = getSavedTweets(timelineDao);
-            return result;
-        }
-        
-        @Override
-        protected void onPostExecute(List<twitter4j.Status> result) {
-            if (getActivity() != null) {
-                swipeLayout.setRefreshing(false);
-                progressBar.setVisibility(View.GONE);
-                swipeLayout.setVisibility(View.VISIBLE);
-                tweetListView.setVisibility(View.VISIBLE);
-                if (getTwitterException() != null) {
-                    Log.e(TAG, "Error while retrieving tweets", getTwitterException());
-                    onTwitterError(getTwitterException());
-                } else if (result != null && !result.isEmpty()) listAdapter.set(result);
-                else {
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            R.string.twitt4droid_no_tweets_found_message,
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
+        protected StatusesLoaderTask(GenericDAO<?, ?> dao) {
+            this.dao = dao;
+            isConnectToInternet = Resources.isConnectedToInternet(getActivity());
+            twitter = Twitt4droid.getTwitter(getActivity());
         }
 
         protected boolean isConnectToInternet() {
             return isConnectToInternet;
+        }
+
+        protected GenericDAO<?, ?> getDAO() {
+            return dao;
+        }
+
+        protected Twitter getTwitter() {
+            return twitter;
+        }
+
+        protected abstract List<twitter4j.Status> loadTweetsInBackground() throws TwitterException;
+
+        @Override
+        protected List<twitter4j.Status> doInBackground(Void... params) {
+            try {
+                return loadTweetsInBackground();
+            } catch (TwitterException ex) {
+                error = ex;
+                return null;
+            }
+        }
+
+        @Override
+        public void onPostExecute(List<twitter4j.Status> data) {
+            if (getActivity() != null) {
+                if (error != null) {
+                    Log.e(TAG, "Twitter error", error);
+                    Toast.makeText(getActivity().getApplicationContext(), 
+                            R.string.twitt4droid_error_message, 
+                            Toast.LENGTH_LONG)
+                            .show();
+                    error = null;
+                } else {
+                    swipeLayout.setRefreshing(false);
+                    progressBar.setVisibility(View.GONE);
+                    swipeLayout.setVisibility(View.VISIBLE);
+                    tweetListView.setVisibility(View.VISIBLE);
+                    if (data != null && !data.isEmpty()) listAdapter.set(data);
+                    else {
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                R.string.twitt4droid_no_tweets_found_message,
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                }
+            }
         }
     }
 }

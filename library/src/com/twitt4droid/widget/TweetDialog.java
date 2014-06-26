@@ -1,9 +1,11 @@
 package com.twitt4droid.widget;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -16,14 +18,21 @@ import android.widget.Toast;
 import com.twitt4droid.R;
 import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
-import com.twitt4droid.Twitt4droidAsyncTasks;
 import com.twitt4droid.task.ImageLoader;
+import com.twitt4droid.util.Strings;
 
+import twitter4j.TwitterException;
+import twitter4j.TwitterMethod;
+import twitter4j.AsyncTwitter;
 import twitter4j.Status;
+import twitter4j.TwitterAdapter;
 import twitter4j.User;
 
 public class TweetDialog extends Dialog {
 
+    private static final String TAG = TweetDialog.class.getSimpleName();
+
+    private AsyncTwitter twitter;
     private ImageView userProfileImage;
     private TextView userUsername;
     private TextView userScreenName;
@@ -49,18 +58,60 @@ public class TweetDialog extends Dialog {
         super(context, cancelable, cancelListener);
         init();
     }
-    
-    public TweetDialog setAsReplayTweet(Status statusToReplay) {
-        if (statusToReplay != null) {
-            tweetEditText.setText(getContext().getString(R.string.twitt4droid_username_format, statusToReplay.getUser().getScreenName()));
+
+    public TweetDialog addTextToTweet(String text) {
+        if (!Strings.isNullOrBlank(text)) {
+            tweetEditText.setText(text);
             onTweetContentChanged(tweetEditText.getText().toString());
             tweetEditText.setSelection(tweetEditText.getText().length());
         }
+
         return this;
     }
 
     private void init() {
         if (!Twitt4droid.isUserLoggedIn(getContext())) throw new IllegalStateException("User must be logged in in order to use TweetDialog");
+        twitter = Twitt4droid.getAsyncTwitter(getContext());
+        twitter.addListener(new TwitterAdapter() {
+            @Override
+            public void gotUserDetail(final User user) {
+                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                    
+                    @Override
+                    public void run() {
+                        setUpUser(user);
+                    }
+                });
+            }
+
+            @Override
+            public void updatedStatus(Status status) {
+                ((Activity) getContext()).runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext().getApplicationContext(), 
+                                R.string.twitt4droid_tweet_sent, 
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+            }
+            
+            @Override
+            public void onException(TwitterException te, TwitterMethod method) {
+                Log.e(TAG, "Twitter error in " + method, te);
+                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                    
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext().getApplicationContext(),
+                                R.string.twitt4droid_error_message,
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.twitt4droid_new_tweet);
         inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -68,34 +119,18 @@ public class TweetDialog extends Dialog {
         initConsts();
         setUpTweetEditText();
         setUpTweetButton();
-        new Twitt4droidAsyncTasks.UserInfoFetcher(getContext()) {
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                setUpUser(Twitt4droid.getCurrentUser(getContext()));
-            }
-
-            @Override
-            protected void onPostExecute(User result) {
-                if (getTwitterException() != null) {
-                    Toast.makeText(getContext().getApplicationContext(), 
-                            R.string.twitt4droid_error_message, 
-                            Toast.LENGTH_LONG).show();
-                } else if (result != null) setUpUser(result);
-                else setUpUser(Twitt4droid.getCurrentUser(getContext()));
-            }
-            
-            private void setUpUser(User user) {
-                userUsername.setText(getContext().getString(R.string.twitt4droid_username_format, user.getScreenName()));
-                userScreenName.setText(user.getName());
-                new ImageLoader(getContext())
-                    .setImageView(userProfileImage)
-                    .execute(user.getProfileImageURL());
-            }
-        }.execute(Twitt4droid.getCurrentUser(getContext()).getScreenName());
+        setUpUser(Twitt4droid.getCurrentUser(getContext()));
+        if (Resources.isConnectedToInternet(getContext())) twitter.showUser(Twitt4droid.getCurrentUser(getContext()).getScreenName());
     }
 
+    private void setUpUser(User user) {
+        userUsername.setText(getContext().getString(R.string.twitt4droid_username_format, user.getScreenName()));
+        userScreenName.setText(user.getName());
+        new ImageLoader(getContext())
+            .setImageView(userProfileImage)
+            .execute(user.getProfileImageURL());
+    }
+    
     private void findViews() {
         userProfileImage = (ImageView) findViewById(R.id.user_profile_image);
         userUsername = (TextView) findViewById(R.id.user_username);
@@ -160,7 +195,7 @@ public class TweetDialog extends Dialog {
             @Override
             public void onClick(View view) {
                 if (Resources.isConnectedToInternet(getContext())) {
-                    new Twitt4droidAsyncTasks.TweetTask(getContext()).execute(tweetEditText.getText().toString());
+                    twitter.updateStatus(tweetEditText.getText().toString());
                     hideSoftKeyboard();
                     dismiss();
                 } else {

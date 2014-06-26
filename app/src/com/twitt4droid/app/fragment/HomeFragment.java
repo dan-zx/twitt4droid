@@ -13,9 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.twitt4droid.app.R;
-import com.twitt4droid.fragment.BaseTimelineFragment;
 import com.twitt4droid.fragment.HomeTimelineFragment;
 import com.twitt4droid.fragment.MentionsTimelineFragment;
+import com.twitt4droid.fragment.TimelineFragment;
 import com.twitt4droid.widget.TweetDialog;
 
 import java.util.ArrayList;
@@ -26,6 +26,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         setHasOptionsMenu(true);
     }
 
@@ -65,14 +66,14 @@ public class HomeFragment extends Fragment {
 
     private class SwipeTimelineFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
-        private final List<BaseTimelineFragment> fragments;
+        private final List<TimelineFragment> fragments;
 
         private SwipeTimelineFragmentPagerAdapter() {
             super(getFragmentManager());
             fragments = new ArrayList<>();
         }
 
-        private void addFragment(BaseTimelineFragment fragment) {
+        private void addFragment(TimelineFragment fragment) {
             fragments.add(fragment);
             notifyDataSetChanged();
         }

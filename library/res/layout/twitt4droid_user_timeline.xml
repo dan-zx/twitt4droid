@@ -22,16 +22,15 @@
     <RelativeLayout
         android:id="@+id/user_info_layout"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
-        android:visibility="gone" >
+        android:layout_height="130dp" >
 
         <ImageView
             android:id="@+id/user_banner_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/twitt4droid_banner_image_description"
-            android:src="@color/twitt4droid_no_image_background"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:src="@color/twitt4droid_no_image_background" />
 
         <ImageView
             android:id="@+id/user_profile_image"

@@ -18,12 +18,12 @@ package com.twitt4droid.fragment;
 import android.os.Bundle;
 
 import com.twitt4droid.R;
+import com.twitt4droid.data.dao.TimelineDAO;
 import com.twitt4droid.data.dao.impl.DAOFactory;
 
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
+
+import java.util.List;
 
 public class HomeTimelineFragment extends TimelineFragment {
 
@@ -40,14 +40,14 @@ public class HomeTimelineFragment extends TimelineFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setTimelineDao(new DAOFactory(getActivity().getApplicationContext()).getHomeTimelineDAO());
+    protected HomeStatusesLoaderTask initStatusesLoaderTask() {
+        return new HomeStatusesLoaderTask(new DAOFactory(getActivity().getApplicationContext()).getHomeTimelineDAO());
     }
 
     @Override
-    protected ResponseList<Status> getTweets(Twitter twitter) throws TwitterException {
-        return twitter.getHomeTimeline();
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initStatusesLoaderTask().execute();
     }
     
     @Override
@@ -63,5 +63,25 @@ public class HomeTimelineFragment extends TimelineFragment {
     @Override
     public int getResourceHoloDarkIcon() {
         return R.drawable.twitt4droid_ic_home_holo_dark;
+    }
+
+    private class HomeStatusesLoaderTask extends StatusesLoaderTask {
+
+        protected HomeStatusesLoaderTask(TimelineDAO timelineDao) {
+            super(timelineDao);
+        }
+
+        @Override
+        protected List<twitter4j.Status> loadTweetsInBackground() throws TwitterException {
+            TimelineDAO timelineDAO = (TimelineDAO) getDAO();
+            List<twitter4j.Status> statuses = null;
+            if (isConnectToInternet()) {
+                statuses = getTwitter().getHomeTimeline();
+                // TODO: update statuses instead of deleting all previous statuses and save new ones.
+                timelineDAO.deleteAll();
+                timelineDAO.save(statuses);
+            } else statuses = timelineDAO.fetchList();
+            return statuses;
+        }
     }
 }

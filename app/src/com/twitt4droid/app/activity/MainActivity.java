@@ -17,6 +17,7 @@ package com.twitt4droid.app.activity;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -27,21 +28,31 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.activity.UserProfileActivity;
 import com.twitt4droid.app.R;
 import com.twitt4droid.app.fragment.CustomFixedQueryTimelineFragment;
 import com.twitt4droid.app.fragment.CustomQueryableTimelineFragment;
-import com.twitt4droid.app.fragment.ListsFragment;
 import com.twitt4droid.app.fragment.HomeFragment;
+import com.twitt4droid.app.fragment.ListsFragment;
 import com.twitt4droid.app.widget.DrawerItem;
 import com.twitt4droid.app.widget.DrawerItemAdapter;
+import com.twitt4droid.task.ImageLoader;
+import com.twitt4droid.util.Strings;
+
+import twitter4j.TwitterException;
+
+import twitter4j.Twitter;
+import twitter4j.User;
 
 public class MainActivity extends ActionBarActivity {
 
     private static final String FRAGMENT_TAG = "CURRENT_FRAGMENT";
+    private static final String CURRENT_TITLE_KEY = "CURRENT_TITLE";
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
@@ -53,8 +64,22 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpDrawer();
-        setUpFragment(new HomeFragment());
-        setTitle(R.string.drawer_home_option);
+        if (savedInstanceState == null) {
+            setUpFragment(new HomeFragment());
+            setTitle(R.string.drawer_home_option);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(CURRENT_TITLE_KEY, currentTitleId);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        setTitle(savedInstanceState.getInt(CURRENT_TITLE_KEY));
     }
 
     @Override
@@ -101,27 +126,18 @@ public class MainActivity extends ActionBarActivity {
     private void setUpDrawerMenu() {
         drawerList = (ListView) drawerLayout.findViewById(R.id.left_drawer);
         DrawerItemAdapter drawerMenuAdapter = new DrawerItemAdapter(this);
-        drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.HEADER)
-            .put("SCREEN_NAME", Twitt4droid.getCurrentUser(this).getScreenName()));
-        drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.SIMPLE)
-            .put("ICON_RES", R.drawable.twitt4droid_ic_home_holo_dark)
-            .put("TEXT_RES", R.string.drawer_home_option));
-        drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.SIMPLE)
-            .put("ICON_RES", R.drawable.twitt4droid_ic_clock_holo_dark)
-            .put("TEXT_RES", R.string.drawer_lists_option));
-        drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.SIMPLE)
-            .put("ICON_RES", R.drawable.twitt4droid_ic_hashtag_holo_dark)
-            .put("TEXT_RES", R.string.drawer_fixed_search_option));
-        drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.SIMPLE)
-            .put("ICON_RES", R.drawable.twitt4droid_ic_search_holo_dark)
-            .put("TEXT_RES", R.string.drawer_search_option));
-        drawerMenuAdapter.add(new DrawerItem(DrawerItem.Type.SIMPLE)
-            .put("ICON_RES", R.drawable.ic_settings)
-            .put("TEXT_RES", R.string.drawer_settings_option));
-        drawerList.setAdapter(drawerMenuAdapter);
+        drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_home_holo_dark, R.string.drawer_home_option));
+        drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_clock_holo_dark, R.string.drawer_lists_option));
+        drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_hashtag_holo_dark, R.string.drawer_fixed_search_option));
+        drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_search_holo_dark, R.string.drawer_search_option));
+        drawerMenuAdapter.add(new DrawerItem(R.drawable.ic_settings, R.string.drawer_settings_option));
+        View drawerListHeader = getLayoutInflater().inflate(R.layout.drawer_header, null);
+        new DrawerHeaderSetUpTask(drawerListHeader).execute();
+        drawerList.addHeaderView(drawerListHeader);
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
+        drawerList.setAdapter(drawerMenuAdapter);
     }
-
+    
     private void setUpFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment currentFragment = fragmentManager.findFragmentByTag(FRAGMENT_TAG);
@@ -156,6 +172,57 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setTitle(currentTitleId);
     }
 
+    private class DrawerHeaderSetUpTask extends AsyncTask<Void, Void, User> {
+
+        private final View drawerHeader;
+        private final Twitter twitter;
+        private final String screenName;
+        
+        private DrawerHeaderSetUpTask(View drawerHeader) {
+            this.drawerHeader = drawerHeader;
+            this.twitter = Twitt4droid.getTwitter(MainActivity.this);
+            this.screenName = Twitt4droid.getCurrentUser(MainActivity.this).getScreenName();
+        }
+        
+        @Override
+        protected void onPreExecute() {
+            setUpUser(Twitt4droid.getCurrentUser(MainActivity.this));
+        }
+    
+        @Override
+        protected User doInBackground(Void... params) {
+            try {
+                return twitter.showUser(screenName);
+            } catch (TwitterException e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(User result) {
+            if (result != null) setUpUser(result);
+        }
+        
+        private void setUpUser(User user) {
+            ImageView userProfileBannerImage = (ImageView) drawerHeader.findViewById(R.id.user_profile_banner_image);
+            ImageView userProfileImage = (ImageView) drawerHeader.findViewById(R.id.user_profile_image);
+            TextView userScreenName = (TextView) drawerHeader.findViewById(R.id.user_screen_name);
+            TextView userName = (TextView) drawerHeader.findViewById(R.id.user_name);
+            userScreenName.setText(getString(R.string.twitt4droid_username_format, user.getScreenName()));
+            userName.setText(user.getName());
+            if (!Strings.isNullOrBlank(user.getProfileBannerURL())) {
+                new ImageLoader(MainActivity.this)
+                    .setImageView(userProfileBannerImage)
+                    .execute(user.getProfileBannerURL());
+            }
+            if (!Strings.isNullOrBlank(user.getProfileImageURL())) {
+                new ImageLoader(MainActivity.this)
+                    .setImageView(userProfileImage)
+                    .execute(user.getProfileImageURL());
+            }
+        }
+    }
+    
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
         @Override

@@ -1,35 +1,20 @@
 package com.twitt4droid.app.widget;
 
-import java.util.HashMap;
-
 public class DrawerItem {
 
-    public static enum Type { HEADER, SIMPLE }
+    private final int iconRes;
+    private final int textRes;
 
-    private final Type type;
-
-    private HashMap<String, Object> data;
-
-    public DrawerItem(Type type) {
-        this.type = type;
-        this.data = new HashMap<>();
+    public DrawerItem(int iconRes, int textRes) {
+        this.iconRes = iconRes;
+        this.textRes = textRes;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T get(String key, Class<T> type) {
-        return (T) data.get(key);
+    public int getIconRes() {
+        return iconRes;
     }
 
-    public boolean isNotNull(String key) {
-        return data.get(key) != null;
-    }
-
-    public DrawerItem put(String key, Object value) {
-        data.put(key, value);
-        return this;
-    }
-
-    public Type getType() {
-        return type;
+    public int getTextRes() {
+        return textRes;
     }
 }

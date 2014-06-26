@@ -18,74 +18,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <RelativeLayout
-        android:id="@+id/header_item_layout"
+    <TextView
+        android:id="@+id/item_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone" >
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:paddingBottom="8dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/white" />
 
-        <ImageView
-            android:id="@+id/user_profile_banner_image"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:contentDescription="@string/twitt4droid_banner_image_description"
-            android:scaleType="centerCrop"
-            android:src="@color/twitt4droid_no_image_background" />
-
-        <TextView
-            android:id="@+id/user_screen_name"
-            style="@style/Twitt4droid.TextAppearance.Overlay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/user_profile_image"
-            android:layout_toRightOf="@+id/user_profile_image" />
-
-        <TextView
-            android:id="@+id/user_name"
-            style="@style/Twitt4droid.TextAppearance.Overlay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/user_profile_image"
-            android:layout_toRightOf="@+id/user_profile_image"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/user_profile_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignBottom="@+id/user_profile_banner_image"
-            android:layout_alignParentLeft="true"
-            android:layout_margin="8dp"
-            android:background="@drawable/twitt4droid_image_white_border"
-            android:contentDescription="@string/twitt4droid_profile_image_description"
-            android:src="@color/twitt4droid_no_image_background" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/simple_item_layout"
+    <View
+        android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" >
-
-        <TextView
-            android:id="@+id/item_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:drawablePadding="8dp"
-            android:gravity="center_vertical"
-            android:paddingBottom="8dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@android:color/white" />
-
-        <View android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignLeft="@id/item_text"
-            android:layout_alignRight="@id/item_text"
-            android:layout_below="@id/item_text"
-            android:background="#8c888c" />
-    </RelativeLayout>
+        android:layout_height="1dp"
+        android:layout_alignLeft="@id/item_text"
+        android:layout_alignRight="@id/item_text"
+        android:layout_below="@id/item_text"
+        android:background="#3e3e3e" />
 
 </RelativeLayout>
