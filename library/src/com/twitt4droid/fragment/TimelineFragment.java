@@ -74,7 +74,7 @@ public abstract class TimelineFragment extends Fragment {
         listAdapter = new TweetAdapter(getActivity());
         listAdapter.setUseDarkTheme(isDarkThemeEnabled());
         tweetListView.setAdapter(listAdapter);
-        swipeLayout.setColorScheme(R.color.twitt4droid_primary_color, 
+        swipeLayout.setColorSchemeResources(R.color.twitt4droid_primary_color, 
                 R.color.twitt4droid_secundary_color_1,
                 R.color.twitt4droid_secundary_color_2,
                 R.color.twitt4droid_secundary_color_3);
