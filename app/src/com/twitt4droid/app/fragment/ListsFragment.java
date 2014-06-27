@@ -133,7 +133,7 @@ public class ListsFragment extends Fragment {
         private final List<ListTimelineFragment> fragments;
 
         private SwipeTimelineFragmentPagerAdapter() {
-            super(getFragmentManager());
+            super(getChildFragmentManager());
             fragments = new ArrayList<>();
         }
 

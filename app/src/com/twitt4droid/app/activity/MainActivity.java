@@ -45,7 +45,6 @@ import com.twitt4droid.task.ImageLoader;
 import com.twitt4droid.util.Strings;
 
 import twitter4j.TwitterException;
-
 import twitter4j.Twitter;
 import twitter4j.User;
 
@@ -124,16 +123,15 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void setUpDrawerMenu() {
-        drawerList = (ListView) drawerLayout.findViewById(R.id.left_drawer);
+        drawerList = (ListView) drawerLayout.findViewById(R.id.drawer_options);
         DrawerItemAdapter drawerMenuAdapter = new DrawerItemAdapter(this);
         drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_home_holo_dark, R.string.drawer_home_option));
         drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_clock_holo_dark, R.string.drawer_lists_option));
         drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_hashtag_holo_dark, R.string.drawer_fixed_search_option));
         drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_search_holo_dark, R.string.drawer_search_option));
         drawerMenuAdapter.add(new DrawerItem(R.drawable.ic_settings, R.string.drawer_settings_option));
-        View drawerListHeader = getLayoutInflater().inflate(R.layout.drawer_header, null);
-        new DrawerHeaderSetUpTask(drawerListHeader).execute();
-        drawerList.addHeaderView(drawerListHeader);
+        View drawerHeaderView = findViewById(R.id.drawer_header);
+        new DrawerHeaderSetUpTask(drawerHeaderView).execute();
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
         drawerList.setAdapter(drawerMenuAdapter);
     }
@@ -174,12 +172,12 @@ public class MainActivity extends ActionBarActivity {
 
     private class DrawerHeaderSetUpTask extends AsyncTask<Void, Void, User> {
 
-        private final View drawerHeader;
+        private final View drawerHeaderView;
         private final Twitter twitter;
         private final String screenName;
         
-        private DrawerHeaderSetUpTask(View drawerHeader) {
-            this.drawerHeader = drawerHeader;
+        private DrawerHeaderSetUpTask(View drawerHeaderView) {
+            this.drawerHeaderView = drawerHeaderView;
             this.twitter = Twitt4droid.getTwitter(MainActivity.this);
             this.screenName = Twitt4droid.getCurrentUser(MainActivity.this).getScreenName();
         }
@@ -203,13 +201,24 @@ public class MainActivity extends ActionBarActivity {
             if (result != null) setUpUser(result);
         }
         
+        @SuppressWarnings("deprecation")
         private void setUpUser(User user) {
-            ImageView userProfileBannerImage = (ImageView) drawerHeader.findViewById(R.id.user_profile_banner_image);
-            ImageView userProfileImage = (ImageView) drawerHeader.findViewById(R.id.user_profile_image);
-            TextView userScreenName = (TextView) drawerHeader.findViewById(R.id.user_screen_name);
-            TextView userName = (TextView) drawerHeader.findViewById(R.id.user_name);
+            ImageView userProfileBannerImage = (ImageView) drawerHeaderView.findViewById(R.id.user_profile_banner_image);
+            ImageView userProfileImage = (ImageView) drawerHeaderView.findViewById(R.id.user_profile_image);
+            TextView userScreenName = (TextView) drawerHeaderView.findViewById(R.id.user_screen_name);
+            TextView userName = (TextView) drawerHeaderView.findViewById(R.id.user_name);
             userScreenName.setText(getString(R.string.twitt4droid_username_format, user.getScreenName()));
             userName.setText(user.getName());
+            userProfileBannerImage.setAlpha(0xfe);
+            userProfileImage.setAlpha(0xfe);
+            userProfileImage.setOnClickListener(new View.OnClickListener() {
+                
+                @Override
+                public void onClick(View v) {
+                    Intent profileIntent = UserProfileActivity.buildIntent(MainActivity.this, Twitt4droid.getCurrentUser(MainActivity.this).getScreenName());
+                    startActivity(profileIntent);
+                }
+            });
             if (!Strings.isNullOrBlank(user.getProfileBannerURL())) {
                 new ImageLoader(MainActivity.this)
                     .setImageView(userProfileBannerImage)
@@ -228,32 +237,29 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             switch(position) {
-                case 0:
-                    Intent profileIntent = UserProfileActivity.buildIntent(MainActivity.this, Twitt4droid.getCurrentUser(MainActivity.this).getScreenName());
-                    startActivity(profileIntent);
-                case 1: 
+                case 0: 
                     setUpFragment(new HomeFragment());
                     setTitle(R.string.drawer_home_option);
                     break;
-                case 2: 
+                case 1: 
                     setUpFragment(new ListsFragment());
                     setTitle(R.string.drawer_lists_option);
                     break;
-                case 3:
+                case 2:
                     setUpFragment(CustomFixedQueryTimelineFragment.newInstance(getString(R.string.drawer_fixed_search_option)));
                     setTitle(R.string.drawer_fixed_search_option);
                     break;
-                case 4:
+                case 3:
                     setUpFragment(CustomQueryableTimelineFragment.newInstance());
                     setTitle(R.string.drawer_search_option);
                     break;
-                case 5: 
+                case 4: 
                     Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
                     startActivity(settingsIntent);
                     break;
             }
             drawerList.setItemChecked(position, true);
-            drawerLayout.closeDrawer(drawerList);
-        }        
+            drawerLayout.closeDrawers();
+        }
     }
 }

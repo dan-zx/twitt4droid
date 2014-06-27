@@ -69,7 +69,7 @@ public class HomeFragment extends Fragment {
         private final List<TimelineFragment> fragments;
 
         private SwipeTimelineFragmentPagerAdapter() {
-            super(getFragmentManager());
+            super(getChildFragmentManager());
             fragments = new ArrayList<>();
         }
 

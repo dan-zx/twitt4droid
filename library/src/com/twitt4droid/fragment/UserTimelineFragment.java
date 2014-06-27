@@ -15,6 +15,7 @@
  */
 package com.twitt4droid.fragment;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 import com.twitt4droid.R;
 import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
+import com.twitt4droid.data.dao.UserDAO;
 import com.twitt4droid.data.dao.UserTimelineDAO;
 import com.twitt4droid.data.dao.impl.DAOFactory;
 import com.twitt4droid.task.ImageLoader;
@@ -75,6 +77,7 @@ public class UserTimelineFragment extends TimelineFragment {
         super.onActivityCreated(savedInstanceState);
         initStatusesLoaderTask().execute();
         if (Resources.isConnectedToInternet(getActivity())) twitter.showUser(getUsername());
+        else new CachedUserLoaderTask(getUsername()).execute();
     }
 
     @Override
@@ -101,20 +104,7 @@ public class UserTimelineFragment extends TimelineFragment {
 
                         @Override
                         public void run() {
-                            userUsername.setText(getString(R.string.twitt4droid_username_format, user.getScreenName()));
-                            userScreenName.setText(user.getName());
-                            if (!Strings.isNullOrBlank(user.getProfileBannerURL())) {
-                                new ImageLoader(getActivity())
-                                    .setLoadingColorId(R.color.twitt4droid_no_image_background)
-                                    .setImageView(userProfileBannerImage)
-                                    .execute(user.getProfileBannerURL());
-                            }
-                            if (!Strings.isNullOrBlank(user.getProfileImageURL())) {
-                                new ImageLoader(getActivity())
-                                    .setLoadingColorId(R.color.twitt4droid_no_image_background)
-                                    .setImageView(userProfileImage)
-                                    .execute(user.getProfileImageURL());
-                            }
+                            if (user != null) setUpUser(user);
                         }
                     });
                 }
@@ -137,6 +127,22 @@ public class UserTimelineFragment extends TimelineFragment {
                 }
             }
         });
+    }
+
+    private void setUpUser(User user) {
+        userScreenName.setText(user.getName());
+        if (!Strings.isNullOrBlank(user.getProfileBannerURL())) {
+            new ImageLoader(getActivity())
+                .setLoadingColorId(R.color.twitt4droid_no_image_background)
+                .setImageView(userProfileBannerImage)
+                .execute(user.getProfileBannerURL());
+        }
+        if (!Strings.isNullOrBlank(user.getProfileImageURL())) {
+            new ImageLoader(getActivity())
+                .setLoadingColorId(R.color.twitt4droid_no_image_background)
+                .setImageView(userProfileImage)
+                .execute(user.getProfileImageURL());
+        }
     }
 
     @Override
@@ -168,6 +174,27 @@ public class UserTimelineFragment extends TimelineFragment {
         return getArguments().getString(USERNAME_ARG);
     }
 
+    private class CachedUserLoaderTask extends AsyncTask<Void, Void, User> {
+
+        private final String username;
+        private final UserDAO userDAO;
+
+        private CachedUserLoaderTask(String username) {
+            this.username = username;
+            userDAO = new DAOFactory(getActivity()).getUserDAO();
+        }
+        
+        @Override
+        protected User doInBackground(Void... params) {
+            return userDAO.fetchByScreenName(username);
+        }
+
+        @Override
+        protected void onPostExecute(User user) {
+            if (user != null) setUpUser(user);
+        }
+    }
+    
     private class UserStatusesLoaderTask extends StatusesLoaderTask {
 
         private final String username;
@@ -189,6 +216,5 @@ public class UserTimelineFragment extends TimelineFragment {
             } else statuses = timelineDAO.fetchListByScreenName(username);
             return statuses;
         }
-        
     }
 }
