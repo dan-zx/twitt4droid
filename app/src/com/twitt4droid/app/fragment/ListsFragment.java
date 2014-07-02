@@ -6,9 +6,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -17,7 +14,6 @@ import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.app.R;
 import com.twitt4droid.fragment.ListTimelineFragment;
-import com.twitt4droid.widget.TweetDialog;
 
 import twitter4j.AsyncTwitter;
 import twitter4j.ResponseList;
@@ -82,16 +78,10 @@ public class ListsFragment extends Fragment {
             }
         });
     }
-    
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.fragment_timelines, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.fragment_timelines, container, false);
+        View layout = inflater.inflate(R.layout.fragment_lists, container, false);
         setUpLayout(layout);
         return layout;
     }
@@ -115,16 +105,6 @@ public class ListsFragment extends Fragment {
         viewPager.setAdapter(adapter);
         pagerStrip.setDrawFullUnderline(false);
         pagerStrip.setTabIndicatorColor(getResources().getColor(R.color.twitt4droid_primary_color));
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.new_tweet_item:
-                new TweetDialog(getActivity()).show();
-                return true;
-            default: return super.onOptionsItemSelected(item);
-        }
     }
 
     private class SwipeTimelineFragmentPagerAdapter extends FragmentStatePagerAdapter {

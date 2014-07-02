@@ -40,7 +40,7 @@
             <ImageView
                 android:id="@+id/user_profile_banner_image"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="120dp"
                 android:contentDescription="@string/twitt4droid_banner_image_description"
                 android:scaleType="centerCrop"
                 android:src="@color/twitt4droid_no_image_background" />
@@ -64,8 +64,8 @@
 
             <ImageView
                 android:id="@+id/user_profile_image"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_alignBottom="@+id/user_profile_banner_image"
                 android:layout_alignParentLeft="true"
                 android:layout_margin="8dp"

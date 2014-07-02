@@ -25,6 +25,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,17 +36,19 @@ import android.widget.TextView;
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.activity.UserProfileActivity;
 import com.twitt4droid.app.R;
-import com.twitt4droid.app.fragment.CustomFixedQueryTimelineFragment;
-import com.twitt4droid.app.fragment.CustomQueryableTimelineFragment;
-import com.twitt4droid.app.fragment.HomeFragment;
 import com.twitt4droid.app.fragment.ListsFragment;
 import com.twitt4droid.app.widget.DrawerItem;
 import com.twitt4droid.app.widget.DrawerItemAdapter;
+import com.twitt4droid.fragment.FixedQueryTimelineFragment;
+import com.twitt4droid.fragment.HomeTimelineFragment;
+import com.twitt4droid.fragment.MentionsTimelineFragment;
+import com.twitt4droid.fragment.QueryableTimelineFragment;
 import com.twitt4droid.task.ImageLoader;
 import com.twitt4droid.util.Strings;
+import com.twitt4droid.widget.TweetDialog;
 
-import twitter4j.TwitterException;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.User;
 
 public class MainActivity extends ActionBarActivity {
@@ -64,9 +67,17 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         setUpDrawer();
         if (savedInstanceState == null) {
-            setUpFragment(new HomeFragment());
+            HomeTimelineFragment homeTimelineFragment = HomeTimelineFragment.newInstance();
+            homeTimelineFragment.setRetainInstance(true);
+            setUpFragment(homeTimelineFragment);
             setTitle(R.string.drawer_home_option);
         }
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_main, menu);
+        return true;
     }
 
     @Override
@@ -126,7 +137,8 @@ public class MainActivity extends ActionBarActivity {
         drawerList = (ListView) drawerLayout.findViewById(R.id.drawer_options);
         DrawerItemAdapter drawerMenuAdapter = new DrawerItemAdapter(this);
         drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_home_holo_dark, R.string.drawer_home_option));
-        drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_clock_holo_dark, R.string.drawer_lists_option));
+        drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_notifications_holo_dark, R.string.drawer_mentions_option));
+        drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_list_holo_dark, R.string.drawer_lists_option));
         drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_hashtag_holo_dark, R.string.drawer_fixed_search_option));
         drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_search_holo_dark, R.string.drawer_search_option));
         drawerMenuAdapter.add(new DrawerItem(R.drawable.ic_settings, R.string.drawer_settings_option));
@@ -148,6 +160,10 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.new_tweet_item) {
+            new TweetDialog(this).show();
+            return true;
+        }
         if (drawerToggle.onOptionsItemSelected(item)) return true;
         return super.onOptionsItemSelected(item);
     }
@@ -238,22 +254,34 @@ public class MainActivity extends ActionBarActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             switch(position) {
                 case 0: 
-                    setUpFragment(new HomeFragment());
+                    HomeTimelineFragment homeTimelineFragment = HomeTimelineFragment.newInstance();
+                    homeTimelineFragment.setRetainInstance(true);
+                    setUpFragment(homeTimelineFragment);
                     setTitle(R.string.drawer_home_option);
                     break;
                 case 1: 
+                    MentionsTimelineFragment mentionsTimelineFragment = MentionsTimelineFragment.newInstance();
+                    mentionsTimelineFragment.setRetainInstance(true);
+                    setUpFragment(mentionsTimelineFragment);
+                    setTitle(R.string.drawer_mentions_option);
+                    break;
+                case 2: 
                     setUpFragment(new ListsFragment());
                     setTitle(R.string.drawer_lists_option);
                     break;
-                case 2:
-                    setUpFragment(CustomFixedQueryTimelineFragment.newInstance(getString(R.string.drawer_fixed_search_option)));
+                case 3:
+                    FixedQueryTimelineFragment fixedQueryTimelineFragment = FixedQueryTimelineFragment.newInstance(getString(R.string.drawer_fixed_search_option));
+                    fixedQueryTimelineFragment.setRetainInstance(true);
+                    setUpFragment(fixedQueryTimelineFragment);
                     setTitle(R.string.drawer_fixed_search_option);
                     break;
-                case 3:
-                    setUpFragment(CustomQueryableTimelineFragment.newInstance());
+                case 4:
+                    QueryableTimelineFragment queryableTimelineFragment = QueryableTimelineFragment.newInstance();
+                    queryableTimelineFragment.setRetainInstance(true);
+                    setUpFragment(queryableTimelineFragment);
                     setTitle(R.string.drawer_search_option);
                     break;
-                case 4: 
+                case 5: 
                     Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
                     startActivity(settingsIntent);
                     break;
