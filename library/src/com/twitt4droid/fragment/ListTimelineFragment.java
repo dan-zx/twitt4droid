@@ -56,14 +56,12 @@ public class ListTimelineFragment extends TimelineFragment {
 
     @Override
     public int getResourceHoloLightIcon() {
-        // TODO Auto-generated method stub
-        return R.drawable.twitt4droid_ic_person_holo_light;
+        return R.drawable.twitt4droid_ic_list_holo_light;
     }
 
     @Override
     public int getResourceHoloDarkIcon() {
-        // TODO Auto-generated method stub
-        return R.drawable.twitt4droid_ic_person_holo_dark;
+        return R.drawable.twitt4droid_ic_list_holo_dark;
     }
 
     private class ListStatusesLoaderTask extends StatusesLoaderTask {
