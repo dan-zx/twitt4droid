@@ -19,9 +19,9 @@
     <!-- ACTIVITY TITLES -->
     <string name="twitt4droid_user_profile_activity_title">Profile</string>
 
-    <!-- MENUS -->
-    <string name="twitt4droid_refresh_menu_title">Refresh</string>
-    <string name="twitt4droid_cancel_menu_title">Cancel</string>
+    <!-- RELOAD CANCEL BUTTON -->
+    <string name="twitt4droid_refresh_button_title">Refresh</string>
+    <string name="twitt4droid_cancel_button_title">Cancel</string>
 
     <!-- LOGIN BUTTON -->
     <string name="twitt4droid_login_label">Login</string>

@@ -23,15 +23,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.twitt4droid.R;
 import com.twitt4droid.Resources;
@@ -73,8 +73,9 @@ public class WebLoginActivity extends Activity {
     private static final String CALLBACK_URL = "oauth://twitt4droid";
 
     private AsyncTwitter twitter;
+    private TextView urlTextView;
     private ProgressBar loadingBar;
-    private MenuItem reloadCancelItem;
+    private ImageButton refreshCancelButton;
     private WebView webView;
 
     /** {@inheritDoc} */
@@ -122,7 +123,9 @@ public class WebLoginActivity extends Activity {
 
                     @Override
                     public void run() {
-                        webView.loadUrl(token.getAuthenticationURL());
+                        String url = token.getAuthenticationURL();
+                        urlTextView.setText(url);
+                        webView.loadUrl(url);
                     }
                 });
             }
@@ -182,8 +185,17 @@ public class WebLoginActivity extends Activity {
     /** Sets up views. */
     @SuppressWarnings("deprecation")
     private void setUpView() {
+        urlTextView = (TextView) findViewById(R.id.url_text);
         loadingBar = (ProgressBar) findViewById(R.id.loading_bar);
+        refreshCancelButton = (ImageButton) findViewById(R.id.refresh_cancel_botton);
         webView = (WebView) findViewById(R.id.web_view);
+        refreshCancelButton.setOnClickListener(new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                onReloadCancelButtonClick();
+            }
+        });
         CookieSyncManager.createInstance(this);
         CookieManager.getInstance().removeAllCookie();
         webView.getSettings().setSaveFormData(false);
@@ -194,10 +206,8 @@ public class WebLoginActivity extends Activity {
                 if (progress == 100) {
                     loadingBar.setVisibility(View.INVISIBLE);
                     loadingBar.setProgress(0);
-                    if (reloadCancelItem != null) {
-                        reloadCancelItem.setTitle(R.string.twitt4droid_refresh_menu_title);
-                        reloadCancelItem.setIcon(R.drawable.twitt4droid_ic_refresh_holo_dark);
-                    }
+                    refreshCancelButton.setContentDescription(getString(R.string.twitt4droid_refresh_button_title));
+                    refreshCancelButton.setImageResource(R.drawable.twitt4droid_ic_refresh_holo_dark);
                 } else loadingBar.setVisibility(View.VISIBLE);
                 loadingBar.setProgress(progress);
             }
@@ -205,6 +215,7 @@ public class WebLoginActivity extends Activity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                urlTextView.setText(url);
                 if (url.startsWith(CALLBACK_URL)) {
                     Uri uri = Uri.parse(url);
                     if (uri.getQueryParameter(DENIED_CALLBACK_PARAMETER) != null) {
@@ -257,44 +268,28 @@ public class WebLoginActivity extends Activity {
             .show();
     }
 
-    /** {@inheritDoc}*/
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.twitt4droid_web_browser, menu);
-        reloadCancelItem = menu.findItem(R.id.reload_cancel_item);
-        if (loadingBar.getProgress() == loadingBar.getMax() || loadingBar.getProgress() == 0) {
-            reloadCancelItem.setTitle(R.string.twitt4droid_refresh_menu_title);
-            reloadCancelItem.setIcon(R.drawable.twitt4droid_ic_refresh_holo_dark);
-        }
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.reload_cancel_item) {
-            if (item.getTitle().toString().equals(getString(R.string.twitt4droid_cancel_menu_title))) {
-                webView.stopLoading();
-                item.setTitle(R.string.twitt4droid_refresh_menu_title);
-                item.setIcon(R.drawable.twitt4droid_ic_refresh_holo_dark);
-            } else {
-                webView.reload();
-                item.setTitle(R.string.twitt4droid_cancel_menu_title);
-                item.setIcon(R.drawable.twitt4droid_ic_cancel_holo_dark);
-            }
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     /** {@inheritDoc} */
     @Override
     public void onBackPressed() {
-        if (webView != null && webView.canGoBack()) webView.goBack();
-        else {
+        if (webView != null && webView.canGoBack()) {
+            webView.goBack();
+            urlTextView.setText(webView.getUrl());
+        } else {
             setResult(RESULT_CANCELED, getIntent());
             finish();
+        }
+    }
+
+    private void onReloadCancelButtonClick() {
+        if (refreshCancelButton.getDrawable().getConstantState().equals(
+                getResources().getDrawable(R.drawable.twitt4droid_ic_cancel_holo_dark).getConstantState())) {
+            webView.stopLoading();
+            refreshCancelButton.setContentDescription(getString(R.string.twitt4droid_refresh_button_title));
+            refreshCancelButton.setImageResource(R.drawable.twitt4droid_ic_refresh_holo_dark);
+        } else {
+            webView.reload();
+            refreshCancelButton.setContentDescription(getString(R.string.twitt4droid_cancel_button_title));
+            refreshCancelButton.setImageResource(R.drawable.twitt4droid_ic_cancel_holo_dark);
         }
     }
 }

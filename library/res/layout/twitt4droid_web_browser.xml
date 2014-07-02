@@ -18,12 +18,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <WebView
-        android:id="@+id/web_view"
+    <TextView
+        android:id="@+id/url_text"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:background="#000000"
+        android:ellipsize="end"
+        android:padding="4dp"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ProgressBar
         android:id="@+id/loading_bar"
@@ -31,8 +36,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/url_text"
+        android:layout_marginTop="-4dp"
         android:max="100" />
+
+    <WebView
+        android:id="@+id/web_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/url_text" />
+
+    <ImageButton
+        android:id="@+id/refresh_cancel_botton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        android:background="#aa5d6165"
+        android:contentDescription="@string/twitt4droid_cancel_button_title"
+        android:padding="4dp"
+        android:src="@drawable/twitt4droid_ic_cancel_holo_dark" />
 
 </RelativeLayout>
