@@ -11,16 +11,6 @@ Try out the [sample application](https://dl.dropboxusercontent.com/u/1995295/app
 
 ![App Screenshots](https://dl.dropboxusercontent.com/u/1995295/img/twitt4droid/app-screenshots.png)
 
-Install
-=======
-
-### Eclipse
-
-Import the the **library/** folder as *Existing Android Code Into Workspace*. Then, in your application project properties, add the created project under the *Libraries* section of the *Android* category.
-
-### Android Studio
-
-Support is coming soon.
 
 License
 =======
