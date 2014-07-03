@@ -3,7 +3,7 @@ twitt4droid
 
 This open-source library allows you to integrate Twitter into your Android app.
 
-Contains several Android widgets, activities and fragments to easily integrate Twitter APIs and GUIs into your app.
+Contains several Android widgets, activities and fragments to easily integrate Twitter APIs and GUIs into your app. Twitter API binding is done using [Twitter4J](http://twitter4j.org/)
 
 Check the [wiki](https://github.com/dan-zx/twitt4droid/wiki) to get started with twitt4droid.
 
@@ -14,15 +14,13 @@ Try out the [sample application](https://dl.dropboxusercontent.com/u/1995295/app
 Install
 =======
 
-#### Eclipse
+### Eclipse
 
 Import the the **library/** folder as *Existing Android Code Into Workspace*. Then, in your application project properties, add the created project under the *Libraries* section of the *Android* category.
 
-#### Android Studio
+### Android Studio
 
 Support is coming soon.
-
-> Twitter API binding is done using [Twitter4J](http://twitter4j.org/)
 
 License
 =======
