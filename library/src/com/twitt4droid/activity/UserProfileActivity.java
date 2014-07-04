@@ -11,11 +11,31 @@ import android.view.MenuItem;
 import com.twitt4droid.R;
 import com.twitt4droid.fragment.UserTimelineFragment;
 
+/**
+ * Shows the user profile of the given user. 
+ * Use the following factory method to create an intent to call this activity:
+ * <pre>
+ * {@code  
+ * Intent intent = UserProfileActivity.buildIntent(context, "2010MisterChip");
+ * Intent intent = UserProfileActivity.buildIntent(context, "2010MisterChip", true); // dark themed
+ * }
+ * </pre> 
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public class UserProfileActivity extends FragmentActivity {
 
     private static final String EXTRA_USERNAME = "EXTRA_USERNAME";
     private static final String EXTRA_ENABLE_DARK_THEME = "EXTRA_ENABLE_DARK_THEME";
 
+    /**
+     * Builds the intent to call this activity.
+     * 
+     * @param context the application context.
+     * @param username a twitter username.
+     * @param isDarkThemeEnabled if is going to use the dark theme.
+     * @return an Intent.
+     */
     public static Intent buildIntent(Context context, String username, boolean isDarkThemeEnabled) {
         Intent intent = new Intent(context, UserProfileActivity.class);
         Bundle b = new Bundle();
@@ -25,10 +45,18 @@ public class UserProfileActivity extends FragmentActivity {
         return intent;
     }
 
+    /**
+     * Builds the intent to call this activity.
+     * 
+     * @param context the application context.
+     * @param username a twitter username.
+     * @return an Intent.
+     */
     public static Intent buildIntent(Context context, String username) {
         return buildIntent(context, username, false);
     }
-    
+
+    /** {@inheritDoc} */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,11 +72,13 @@ public class UserProfileActivity extends FragmentActivity {
             .commit();
     }
 
+    /** Set whether home should be displayed as an "up" affordance. */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void displayHomeAsUp() {
         getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
