@@ -19,7 +19,19 @@ import twitter4j.Status;
 
 import java.util.List;
 
+/**
+ * User Timeline Data Access Object interface.
+ *
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public interface UserTimelineDAO extends TimelineDAO {
 
+    /**
+     * All statuses from the given user.
+     * 
+     * @param screenName a username.
+     * @return statuses.
+     */
     List<Status> fetchListByScreenName(String screenName);
 }

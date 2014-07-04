@@ -23,8 +23,15 @@ import com.twitt4droid.util.Objects;
 
 import twitter4j.User;
 
+/**
+ * SQLite implementation of UserDAO interface.
+ *
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public class UserSQLiteDAO extends SQLiteTemplate.DAOSupport implements UserDAO {
 
+    /** {@inheritDoc} */
     @Override
     public User fetchById(Long id) {
         return getSQLiteTemplate().queryForSingleResult(
@@ -39,6 +46,7 @@ public class UserSQLiteDAO extends SQLiteTemplate.DAOSupport implements UserDAO 
                 });
     }
 
+    /** {@inheritDoc} */
     @Override
     public User fetchByScreenName(String screenName) {
         return getSQLiteTemplate().queryForSingleResult(
@@ -53,6 +61,7 @@ public class UserSQLiteDAO extends SQLiteTemplate.DAOSupport implements UserDAO 
                 });
     }
 
+    /** {@inheritDoc} */
     @Override
     public void save(User user) {
         getSQLiteTemplate().execute(
@@ -60,6 +69,7 @@ public class UserSQLiteDAO extends SQLiteTemplate.DAOSupport implements UserDAO 
                 new String[] { Objects.toString(user.getId()), user.getName(), user.getScreenName(), user.getProfileImageURL(), user.getProfileBannerURL(), user.getURL(), user.getDescription(), user.getLocation() });
     }
 
+    /** {@inheritDoc} */
     @Override
     public void delete(User user) {
         getSQLiteTemplate().execute(

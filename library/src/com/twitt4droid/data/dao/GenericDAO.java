@@ -15,4 +15,12 @@
  */
 package com.twitt4droid.data.dao;
 
+/**
+ * Generic Data Access Object (DAO) interface. Defines the general DAO behavior.
+ *
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ * @param <T> an entity type.
+ * @param <ID> the id type.
+ */
 public interface GenericDAO<T, ID> { }

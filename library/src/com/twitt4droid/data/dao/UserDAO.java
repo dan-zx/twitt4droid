@@ -17,10 +17,41 @@ package com.twitt4droid.data.dao;
 
 import twitter4j.User;
 
+/**
+ * User Data Access Object interface.
+ *
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public interface UserDAO extends GenericDAO<User, Long> {
 
+    /**
+     * Return a user by the given id.
+     * 
+     * @param id a user id.
+     * @return a user.
+     */
     User fetchById(Long id);
+
+    /**
+     * Return a user by the given username.
+     * 
+     * @param screenName a username.
+     * @return a user.
+     */
     User fetchByScreenName(String screenName);
+
+    /**
+     * Saves the given user.
+     * 
+     * @param user a user.
+     */
     void save(User user);
+
+    /**
+     * Deletes the given user.
+     * 
+     * @param user a user.
+     */
     void delete(User user);
 }

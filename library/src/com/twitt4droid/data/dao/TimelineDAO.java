@@ -19,9 +19,28 @@ import java.util.List;
 
 import twitter4j.Status;
 
+/**
+ * Timeline Data Access Object interface.
+ *
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public interface TimelineDAO extends GenericDAO<Status, Long> { 
 
+    /** 
+     * Returns all statuses.
+     * 
+     * @return statuses. 
+     */
     List<Status> fetchList();
+
+    /**
+     * Saves all the given statuses.
+     * 
+     * @param statuses statuses.
+     */
     void save(List<Status> statuses);
+
+    /** Deletes all statuses. */
     void deleteAll();
 }

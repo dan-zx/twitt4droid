@@ -27,14 +27,26 @@ import com.twitt4droid.data.dao.impl.sqlite.UserSQLiteDAO;
 import com.twitt4droid.data.dao.impl.sqlite.UserTimelineSQLiteDAO;
 import com.twitt4droid.data.source.Twitt4droidDatabaseHelper;
 
+/**
+ * Creates the current DAO objects from the implementations.
+ * 
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public class DAOFactory {
 
     private final Context context;
 
+    /**
+     * Creates a DAOFactory.
+     * 
+     * @param context the application context.
+     */
     public DAOFactory(Context context) {
         this.context = context;
     }
 
+    /** @return a new HomeTimelineDAO. */
     public TimelineDAO getHomeTimelineDAO() {
         TimelineSQLiteDAO dao = new TimelineSQLiteDAO(TimelineSQLiteDAO.Table.HOME);
         dao.setContext(context);
@@ -42,6 +54,7 @@ public class DAOFactory {
         return dao;
     }
 
+    /** @return a new MentionsTimelineDAO. */
     public TimelineDAO getMentionsTimelineDAO() {
         TimelineSQLiteDAO dao = new TimelineSQLiteDAO(TimelineSQLiteDAO.Table.MENTION);
         dao.setContext(context);
@@ -49,6 +62,7 @@ public class DAOFactory {
         return dao;
     }
 
+    /** @return a new UserTimelineDAO. */
     public UserTimelineDAO getUserTimelineDAO() {
         UserTimelineSQLiteDAO dao = new UserTimelineSQLiteDAO();
         dao.setContext(context);
@@ -56,6 +70,7 @@ public class DAOFactory {
         return dao;
     }
 
+    /** @return a new FixedQueryTimelineDAO. */
     public TimelineDAO getFixedQueryTimelineDAO() {
         TimelineSQLiteDAO dao = new TimelineSQLiteDAO(TimelineSQLiteDAO.Table.FIXED_QUERY);
         dao.setContext(context);
@@ -63,6 +78,7 @@ public class DAOFactory {
         return dao;
     }
 
+    /** @return a new QueryableTimelineDAO. */
     public TimelineDAO getQueryableTimelineDAO() {
         TimelineSQLiteDAO dao = new TimelineSQLiteDAO(TimelineSQLiteDAO.Table.QUERYABLE);
         dao.setContext(context);
@@ -70,6 +86,7 @@ public class DAOFactory {
         return dao;
     }
 
+    /** @return a new ListTimelineDAO. */
     public ListTimelineDAO getListTimelineDAO() {
         ListSQLiteDAO dao = new ListSQLiteDAO();
         dao.setContext(context);
@@ -77,6 +94,7 @@ public class DAOFactory {
         return dao;
     }
 
+    /** @return a new UserDAO. */
     public UserDAO getUserDAO() {
         UserSQLiteDAO dao = new UserSQLiteDAO();
         dao.setContext(context);

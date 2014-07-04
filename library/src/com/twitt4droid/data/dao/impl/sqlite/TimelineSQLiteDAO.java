@@ -26,17 +26,29 @@ import twitter4j.Status;
 
 import java.util.List;
 
+/**
+ * SQLite implementation of TimelineDAO interface.
+ *
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public class TimelineSQLiteDAO extends SQLiteTemplate.DAOSupport implements TimelineDAO {
 
     public static enum Table { HOME, MENTION, ANY_USER, FIXED_QUERY, QUERYABLE }
 
     private final String tableName;
 
+    /**
+     * Creates a TimelineSQLiteDAO for the given table.
+     * 
+     * @param which a table.
+     */
     @SuppressLint("DefaultLocale")
     public TimelineSQLiteDAO(Table which) {
         tableName = which.name().toLowerCase();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Status> fetchList() {
         return getSQLiteTemplate().queryForList(
@@ -50,6 +62,7 @@ public class TimelineSQLiteDAO extends SQLiteTemplate.DAOSupport implements Time
                 });
     }
 
+    /** {@inheritDoc} */
     @Override
     public void save(final List<Status> statuses) {
         getSQLiteTemplate().batchExecute(
@@ -75,6 +88,7 @@ public class TimelineSQLiteDAO extends SQLiteTemplate.DAOSupport implements Time
                 });
     }
 
+    /** {@inheritDoc} */
     @Override
     public void deleteAll() {
         getSQLiteTemplate().execute(

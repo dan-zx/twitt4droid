@@ -26,8 +26,15 @@ import twitter4j.Status;
 
 import java.util.List;
 
+/**
+ * SQLite implementation of ListDAO interface.
+ *
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public class ListSQLiteDAO extends SQLiteTemplate.DAOSupport implements ListTimelineDAO {
 
+    /** {@inheritDoc} */
     @Override
     public List<Status> fetchListByListId(Long listId) {
         return getSQLiteTemplate().queryForList(
@@ -42,6 +49,7 @@ public class ListSQLiteDAO extends SQLiteTemplate.DAOSupport implements ListTime
                 });
     }
 
+    /** {@inheritDoc} */
     @Override
     public void save(final List<Status> statuses, final Long listId) {
         getSQLiteTemplate().batchExecute(
@@ -68,6 +76,7 @@ public class ListSQLiteDAO extends SQLiteTemplate.DAOSupport implements ListTime
                 });
     }
 
+    /** {@inheritDoc} */
     @Override
     public void deleteAllByListId(Long listId) {
         getSQLiteTemplate().execute(

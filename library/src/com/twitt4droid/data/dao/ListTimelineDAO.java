@@ -19,9 +19,34 @@ import java.util.List;
 
 import twitter4j.Status;
 
+/**
+ * List Data Access Object interface.
+ *
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public interface ListTimelineDAO extends GenericDAO<Status, Long> {
 
+    /**
+     * Returns all the statuses from the given list.
+     * 
+     * @param listId the list id.
+     * @return statuses.
+     */
     List<Status> fetchListByListId(Long listId);
+
+    /**
+     * Saves all the given statuses in the given list.
+     * 
+     * @param statuses statuses.
+     * @param listId the list id.
+     */
     void save(List<Status> statuses, Long listId);
+
+    /**
+     * Deletes all statuses in the given list.
+     * 
+     * @param listId the list id.
+     */
     void deleteAllByListId(Long listId);
 }

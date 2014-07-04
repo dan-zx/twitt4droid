@@ -25,12 +25,20 @@ import twitter4j.Status;
 
 import java.util.List;
 
+/**
+ * SQLite implementation of UserTimelineDAO interface.
+ *
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public class UserTimelineSQLiteDAO extends TimelineSQLiteDAO implements UserTimelineDAO {
 
+    /** Creates a UserTimelineSQLiteDAO. */
     public UserTimelineSQLiteDAO() {
         super(Table.ANY_USER);
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Status> fetchListByScreenName(String screenName) {
         return getSQLiteTemplate().queryForList(
