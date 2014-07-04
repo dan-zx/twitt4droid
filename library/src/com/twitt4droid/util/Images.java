@@ -19,9 +19,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.util.LruCache;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.jakewharton.disklrucache.DiskLruCache;
 
@@ -37,6 +39,12 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * Images class contains miscellaneous image utility methods.
+ *
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public final class Images {
 
     private static final String TAG = Images.class.getSimpleName();
@@ -53,11 +61,20 @@ public final class Images {
             }
         };
     }
-    
+
+    /**
+     * Default constructor. Do NOT try to initialize this class, it is suppose
+     * to be an static utility.
+     */
     private Images() {
         throw new IllegalAccessError("This class cannot be instantiated nor extended");
     }
 
+    /**
+     * Initializes the disk cache when is closed or null.
+     * 
+     * @param context the application context.
+     */
     private static void intDiskCacheIfNeeded(Context context) {
         if (DISK_CACHE == null || DISK_CACHE.isClosed()) {
             try {
@@ -74,8 +91,15 @@ public final class Images {
         }
     }
 
+    /**
+     * Gets a bitmap, if exists, from the given url and stores in both memory cache and disk cache.
+     * 
+     * @param context the application context.
+     * @param url an url.
+     * @return a bitmap or {@code null}.
+     */
     public static Bitmap getFromUrl(Context context, String url) {
-        String key = buildKeyFor(url);
+        String key = buildKey(url);
         Bitmap cachedBitmap = getFromCache(context, key);
         if (cachedBitmap != null) return cachedBitmap;
         
@@ -93,7 +117,13 @@ public final class Images {
         return null;
     }
 
-    private static String buildKeyFor(String url) {
+    /**
+     * Builds a key for given url.
+     * 
+     * @param url an url.
+     * @return a key.
+     */
+    private static String buildKey(String url) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             digest.update(url.getBytes());
@@ -106,6 +136,7 @@ public final class Images {
         return null;
     }
 
+    /** Clears both the memory cache and disk cache. */
     public static void clearCache() {
         MEM_CACHE.evictAll();
         if (DISK_CACHE != null) {
@@ -117,6 +148,14 @@ public final class Images {
         }
     }
 
+    /**
+     * Returns the bitmap to which the specified key is mapped, or null if both the memory cache and
+     * disk cache contains no mapping for the key.
+     * 
+     * @param context the application context.
+     * @param key the key whose associated value is to be returned.
+     * @return a bitmap or {@code null}.
+     */
     public static Bitmap getFromCache(Context context, String key) {
         Bitmap bitmap = MEM_CACHE.get(key);
         if (bitmap == null) {
@@ -125,7 +164,14 @@ public final class Images {
         }
         return bitmap;
     }
-    
+
+    /**
+     * Associates the specified bitmap with the specified key in both memory cache and disk cache.
+     * 
+     * @param context the application context.
+     * @param key the key with which the specified value is to be associated
+     * @param bitmap the bitmap.
+     */
     public static void saveInCache(Context context, String key, Bitmap bitmap) {
         if (!Strings.isNullOrBlank(key) && bitmap != null) {
             MEM_CACHE.put(key, bitmap);
@@ -133,6 +179,14 @@ public final class Images {
         }
     }
 
+    /**
+     * Returns the bitmap to which the specified key is mapped, or null if the disk cache contains
+     * no mapping for the key.
+     * 
+     * @param context the application context.
+     * @param key the key whose associated value is to be returned.
+     * @return a bitmap or {@code null}.
+     */
     private static Bitmap getFromDiskCache(Context context, String key) {
         intDiskCacheIfNeeded(context);
         DiskLruCache.Snapshot snapshot = null;
@@ -153,6 +207,13 @@ public final class Images {
         return null;
     }
 
+    /**
+     * Associates the specified bitmap with the specified key in the disk cache.
+     * 
+     * @param context the application context.
+     * @param key the key with which the specified value is to be associated
+     * @param bitmap the bitmap.
+     */
     private static void saveInDiskCache(Context context, String key, Bitmap bitmap) {
         intDiskCacheIfNeeded(context);
         DiskLruCache.Editor editor = null;
@@ -183,6 +244,85 @@ public final class Images {
                     Log.e(TAG, "Couldn't close stream", ex);
                 }
             }
+        }
+    }
+
+    /**
+     * Loades an bitmap from any url asynchronously and the sets the bitmap in the given ImageView. 
+     * 
+     * @author Daniel Pedraza-Arcega
+     * @since version 1.0
+     */
+    public static class ImageLoader extends AsyncTask<String, Void, Bitmap> {
+
+        private ImageView imageView;
+        private Integer loadingResourceImageId;
+        private Integer loadingColorId;
+        private Context context;
+
+        /**
+         * Creates an ImageLoader.
+         * 
+         * @param context the application context.
+         */
+        public ImageLoader(Context context) {
+            this.context = context;
+        }
+
+        /**
+         * Sets the ImageView to use.
+         * 
+         * @param imageView an ImageView.
+         * @return this ImageLoader.
+         */
+        public ImageLoader setImageView(ImageView imageView) {
+            this.imageView = imageView;
+            return this;
+        }
+
+        /**
+         * Sets the drawable resource to use when the ImageView is loading.
+         * 
+         * @param loadingResourceImageId an ImageView.
+         * @return this ImageLoader.
+         */
+        public ImageLoader setLoadingResourceImageId(int loadingResourceImageId) {
+            this.loadingResourceImageId = loadingResourceImageId;
+            return this;
+        }
+
+        /**
+         * Sets the color resource to use when the ImageView is loading.
+         * 
+         * @param loadingColorId an ImageView.
+         * @return this ImageLoader.
+         */
+        public ImageLoader setLoadingColorId(int loadingColorId) {
+            this.loadingColorId = loadingColorId;
+            return this;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        protected void onPreExecute() {
+            if (loadingResourceImageId != null) imageView.setImageResource(loadingResourceImageId);
+            if (loadingColorId != null) imageView.setBackgroundColor(context.getResources().getColor(loadingColorId));
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        protected Bitmap doInBackground(String... param) {
+            return getFromUrl(context, param[0]);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            if (result != null) imageView.setImageBitmap(result);
+            imageView = null;
+            loadingResourceImageId = null;
+            loadingColorId = null;
+            context = null;
         }
     }
 }

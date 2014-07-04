@@ -43,7 +43,7 @@ import com.twitt4droid.fragment.FixedQueryTimelineFragment;
 import com.twitt4droid.fragment.HomeTimelineFragment;
 import com.twitt4droid.fragment.MentionsTimelineFragment;
 import com.twitt4droid.fragment.QueryableTimelineFragment;
-import com.twitt4droid.task.ImageLoader;
+import com.twitt4droid.util.Images.ImageLoader;
 import com.twitt4droid.util.Strings;
 import com.twitt4droid.widget.TweetDialog;
 

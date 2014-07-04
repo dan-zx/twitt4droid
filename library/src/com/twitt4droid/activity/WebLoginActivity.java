@@ -193,7 +193,7 @@ public class WebLoginActivity extends Activity {
             
             @Override
             public void onClick(View v) {
-                onReloadCancelButtonClick();
+                onRefreshCancelButtonClick();
             }
         });
         CookieSyncManager.createInstance(this);
@@ -280,7 +280,8 @@ public class WebLoginActivity extends Activity {
         }
     }
 
-    private void onReloadCancelButtonClick() {
+    /** Action when the refresh/cancel button is clicked. */
+    private void onRefreshCancelButtonClick() {
         if (refreshCancelButton.getDrawable().getConstantState().equals(
                 getResources().getDrawable(R.drawable.twitt4droid_ic_cancel_holo_dark).getConstantState())) {
             webView.stopLoading();

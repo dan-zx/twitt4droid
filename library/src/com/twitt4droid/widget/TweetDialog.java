@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014 Daniel Pedraza-Arcega
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.twitt4droid.widget;
 
 import android.app.Activity;
@@ -18,16 +33,28 @@ import android.widget.Toast;
 import com.twitt4droid.R;
 import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
-import com.twitt4droid.task.ImageLoader;
+import com.twitt4droid.util.Images.ImageLoader;
 import com.twitt4droid.util.Strings;
 
-import twitter4j.TwitterException;
-import twitter4j.TwitterMethod;
 import twitter4j.AsyncTwitter;
 import twitter4j.Status;
 import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterMethod;
 import twitter4j.User;
 
+/**
+ * A dialog to compose a tweet. Call it like this:
+ * <pre>
+ * {@code 
+ * new TweetDialog(context).show();
+ * new TweetDialog(context).addTextToTweet(text).show();
+ * }
+ * </pre>
+ * 
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public class TweetDialog extends Dialog {
 
     private static final String TAG = TweetDialog.class.getSimpleName();
@@ -44,21 +71,22 @@ public class TweetDialog extends Dialog {
     private int redColor;
     private int defaultCharacterCountTextViewTextColor;
 
+    /**
+     * Creates a TweetDialog.
+     * 
+     * @param context the Context in which the Dialog should run.
+     */
     public TweetDialog(Context context) {
         super(context);
         init();
     }
 
-    public TweetDialog(Context context, int theme) {
-        super(context, theme);
-        init();
-    }
-
-    public TweetDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
-        super(context, cancelable, cancelListener);
-        init();
-    }
-
+    /**
+     * Pre-appends the given text to the tweet.
+     * 
+     * @param text any text.
+     * @return this TweetDialog.
+     */
     public TweetDialog addTextToTweet(String text) {
         if (!Strings.isNullOrBlank(text)) {
             tweetEditText.setText(text);
@@ -69,6 +97,7 @@ public class TweetDialog extends Dialog {
         return this;
     }
 
+    /** Initializes components. */
     private void init() {
         if (!Twitt4droid.isUserLoggedIn(getContext())) throw new IllegalStateException("User must be logged in in order to use TweetDialog");
         twitter = Twitt4droid.getAsyncTwitter(getContext());
@@ -123,6 +152,11 @@ public class TweetDialog extends Dialog {
         if (Resources.isConnectedToInternet(getContext())) twitter.showUser(Twitt4droid.getCurrentUser(getContext()).getScreenName());
     }
 
+    /**
+     * Sets up the authenticated user.
+     * 
+     * @param user the authenticated user.
+     */
     private void setUpUser(User user) {
         userUsername.setText(getContext().getString(R.string.twitt4droid_username_format, user.getScreenName()));
         userScreenName.setText(user.getName());
@@ -130,7 +164,8 @@ public class TweetDialog extends Dialog {
             .setImageView(userProfileImage)
             .execute(user.getProfileImageURL());
     }
-    
+
+    /** Finds the custom views. */
     private void findViews() {
         userProfileImage = (ImageView) findViewById(R.id.user_profile_image);
         userUsername = (TextView) findViewById(R.id.user_username);
@@ -140,24 +175,28 @@ public class TweetDialog extends Dialog {
         tweetButton = (ImageButton) findViewById(R.id.tweet_button);
     }
 
+    /** Initializes some constants. */
     private void initConsts() {
         tweetCharLimit = getContext().getResources().getInteger(R.integer.twitt4droid_tweet_char_limit);
         redColor = getContext().getResources().getColor(R.color.twitt4droid_error_color);
         defaultCharacterCountTextViewTextColor = charCounterTextView.getTextColors().getDefaultColor();
     }
 
+    /** Toggles the software keyboard. */
     private void toggleSoftKeyboard() {
         inputMethodManager.toggleSoftInput(
                 InputMethodManager.SHOW_FORCED, 
                 InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
+    /** Hides the software keyboard. */
     private void hideSoftKeyboard() {
         inputMethodManager.hideSoftInputFromWindow(
                 tweetEditText.getWindowToken(),
                 0);
     }
 
+    /** Sets up the tweet edit text view. */
     private void setUpTweetEditText() {
         toggleSoftKeyboard();
         tweetEditText.addTextChangedListener(new TextWatcher() {
@@ -174,7 +213,12 @@ public class TweetDialog extends Dialog {
             }
         });
     }
-    
+
+    /**
+     * Action when the tweet content has changed.
+     * 
+     * @param text new text.
+     */
     private void onTweetContentChanged(String text) {
         if (text.trim().length() == 0) tweetButton.setEnabled(false);
         else if (text.trim().length() > tweetCharLimit) {
@@ -187,7 +231,8 @@ public class TweetDialog extends Dialog {
 
         charCounterTextView.setText(String.valueOf(tweetCharLimit-text.length()));
     }
-    
+
+    /** Sets up the tweet button view. */
     private void setUpTweetButton() {
         tweetButton.setEnabled(false);
         tweetButton.setOnClickListener(new View.OnClickListener() {

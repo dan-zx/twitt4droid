@@ -15,14 +15,32 @@
  */
 package com.twitt4droid.util;
 
+/**
+ * Strings class contains miscellaneous string utility methods.
+ *
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public final class Strings {
 
+    /** Empty string "". */
     public static final String EMPTY = "";
 
+    /**
+     * Default constructor. Do NOT try to initialize this class, it is suppose
+     * to be an static utility.
+     */
     private Strings() {
         throw new IllegalAccessError("This class cannot be instantiated nor extended");
     }
-    
+
+    /**
+     * Check that the given string is either null or empty.
+     *
+     * @param str the string to check.
+     * @return {@code true} if the given string is either null or empty;
+     * otherwise {@code false}.
+     */
     public static boolean isNullOrBlank(String str) {
         return str == null || str.trim().length() == 0;
     }

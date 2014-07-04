@@ -31,7 +31,7 @@ import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.data.dao.UserDAO;
 import com.twitt4droid.data.dao.UserTimelineDAO;
 import com.twitt4droid.data.dao.impl.DAOFactory;
-import com.twitt4droid.task.ImageLoader;
+import com.twitt4droid.util.Images.ImageLoader;
 import com.twitt4droid.util.Strings;
 
 import twitter4j.AsyncTwitter;

@@ -36,7 +36,7 @@ import com.twitt4droid.R;
 import com.twitt4droid.Resources;
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.activity.UserProfileActivity;
-import com.twitt4droid.task.ImageLoader;
+import com.twitt4droid.util.Images.ImageLoader;
 
 import twitter4j.AsyncTwitter;
 import twitter4j.Status;
@@ -47,6 +47,12 @@ import twitter4j.TwitterMethod;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adapter that is responsible for making a View for each Twitter status.
+ *  
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public class TweetAdapter extends BaseAdapter {
 
     private static final String TAG = TweetAdapter.class.getSimpleName();
@@ -57,6 +63,11 @@ public class TweetAdapter extends BaseAdapter {
     private List<Status> data;
     private boolean isUsingDarkTheme;
 
+    /**
+     * Standard constructor.
+     * 
+     * @param context the context.
+     */
     public TweetAdapter(Context context) {
         if (!Twitt4droid.isUserLoggedIn(context)) throw new IllegalStateException("User must be logged in in order to use TweetAdapter");
         this.context = context;
@@ -65,6 +76,7 @@ public class TweetAdapter extends BaseAdapter {
         setUpTwitter();
     }
 
+    /** Sets up twitter callbacks. */
     private void setUpTwitter() {
         twitter.addListener(new TwitterAdapter() {
 
@@ -113,36 +125,42 @@ public class TweetAdapter extends BaseAdapter {
         });
     }
 
+    /** @param data the data to be displayed. */
     public void set(List<Status> data) {
         this.data = data == null ? new ArrayList<Status>() : data;
         notifyDataSetChanged();
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getCount() {
         return data.size();
     }
 
+    /** {@inheritDoc} */
     @Override
     public Status getItem(int position) {
         return data.get(position);
     }
 
+    /** {@inheritDoc} */
     @Override
     public long getItemId(int position) {
         return position;
     }
 
+    /** @param useDarkTheme if this adapter uses or not the dark theme. */
     public void setUseDarkTheme(boolean useDarkTheme) {
         isUsingDarkTheme = useDarkTheme;
     }
 
+    /** {@inheritDoc} */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.twitt4droid_tweet_item, null);
+            convertView = layoutInflater.inflate(R.layout.twitt4droid_tweet_item, parent);
             holder = new ViewHolder();
             holder.context = context;
             holder.twitter = twitter;
@@ -159,7 +177,14 @@ public class TweetAdapter extends BaseAdapter {
         holder.setContent(getItem(position));
         return convertView;
     }
-    
+
+    /**
+     * Stores each of the component views inside the tag field of a Layout, so it can immediately
+     * access them without the need to look them up repeatedly.
+     * 
+     * @author Daniel Pedraza-Arcega
+     * @since version 1.0
+     */
     private static class ViewHolder {
 
         private Context context;
@@ -173,8 +198,13 @@ public class TweetAdapter extends BaseAdapter {
         private ImageButton overflowButton;
         private boolean isUsingDarkTheme;
 
+        /**
+         * Sets up the content of a Twitter status.
+         * 
+         * @param status a Twitter status.
+         */
         private void setContent(final Status status) {
-            setUpThemeIfNeed();
+            setUpDarkThemeIfNeeded();
             usernameTextView.setText(context.getString(R.string.twitt4droid_tweet_username_format, status.getUser().getScreenName(), status.getUser().getName()));
             tweetTextView.setText(status.getText());
             String dateText = context.getString(R.string.twitt4droid_tweet_date_format, 
@@ -230,8 +260,9 @@ public class TweetAdapter extends BaseAdapter {
                 }
             });
         }
-        
-        private void setUpThemeIfNeed() {
+
+        /** Sets up the dark theme if needed. */
+        private void setUpDarkThemeIfNeeded() {
             if (isUsingDarkTheme) {
                 contentLayout.setBackgroundResource(R.color.twitt4droid_tweet_background_holo_dark);
                 overflowButton.setImageResource(R.drawable.twitt4droid_ic_overflow_holo_dark);

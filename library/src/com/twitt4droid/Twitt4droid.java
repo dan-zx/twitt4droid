@@ -201,6 +201,12 @@ public final class Twitt4droid {
         Images.clearCache();
     }
 
+    /**
+     * Twitter user implementation.
+     * 
+     * @author Daniel Pedraza-Arcega
+     * @since version 1.0
+     */
     private static class UserJSONImpl implements User {
 
         private static final String TAG = UserJSONImpl.class.getSimpleName();
@@ -217,6 +223,12 @@ public final class Twitt4droid {
         
         private UserJSONImpl() { }
 
+        /**
+         * Converts any user to a json string.
+         * 
+         * @param user any user
+         * @return a json string.
+         */
         private static String toJSON(User user) {
             return new StringBuilder()
                 .append("{")
@@ -231,8 +243,14 @@ public final class Twitt4droid {
                 .append("}")
                 .toString();
         }
-        
-        private static UserJSONImpl fromJSON(String json) {
+
+        /**
+         * Converts a json string to a user.
+         * 
+         * @param json a json string
+         * @return a user.
+         */
+        private static User fromJSON(String json) {
             UserJSONImpl user = null;
             try {
                 JSONObject obj = new JSONObject(json);
