@@ -24,24 +24,52 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * Simplifies the use of SQLite databases and helps to avoid common errors.
+ * 
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 class SQLiteTemplate {
 
     private static final String TAG = SQLiteTemplate.class.getSimpleName();
 
     private final SQLiteOpenHelper databaseHelper;
 
+    /**
+     * Creates a SQLiteTemplate.
+     * 
+     * @param databaseHelper a SQLiteOpenHelper.
+     */
     SQLiteTemplate(SQLiteOpenHelper databaseHelper) {
         this.databaseHelper = databaseHelper;
     }
 
+    /**
+     * Creates a query from given SQL to create a raw query, mapping a single row to a Domain object
+     * via a RowMapper.
+     * 
+     * @param <T> the Object type to be returned.
+     * @param sql SQL query to execute.
+     * @param rowMapper object that will map one object per row.
+     * @return the object mapped.
+     */
     <T> T queryForSingleResult(String sql, RowMapper<T> rowMapper) {
         return queryForSingleResult(sql, null, rowMapper);
     }
 
+    /**
+     * Creates a query from given SQL to create a raw query, mapping a single row to a Domain object
+     * via a RowMapper. The parameters are binded to the query using an string array.
+     * 
+     * @param <T> the Object type to be returned.
+     * @param sql SQL query to execute.
+     * @param args arguments to bind to the query.
+     * @param rowMapper object that will map one object per row.
+     * @return the object mapped.
+     */
     <T> T queryForSingleResult(String sql, String[] args, RowMapper<T> rowMapper) {
         SQLiteDatabase database = null;
         Cursor cursor = null;
@@ -59,10 +87,30 @@ class SQLiteTemplate {
         return object;
     }
 
+    /**
+     * Creates a query from given SQL to create a prepared statement, mapping 
+     * each row to a Domain object via a RowMapper
+     * 
+     * @param <T> the List type to be returned.
+     * @param sql SQL query to execute.
+     * @param rowMapper object that will map one object per row. 
+     * @return the result List, containing mapped objects.
+     */
     <T> List<T> queryForList(String sql, RowMapper<T> rowMapper) {
         return queryForList(sql, null, rowMapper);
     }
 
+    /**
+     * Creates a query from given SQL to create a row query, mapping 
+     * each row to a Domain object via a RowMapper. The parameters are binded to
+     * the query using an Object array.
+     * 
+     * @param <T> the List type to be returned.
+     * @param sql SQL query to execute.
+     * @param args parameters to bind to the query.
+     * @param rowMapper object that will map one object per row. 
+     * @return the result List, containing mapped objects.
+     */
     <T> List<T> queryForList(String sql, String[] args, RowMapper<T> rowMapper) {
         SQLiteDatabase database = null;
         Cursor cursor = null;
@@ -82,6 +130,11 @@ class SQLiteTemplate {
         return list;
     }
 
+    /**
+     * Issue a single SQL update operation (such as an insert, update or delete statement)
+     * 
+     * @param sql a SQL command.
+     */
     void execute(String sql) {
         SQLiteDatabase database = null;
         SQLiteStatement statement = null;
@@ -100,6 +153,13 @@ class SQLiteTemplate {
         }
     }
 
+    /**
+     * Issue a single SQL update operation (such as an insert, update or delete statement) with a
+     * binder object.
+     * 
+     * @param sql SQL to execute .
+     * @param statementBinder the SQLiteStatementBinder to set values to a SQLiteStatement.
+     */
     void execute(String sql, SQLiteStatementBinder statementBinder) {
         SQLiteDatabase database = null;
         SQLiteStatement statement = null;
@@ -119,6 +179,13 @@ class SQLiteTemplate {
         }
     }
 
+    /**
+     * Issue a single SQL update operation (such as an insert, update or delete statement) and an
+     * array of arguments to bind to the update.
+     * 
+     * @param sql SQL to execute.
+     * @param args parameters to bind to the query.
+     */
     void execute(String sql, String[] args) {
         SQLiteDatabase database = null;
         SQLiteStatement statement = null;
@@ -126,9 +193,7 @@ class SQLiteTemplate {
             database = databaseHelper.getWritableDatabase();
             database.beginTransaction();
             statement = database.compileStatement(sql);
-            for (int index = args.length; index != 0; index--) {
-                statement.bindString(index, args[index - 1]);
-            }
+            SQLiteUtils.bindAllArgsAsStrings(statement, args);
             statement.execute();
             database.setTransactionSuccessful();
         } catch (Exception ex) {
@@ -140,6 +205,11 @@ class SQLiteTemplate {
         }
     }
 
+    /**
+     * Submits a batch of commands to the database for execution..
+     * 
+     * @param sqls SQLs to execute.
+     */
     void batchExecute(String[] sqls) {
         SQLiteDatabase database = null;
         try {
@@ -159,6 +229,40 @@ class SQLiteTemplate {
         }
     }
 
+    /**
+     * Submits a batch of commands to the database for execution.
+     * 
+     * @param sql SQL to execute.
+     * @param args arguments to bind to the query.
+     */
+    void batchExecute(String sql, String[][] argsPerRow) {
+        SQLiteDatabase database = null;
+        SQLiteStatement statement = null;
+        try {
+            database = databaseHelper.getWritableDatabase();
+            database.beginTransaction();
+            statement = database.compileStatement(sql);
+            for (String[] args : argsPerRow) {
+                statement.clearBindings();
+                SQLiteUtils.bindAllArgsAsStrings(statement, args);
+                statement.execute();
+            }
+            database.setTransactionSuccessful();
+        } catch (Exception ex) {
+            Log.e(TAG, "Couldn't execute batch " + sql, ex);
+        } finally {
+            SQLiteUtils.close(statement);
+            SQLiteUtils.endTransaction(database);
+            SQLiteUtils.close(database);
+        }
+    }
+
+    /**
+     * Submits a batch of commands to the database for execution.
+     * 
+     * @param sql SQL to execute.
+     * @param statementBinder the BatchSQLiteStatementBinder to set values to a SQLiteStatement.
+     */
     void batchExecute(String sql, BatchSQLiteStatementBinder statementBinder) {
         SQLiteDatabase database = null;
         SQLiteStatement statement = null;
@@ -181,65 +285,104 @@ class SQLiteTemplate {
         }
     }
 
+    /**
+     * An interface for mapping rows of a Cursor on a per-row basis. Implementations of this
+     * interface perform the actual work of mapping each row to a result object.
+     * 
+     * @author Daniel Pedraza-Arcega
+     * @since version 1.0
+     */
     static interface RowMapper<T> {
 
+        /**
+         * Implementations must implement this method to map each row of data in the ResultSet. This
+         * method should not call next() on the ResultSet; it is only supposed to map values of the
+         * current row.
+         * 
+         * @param <T> the object type.
+         * @param cursor the Cursor to map (pre-initialized for the current row).
+         * @param rowNum the number of the current row.
+         * @return the result object for the current row.
+         */
         T mapRow(Cursor cursor, int rowNum);
     }
 
+    /**
+     * This interface sets values on a SQLiteStatement provided by the SQLiteTemplate class, for
+     * each of a number of updates in a batch using the same SQL. Implementations are responsible
+     * for setting any necessary parameters. SQL with placeholders will already have been supplied.
+     * 
+     * @author Daniel Pedraza-Arcega
+     * @since version 1.0
+     */
     static interface SQLiteStatementBinder {
 
+        /**
+         * Binds parameter values on the given SQLiteStatement.
+         *
+         * @param statement the SQLiteStatement to invoke setter methods on.
+         */
         void bindValues(SQLiteStatement statement);
     }
 
-    static class SingleColumnRowMapper implements RowMapper<String> {
-
-        @Override
-        public String mapRow(Cursor cursor, int rowNum) {
-            return cursor.getString(0);
-        }
-    }
-
-    static class ColumnMapRowMapper implements RowMapper<Map<String, String>> {
-
-        @Override
-        public Map<String, String> mapRow(Cursor cursor, int rowNum) {
-            int columnCount = cursor.getColumnCount();
-            Map<String, String> row = new HashMap<>(columnCount);
-            for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
-                row.put(cursor.getColumnName(columnIndex), cursor.getString(columnIndex));
-            }
-            return row;
-        }
-
-    }
-
+    /**
+     * This interface sets values on a SQLiteStatement provided by the SQLiteTemplate class, for
+     * each of a number of updates in a batch using the same SQL. Implementations are responsible
+     * for setting any necessary parameters. SQL with placeholders will already have been supplied.
+     * 
+     * @author Daniel Pedraza-Arcega
+     * @since version 1.0
+     */
     static interface BatchSQLiteStatementBinder {
 
+        /**
+         * Sets parameter values on the given SQLiteStatement.
+         *
+         * @param statement the SQLiteStatement to invoke setter methods on.
+         * @param i index of the statement we're issuing in the batch, starting from 0.
+         */
         void bindValues(SQLiteStatement statement, int i);
+
+        /**
+         * Returns the size of the batch.
+         *
+         * @return the number of statements in the batch.
+         */
         int getBatchSize();
     }
 
+    /**
+     * Generic base class for DAOs, defining template methods for DAO initialization.
+     * 
+     * @author Daniel Pedraza-Arcega
+     * @since version 1.0
+     */
     static abstract class DAOSupport {
 
         private SQLiteTemplate sqliteTemplate;
         private Context context;
 
+        /** @return the current SQLiteTemplate. */
         protected SQLiteTemplate getSQLiteTemplate() {
             return sqliteTemplate;
         }
 
+        /** @return the current context. */
         protected Context getContext() {
             return context;
         }
 
+        /** @param context the current context. */
         public void setContext(Context context) {
             this.context = context;
         }
 
+        /** @param databaseHelper the SQLiteOpenHelper. */
         public void setSQLiteOpenHelper(SQLiteOpenHelper databaseHelper) {
             sqliteTemplate = new SQLiteTemplate(databaseHelper);
         }
 
+        /** @return a SQL command from String resources. */
         protected String getSqlString(int resId) {
             return context.getString(resId).replaceAll("\\\\'", "'");
         }

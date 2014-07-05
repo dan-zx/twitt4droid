@@ -202,7 +202,7 @@ public final class Twitt4droid {
     }
 
     /**
-     * Twitter user implementation.
+     * Twitter user json implementation.
      * 
      * @author Daniel Pedraza-Arcega
      * @since version 1.0

@@ -30,6 +30,12 @@ import twitter4j.UserMentionEntity;
 
 import java.util.Date;
 
+/**
+ * Twitter status cursor implementation.
+ * 
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 class StatusCursorImpl implements Status {
 
     private static final long serialVersionUID = -7346562209217982116L;
@@ -39,10 +45,15 @@ class StatusCursorImpl implements Status {
     private String text;
     private UserCursorImpl user;
 
+    /**
+     * Creates a status with the given Cursor.
+     * 
+     * @param cursor a cursor
+     */
     public StatusCursorImpl(Cursor cursor) {
         id = SQLiteUtils.containsColumn(cursor, "id") ? cursor.getLong(cursor.getColumnIndex("id")) : -1;
-        createdAt = SQLiteUtils.containsColumn(cursor, "created_at") ? new Date(cursor.getLong(cursor.getColumnIndex("created_at"))) : null;
-        text = SQLiteUtils.containsColumn(cursor, "tweet_content") ? cursor.getString(cursor.getColumnIndex("tweet_content")) : null;
+        createdAt = SQLiteUtils.getDateFromLong(cursor, "created_at");
+        text = SQLiteUtils.getString(cursor, "tweet_content");
         user = new UserCursorImpl(cursor);
     }
     

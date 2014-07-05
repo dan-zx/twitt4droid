@@ -95,12 +95,9 @@ class SQLiteUtils {
     }
 
     static void bindAllArgsAsStrings(SQLiteStatement statement, String[] bindArgs) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            nativeBindAllArgsAsStrings(statement, bindArgs);
-        } else if (bindArgs != null) {
-            for (int i = bindArgs.length; i != 0; i--) {
-                statement.bindString(i, bindArgs[i-1]);
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) nativeBindAllArgsAsStrings(statement, bindArgs);
+        else if (bindArgs != null) {
+            for (int i = bindArgs.length; i != 0; i--) statement.bindString(i, bindArgs[i-1]);
         }
     }
     
@@ -157,7 +154,7 @@ class SQLiteUtils {
 
     static Character getCharacter(Cursor cursor, String columnName) {
         String value = getString(cursor, columnName);
-        if (value != null) return value.charAt(0);
+        if (value != null && value.length() == 1) return value.charAt(0);
         return null;
     }
 
@@ -171,6 +168,12 @@ class SQLiteUtils {
         return containsColumn(cursor, columnName) && !cursor.isNull(cursor.getColumnIndex(columnName))
                 ? cursor.getBlob(cursor.getColumnIndex(columnName))
                 : null;
+    }
+
+    static Date getDateFromLong(Cursor cursor, String columnName) {
+        Long value = getLong(cursor, columnName);
+        if (value != null) return new Date(value);
+        return null;
     }
 
     static Date getDateFromUnixTime(Cursor cursor, String columnName) {

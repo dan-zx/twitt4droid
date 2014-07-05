@@ -24,6 +24,12 @@ import twitter4j.User;
 
 import java.util.Date;
 
+/**
+ * Twitter user cursor implementation.
+ * 
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 class UserCursorImpl implements User {
 
     private static final long serialVersionUID = -3838693829821915548L;
@@ -36,7 +42,12 @@ class UserCursorImpl implements User {
     private String url;
     private String description;
     private String location;
-    
+
+    /**
+     * Creates a user with the given Cursor.
+     * 
+     * @param cursor a cursor
+     */
     public UserCursorImpl(Cursor cursor) {
         id = SQLiteUtils.containsColumn(cursor, "id") ? cursor.getLong(cursor.getColumnIndex("id")) : -1;
         name = SQLiteUtils.getString(cursor, "name");
