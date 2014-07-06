@@ -7,9 +7,9 @@ Contains several Android widgets, activities and fragments to easily integrate T
 
 Check the [wiki](https://github.com/dan-zx/twitt4droid/wiki) to get started with twitt4droid.
 
-Try out the [sample application](https://dl.dropboxusercontent.com/u/1995295/apps/twitt4droid_app.apk) and see twitt4droid in action.
+Download the application in [Google Play](https://play.google.com/store/apps/details?id=com.twitt4droid.app) and see twitt4droid in action.
 
-![App Screenshots](https://dl.dropboxusercontent.com/u/1995295/img/twitt4droid/app-screenshots.png)
+![Promo](https://dl.dropboxusercontent.com/u/1995295/img/twitt4droid/promo.png)
 
 
 License
