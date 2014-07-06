@@ -39,6 +39,12 @@ import twitter4j.TwitterException;
 
 import java.util.List;
 
+/**
+ * Base class for Twitter timelines. 
+ * 
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public abstract class TimelineFragment extends Fragment {
     
     protected static final String ENABLE_DARK_THEME_ARG = "ENABLE_DARK_THEME";
@@ -50,16 +56,28 @@ public abstract class TimelineFragment extends Fragment {
     private TweetAdapter listAdapter;
     private ProgressBar progressBar;
 
+    /** @return the title string resource. */
     public abstract int getResourceTitle();
+
+    /** @return the icon for holo light themes. */
     public abstract int getResourceHoloLightIcon();
+
+    /** @return the icon for holo dark themes. */
     public abstract int getResourceHoloDarkIcon();
 
+    /**
+     * Initializes a StatusesLoaderTask.
+     * 
+     * @return a new StatusesLoaderTask.
+     */
     protected abstract StatusesLoaderTask initStatusesLoaderTask();
 
+    /** @return if the dark theme is enabled. */
     protected boolean isDarkThemeEnabled() {
         return getArguments().getBoolean(ENABLE_DARK_THEME_ARG, false);
     }
 
+    /** {@inheritDoc} */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.twitt4droid_timeline, container, false);
@@ -67,6 +85,11 @@ public abstract class TimelineFragment extends Fragment {
         return layout;
     }
 
+    /**
+     * Sets up the layout with the given view.
+     * 
+     * @param layout the root view.
+     */
     protected void setUpLayout(View layout) {
         swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
         tweetListView = (ListView) layout.findViewById(R.id.tweets_list);
@@ -87,6 +110,7 @@ public abstract class TimelineFragment extends Fragment {
         });
     }
 
+    /** Reloads the Twitter feed when connected to internet. */
     protected void reloadTweetsIfPossible() {
         if (Resources.isConnectedToInternet(getActivity())) initStatusesLoaderTask().execute();
         else {
@@ -97,34 +121,54 @@ public abstract class TimelineFragment extends Fragment {
         }
     }
 
+    /**
+     * Loads twitter statuses asynchronously.
+     * 
+     * @author Daniel Pedraza-Arcega
+     * @since version 1.0
+     */
     protected abstract class StatusesLoaderTask extends AsyncTask<Void, Void, List<Status>> {
 
-        private final boolean isConnectToInternet;
+        private final boolean isConnectedToInternet;
         private final GenericDAO<?, ?> dao;
         private final Twitter twitter;
 
         private TwitterException error;
 
+        /**
+         * Creates a StatusesLoaderTask.
+         * 
+         * @param dao any GenericDAO.
+         */
         protected StatusesLoaderTask(GenericDAO<?, ?> dao) {
             this.dao = dao;
-            isConnectToInternet = Resources.isConnectedToInternet(getActivity());
+            isConnectedToInternet = Resources.isConnectedToInternet(getActivity());
             twitter = Twitt4droid.getTwitter(getActivity());
         }
 
-        protected boolean isConnectToInternet() {
-            return isConnectToInternet;
+        /** @return if is connected to internet. */
+        protected boolean isConnectedToInternet() {
+            return isConnectedToInternet;
         }
 
+        /** @return a GenericDAO. */
         protected GenericDAO<?, ?> getDAO() {
             return dao;
         }
 
+        /** @return a Twitter. */
         protected Twitter getTwitter() {
             return twitter;
         }
 
+        /**
+         * Loads Twitter statuses in background.
+         *  
+         * @return Twitter statuses.
+         */
         protected abstract List<twitter4j.Status> loadTweetsInBackground() throws TwitterException;
 
+        /** {@inheritDoc} */
         @Override
         protected List<twitter4j.Status> doInBackground(Void... params) {
             try {
@@ -135,6 +179,7 @@ public abstract class TimelineFragment extends Fragment {
             }
         }
 
+        /** {@inheritDoc} */
         @Override
         public void onPostExecute(List<twitter4j.Status> data) {
             if (getActivity() != null) {

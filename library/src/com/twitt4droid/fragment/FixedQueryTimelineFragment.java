@@ -26,10 +26,23 @@ import twitter4j.TwitterException;
 
 import java.util.List;
 
+/**
+ * Shows the 20 most recent statuses that match a given query. 
+ * 
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public class FixedQueryTimelineFragment extends TimelineFragment {
 
     protected static final String QUERY_ARG = "QUERY";
 
+    /**
+     * Creates a FixedQueryTimelineFragment.
+     * 
+     * @param query a search query.
+     * @param enableDarkTheme if the dark theme is enabled.
+     * @return a new FixedQueryTimelineFragment.
+     */
     public static FixedQueryTimelineFragment newInstance(String query, boolean enableDarkTheme) {
         FixedQueryTimelineFragment fragment = new FixedQueryTimelineFragment();
         Bundle args = new Bundle();
@@ -39,55 +52,84 @@ public class FixedQueryTimelineFragment extends TimelineFragment {
         return fragment;
     }
 
+    /**
+     * Creates a FixedQueryTimelineFragment.
+     * 
+     * @param query a search query.
+     * @return a new FixedQueryTimelineFragment.
+     */
     public static FixedQueryTimelineFragment newInstance(String query) {
         return newInstance(query, false);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected QueryStatusesLoaderTask initStatusesLoaderTask() {
         return new QueryStatusesLoaderTask(new DAOFactory(getActivity().getApplicationContext()).getFixedQueryTimelineDAO(), getQuery());
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initStatusesLoaderTask().execute();
     }
 
+    /** 
+     * {@inheritDoc}
+     * 
+     * @deprecated use {@link #getQuery()} instead. 
+     */
     @Override
     @Deprecated
     public int getResourceTitle() {
         return R.string.twitt4droid_queryable_timeline_fragment_title; 
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getResourceHoloLightIcon() {
         return R.drawable.twitt4droid_ic_search_holo_light;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getResourceHoloDarkIcon() {
         return R.drawable.twitt4droid_ic_search_holo_dark;
     }
 
+    /** @return the search query. */
     public String getQuery() {
         return getArguments().getString(QUERY_ARG);
     }
 
+    /**
+     * Loads twitter statuses asynchronously.
+     * 
+     * @author Daniel Pedraza-Arcega
+     * @since version 1.0
+     */
     private class QueryStatusesLoaderTask extends StatusesLoaderTask {
 
         private final String query;
-        
+
+        /**
+         * Creates a QueryStatusesLoaderTask.
+         * 
+         * @param timelineDao a TimelineDAO.
+         * @param query the search query.
+         */
         protected QueryStatusesLoaderTask(TimelineDAO timelineDao, String query) {
             super(timelineDao);
             this.query = query;
         }
 
+        /** {@inheritDoc} */
         @Override
         protected List<twitter4j.Status> loadTweetsInBackground() throws TwitterException {
             TimelineDAO timelineDAO = (TimelineDAO) getDAO();
             List<twitter4j.Status> statuses = null;
-            if (isConnectToInternet()) {
+            if (isConnectedToInternet()) {
                 statuses = getTwitter().search(new Query(query)).getTweets();
                 // TODO: update statuses instead of deleting all previous statuses and save new ones.
                 timelineDAO.deleteAll();

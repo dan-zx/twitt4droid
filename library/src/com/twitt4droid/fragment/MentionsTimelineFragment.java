@@ -25,8 +25,21 @@ import twitter4j.TwitterException;
 
 import java.util.List;
 
+/**
+ * Shows the 20 most recent mentions (tweets containing a users's \@screen_name) for the
+ * authenticating user.
+ * 
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public class MentionsTimelineFragment extends TimelineFragment {
 
+    /**
+     * Creates a MentionsTimelineFragment.
+     * 
+     * @param enableDarkTheme if the dark theme is enabled.
+     * @return a new MentionsTimelineFragment.
+     */
     public static MentionsTimelineFragment newInstance(boolean enableDarkTheme) {
         MentionsTimelineFragment fragment = new MentionsTimelineFragment();
         Bundle args = new Bundle();
@@ -35,47 +48,69 @@ public class MentionsTimelineFragment extends TimelineFragment {
         return fragment;
     }
 
+    /**
+     * Creates a MentionsTimelineFragment.
+     * 
+     * @return a new MentionsTimelineFragment.
+     */
     public static MentionsTimelineFragment newInstance() {
         return newInstance(false);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected MentionsStatusesLoaderTask initStatusesLoaderTask() {
         return new MentionsStatusesLoaderTask(new DAOFactory(getActivity().getApplicationContext()).getMentionsTimelineDAO());
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initStatusesLoaderTask().execute();
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getResourceTitle() {
         return R.string.twitt4droid_mentions_timeline_fragment_title;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getResourceHoloLightIcon() {
         return R.drawable.twitt4droid_ic_notifications_holo_light;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getResourceHoloDarkIcon() {
         return R.drawable.twitt4droid_ic_notifications_holo_dark;
     }
 
+    /**
+     * Loads twitter statuses asynchronously.
+     * 
+     * @author Daniel Pedraza-Arcega
+     * @since version 1.0
+     */
     private class MentionsStatusesLoaderTask extends StatusesLoaderTask {
 
+        /**
+         * Creates a MentionsStatusesLoaderTask.
+         * 
+         * @param timelineDao a TimelineDAO.
+         */
         protected MentionsStatusesLoaderTask(TimelineDAO timelineDao) {
             super(timelineDao);
         }
 
+        /** {@inheritDoc} */
         @Override
         protected List<twitter4j.Status> loadTweetsInBackground() throws TwitterException {
             TimelineDAO timelineDAO = (TimelineDAO) getDAO();
             List<twitter4j.Status> statuses = null;
-            if (isConnectToInternet()) {
+            if (isConnectedToInternet()) {
                 statuses = getTwitter().getMentionsTimeline();
                 // TODO: update statuses instead of deleting all previous statuses and save new ones.
                 timelineDAO.deleteAll();

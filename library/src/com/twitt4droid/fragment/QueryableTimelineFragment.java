@@ -37,6 +37,12 @@ import twitter4j.TwitterException;
 
 import java.util.List;
 
+/**
+ * Contains a search box for searching statuses in Twitter. 
+ * 
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public class QueryableTimelineFragment extends TimelineFragment {
 
     protected static final String LAST_QUERY_KEY = "lastQuery";
@@ -45,6 +51,12 @@ public class QueryableTimelineFragment extends TimelineFragment {
     private EditText searchEditText;
     private String lastQuery;
 
+    /**
+     * Creates a QueryableTimelineFragment.
+     * 
+     * @param enableDarkTheme if the dark theme is enabled.
+     * @return a new QueryableTimelineFragment.
+     */
     public static QueryableTimelineFragment newInstance(boolean enableDarkTheme) {
         QueryableTimelineFragment fragment = new QueryableTimelineFragment();
         Bundle args = new Bundle();
@@ -53,15 +65,22 @@ public class QueryableTimelineFragment extends TimelineFragment {
         return fragment;
     }
 
+    /**
+     * Creates a QueryableTimelineFragment.
+     * 
+     * @return a new QueryableTimelineFragment.
+     */
     public static QueryableTimelineFragment newInstance() {
         return newInstance(false);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected QueryStatusesLoaderTask initStatusesLoaderTask() {
         return new QueryStatusesLoaderTask(new DAOFactory(getActivity().getApplicationContext()).getFixedQueryTimelineDAO(), lastQuery);
     }
 
+    /** {@inheritDoc} */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.twitt4droid_queryable_timeline, container, false);
@@ -69,6 +88,7 @@ public class QueryableTimelineFragment extends TimelineFragment {
         return layout;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void setUpLayout(View layout) {
         super.setUpLayout(layout);
@@ -93,18 +113,21 @@ public class QueryableTimelineFragment extends TimelineFragment {
         });
     }
 
+    /** Hides the software keyboard. */
     private void hideSoftKeyboard() {
         if (searchEditText != null && inputMethodManager != null) {
             inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
     }
-    
+
+    /** {@inheritDoc} */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -115,41 +138,58 @@ public class QueryableTimelineFragment extends TimelineFragment {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (!isVisibleToUser) hideSoftKeyboard();
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getResourceTitle() {
         return R.string.twitt4droid_queryable_timeline_fragment_title;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getResourceHoloLightIcon() {
         return R.drawable.twitt4droid_ic_search_holo_light;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getResourceHoloDarkIcon() {
         return R.drawable.twitt4droid_ic_search_holo_dark;
     }
 
+    /**
+     * Loads twitter statuses asynchronously.
+     * 
+     * @author Daniel Pedraza-Arcega
+     * @since version 1.0
+     */
     private class QueryStatusesLoaderTask extends StatusesLoaderTask {
 
         private final String query;
-        
+
+        /**
+         * Creates a QueryStatusesLoaderTask.
+         * 
+         * @param timelineDao a TimelineDAO.
+         * @param query the search query.
+         */
         protected QueryStatusesLoaderTask(TimelineDAO timelineDao, String query) {
             super(timelineDao);
             this.query = query;
         }
 
+        /** {@inheritDoc} */
         @Override
         protected List<twitter4j.Status> loadTweetsInBackground() throws TwitterException {
             TimelineDAO timelineDAO = (TimelineDAO) getDAO();
             List<twitter4j.Status> statuses = null;
-            if (isConnectToInternet()) {
+            if (isConnectedToInternet()) {
                 statuses = getTwitter().search(new Query(query)).getTweets();
                 // TODO: update statuses instead of deleting all previous statuses and save new ones.
                 timelineDAO.deleteAll();
