@@ -62,7 +62,7 @@ public class DrawerItemAdapter extends BaseAdapter {
         ViewHolder holder = null;
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.drawer_item, parent);
+            convertView = layoutInflater.inflate(R.layout.drawer_item, parent, false);
             holder = new ViewHolder(); 
             holder.itemtext = (TextView) convertView.findViewById(R.id.item_text);
             convertView.setTag(holder);

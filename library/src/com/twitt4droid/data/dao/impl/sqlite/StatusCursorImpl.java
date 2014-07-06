@@ -238,4 +238,10 @@ class StatusCursorImpl implements Status {
         // TODO Auto-generated method stub
         return false;
     }
+
+    @Override
+    public MediaEntity[] getExtendedMediaEntities() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

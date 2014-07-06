@@ -567,5 +567,17 @@ public final class Twitt4droid {
             // TODO Auto-generated method stub
             return false;
         }
+
+        @Override
+        public boolean isDefaultProfile() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public boolean isDefaultProfileImage() {
+            // TODO Auto-generated method stub
+            return false;
+        }
     }
 }

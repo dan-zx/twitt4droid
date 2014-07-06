@@ -160,7 +160,7 @@ public class TweetAdapter extends BaseAdapter {
         ViewHolder holder = null;
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.twitt4droid_tweet_item, parent);
+            convertView = layoutInflater.inflate(R.layout.twitt4droid_tweet_item, parent, false);
             holder = new ViewHolder();
             holder.context = context;
             holder.twitter = twitter;
