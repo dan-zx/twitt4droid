@@ -25,17 +25,27 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.regex.Pattern;
 
+/**
+ * SQL file parser utility.
+ * 
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 class SQLFileParser {
     
     private static final int END_OF_STREAM = -1;
     private static final String TAG = SQLFileParser.class.getSimpleName();
     private static final String STATEMENT_DELIMITER = ";";
     private static final Pattern COMMENT_PATTERN = Pattern.compile("(?:/\\*[^;]*?\\*/)|(?:--[^;]*?$)", Pattern.DOTALL | Pattern.MULTILINE);
-    
-    static String[] getSqlStatements(InputStream stream) {
-        
-        BufferedReader reader = null;
 
+    /**
+     * Returns all the SQL statements contained in given stream.
+     *  
+     * @param stream an SQL file stream.
+     * @return SQL statements.
+     */
+    static String[] getSqlStatements(InputStream stream) {
+        BufferedReader reader = null;
         try {
             reader = new BufferedReader(new InputStreamReader(stream));
             int r;
@@ -44,11 +54,9 @@ class SQLFileParser {
                 char character = (char) r;
                 sb.append(character);
             }
-
             return COMMENT_PATTERN.matcher(sb)
                     .replaceAll(Strings.EMPTY)
                     .split(STATEMENT_DELIMITER);
-
         } catch (IOException ex) {
             Log.e(TAG, "Unable to parse SQL Statements", ex);
         } finally {
@@ -60,7 +68,6 @@ class SQLFileParser {
                 }
             }
         }
-
         return null;
     }
 }

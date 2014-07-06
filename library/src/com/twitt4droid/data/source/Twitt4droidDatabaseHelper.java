@@ -25,6 +25,12 @@ import com.twitt4droid.R;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Creates and manages the twitt4droid SQLite database. 
+ * 
+ * @author Daniel Pedraza-Arcega
+ * @since version 1.0
+ */
 public class Twitt4droidDatabaseHelper extends SQLiteOpenHelper {
 
     private static final int CURRENT_VERSION = 1;
@@ -34,12 +40,18 @@ public class Twitt4droidDatabaseHelper extends SQLiteOpenHelper {
     private final int version;
     private final Context context;
 
+    /**
+     * Creates a Twitt4droidDatabaseHelper.
+     * 
+     * @param context the application context.
+     */
     public Twitt4droidDatabaseHelper(Context context) {
         super(context, NAME, null, CURRENT_VERSION);
         this.context = context;
         version = CURRENT_VERSION;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onCreate(SQLiteDatabase database) {
         Log.v(TAG, "Creating database version " + version + "...");
@@ -55,13 +67,19 @@ public class Twitt4droidDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
         Log.v(TAG, "Destroying version " + oldVersion + "...");
         destroyDb(context);
         onCreate(database);
     }
-    
+
+    /**
+     * Destroys the twitt4droid database.
+     * 
+     * @param context the application context.
+     */
     public static void destroyDb(Context context) {
         context.deleteDatabase(NAME);
     }
