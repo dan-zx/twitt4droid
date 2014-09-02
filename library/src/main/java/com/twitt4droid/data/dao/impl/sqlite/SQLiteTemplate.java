@@ -233,7 +233,7 @@ class SQLiteTemplate {
      * Submits a batch of commands to the database for execution.
      * 
      * @param sql SQL to execute.
-     * @param args arguments to bind to the query.
+     * @param argsPerRow arguments to bind to the query.
      */
     void batchExecute(String sql, String[][] argsPerRow) {
         SQLiteDatabase database = null;

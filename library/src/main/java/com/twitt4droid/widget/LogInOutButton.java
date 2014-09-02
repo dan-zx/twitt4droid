@@ -86,7 +86,6 @@ public class LogInOutButton extends Button {
     /**
      * Sets the default style for this button. Apparently there's no method for
      * setting an xml style we need to do this programmatically.
-     * @param context the current context.
      */
     private void setStyle() {
         setButtonLabel();
@@ -106,7 +105,6 @@ public class LogInOutButton extends Button {
 
     /**
      * Sets the custom attributes for this button.
-     * @param context the current context.
      * @param attrs the xml attributes.
      */
     private void setAttributes(AttributeSet attrs) {
