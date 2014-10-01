@@ -23,7 +23,7 @@
 
     <!-- SETTINGS ACTIVITY -->
     <string name="about_preferences">About</string>
-    <string name="other_preferences">Other</string>
+    <string name="app_preferences">App settings</string>
     <string name="github_title">twitt4droid on GitHub</string>
     <string name="github_summary">Library code and wikis</string>
     <string name="licenses_title">Licenses</string>
@@ -31,6 +31,13 @@
     <string name="licenses_dialog_tile">Open source licenses</string>
     <string name="clear_cache_title">Clear caches</string>
     <string name="clear_cache_summary">Deletes stored data like images and tweets</string>
+    <string name="change_theme_title">Change theme</string>
+    <string name="change_theme_summary">%s selected</string>
+    <string-array name="theme_entries">
+        <item>Holo light theme</item>
+        <item>Holo dark theme</item>
+    </string-array>
+    <string name="change_theme_warning">Changes will apply after restarting the application</string>
     <string name="cache_cleared_message">Cache cleared</string>
     <string name="close_session_title">Close session</string>
     <string name="close_session_summary">Closes session and deletes all stored data</string>

@@ -19,7 +19,17 @@
     <string name="github_key" translatable="false">GITHUB</string>
     <string name="licences_key" translatable="false">LICENCES</string>
     <string name="clear_cache_key" translatable="false">CLEAR_CACHE</string>
+    <string name="change_theme_key" translatable="false">CHANGE_THEME</string>
     <string name="close_session_key" translatable="false">CLOSE_SESSION</string>
     <string name="app_version_key" translatable="false">APP_VERSION</string>
+    
+    <!-- Theme entries -->
+    <string name="light_theme_entry" translatable="false">LIGHT</string>
+    <string name="dark_theme_entry" translatable="false">DARK</string>
+    <string name="change_theme_default_value" translatable="false">LIGHT</string>
+    <string-array name="theme_entry_values" translatable="false">
+        <item>@string/light_theme_entry</item>
+        <item>@string/dark_theme_entry</item>
+    </string-array>
 
 </resources>
