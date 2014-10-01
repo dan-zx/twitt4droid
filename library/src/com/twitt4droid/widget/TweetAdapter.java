@@ -264,9 +264,12 @@ public class TweetAdapter extends BaseAdapter {
         /** Sets up the dark theme if needed. */
         private void setUpDarkThemeIfNeeded() {
             if (isUsingDarkTheme) {
-                contentLayout.setBackgroundResource(R.color.twitt4droid_tweet_background_holo_dark);
+                contentLayout.setBackgroundResource(R.drawable.twitt4droid_holo_dark_background_with_shadow);
                 overflowButton.setImageResource(R.drawable.twitt4droid_ic_overflow_holo_dark);
                 clockImage.setImageResource(R.drawable.twitt4droid_ic_clock_holo_dark);
+                usernameTextView.setTextColor(context.getResources().getColor(R.color.twitt4droid_text_color_inverse));
+                tweetTextView.setTextColor(context.getResources().getColor(R.color.twitt4droid_text_color_inverse));
+                tweetTimeTextView.setTextColor(context.getResources().getColor(R.color.twitt4droid_text_color_inverse));
             }
         }
     }
