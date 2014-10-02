@@ -77,7 +77,7 @@ public class QueryableTimelineFragment extends TimelineFragment {
     /** {@inheritDoc} */
     @Override
     protected QueryStatusesLoaderTask initStatusesLoaderTask() {
-        return new QueryStatusesLoaderTask(new DAOFactory(getActivity().getApplicationContext()).getFixedQueryTimelineDAO(), lastQuery);
+        return new QueryStatusesLoaderTask(new DAOFactory(getActivity().getApplicationContext()).getQueryableTimelineDAO(), lastQuery);
     }
 
     /** {@inheritDoc} */
@@ -136,6 +136,15 @@ public class QueryableTimelineFragment extends TimelineFragment {
             searchEditText.setText(lastQuery);
             initStatusesLoaderTask().execute();
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Resources.getPreferences(getActivity())
+            .edit()
+            .putString(LAST_QUERY_KEY, lastQuery)
+            .commit();
     }
 
     /** {@inheritDoc} */
