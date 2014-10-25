@@ -20,11 +20,11 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -112,10 +112,9 @@ public class MainActivity extends ActionBarActivity {
     private void setUpDrawer() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = new ActionBarDrawerToggle(
-                this,                
-                drawerLayout,         
-                R.drawable.ic_drawer,
-                R.string.drawer_open,
+                this, 
+                drawerLayout, 
+                R.string.drawer_open, 
                 R.string.drawer_close) {
 
             @Override
