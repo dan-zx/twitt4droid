@@ -71,7 +71,7 @@
             android:layout_alignParentTop="true"
             android:layout_margin="4dp"
             android:contentDescription="@string/twitt4droid_send_tweet"
-            android:src="@drawable/twitt4droid_ic_compose_tweet_holo_light" />
+            android:src="@drawable/twitt4droid_ic_compose_tweet_holo_dark" />
 
         <TextView
             android:id="@+id/char_counter_text"
