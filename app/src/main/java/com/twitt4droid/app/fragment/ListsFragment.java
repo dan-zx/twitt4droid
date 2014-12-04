@@ -16,6 +16,7 @@
 package com.twitt4droid.app.fragment;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTabStrip;
@@ -67,7 +68,7 @@ public class ListsFragment extends Fragment {
                         public void run() {
                             if (userLists != null && !userLists.isEmpty()) {
                                 for (UserList userList : userLists) {
-                                    ListTimelineFragment fragment = ListTimelineFragment.newInstance(userList);
+                                    ListTimelineFragment fragment = ListTimelineFragment.newInstance(userList, isDarkThemeSelected());
                                     adapter.addFragment(fragment);
                                 }
                             }
@@ -92,6 +93,12 @@ public class ListsFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private boolean isDarkThemeSelected() {
+        String theme = PreferenceManager.getDefaultSharedPreferences(getActivity())
+            .getString(getString(R.string.change_theme_key), getString(R.string.change_theme_default_value));
+        return theme.equals(getString(R.string.dark_theme_entry));
     }
 
     @Override

@@ -66,7 +66,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/user_info_layout"
-        android:layout_marginTop="4dp"
         android:background="@color/twitt4droid_tweet_list_background"
         android:visibility="gone" >
 

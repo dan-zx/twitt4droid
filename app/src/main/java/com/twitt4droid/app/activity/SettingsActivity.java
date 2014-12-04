@@ -15,16 +15,14 @@
  */
 package com.twitt4droid.app.activity;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Build;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.util.Log;
-import android.view.MenuItem;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -39,23 +37,19 @@ public class SettingsActivity extends PreferenceActivity {
     private Preference clearCachePreference;
     private Preference closeSessionPreference;
     private Preference versionPreference;
+    private ListPreference changeThemePreference;
     
     @Override
     @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) displayHomeAsUp();
         findPreferences();
         setUpLicencesPreference();
         setUpClearCachePreference();
+        setUpChangeThemePreference();
         setUpCloseSessionPreference();
         setUpVersionPreference();
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void displayHomeAsUp() {
-        getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @SuppressWarnings("deprecation")
@@ -64,6 +58,7 @@ public class SettingsActivity extends PreferenceActivity {
         clearCachePreference = findPreference(getString(R.string.clear_cache_key));
         closeSessionPreference  = findPreference(getString(R.string.close_session_key));
         versionPreference = findPreference(getString(R.string.app_version_key));
+        changeThemePreference = (ListPreference) findPreference(getString(R.string.change_theme_key));
     }
 
     private void setUpLicencesPreference() {
@@ -92,6 +87,24 @@ public class SettingsActivity extends PreferenceActivity {
                 Toast.makeText(getApplicationContext(), 
                         R.string.cache_cleared_message, 
                         Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+    }
+
+    private void setUpChangeThemePreference() {
+        changeThemePreference.setSummary(getString(R.string.change_theme_summary, changeThemePreference.getEntry()));
+        changeThemePreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                ListPreference p = (ListPreference)preference;
+                int index = p.findIndexOfValue(newValue.toString());
+                String entryValue = p.getEntries()[index].toString();
+                p.setSummary(getString(R.string.change_theme_summary, entryValue));
+                Toast.makeText(getApplicationContext(), 
+                        R.string.change_theme_warning, Toast.LENGTH_LONG)
+                        .show();
                 return true;
             }
         });
@@ -127,16 +140,6 @@ public class SettingsActivity extends PreferenceActivity {
             versionPreference.setSummary(versionName);
         } catch (NameNotFoundException ex) {
             Log.e(TAG, "Couldn't find version name", ex);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default: return super.onOptionsItemSelected(item);
         }
     }
 }

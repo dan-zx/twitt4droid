@@ -19,11 +19,12 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -67,7 +68,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         setUpDrawer();
         if (savedInstanceState == null) {
-            HomeTimelineFragment homeTimelineFragment = HomeTimelineFragment.newInstance();
+            HomeTimelineFragment homeTimelineFragment = HomeTimelineFragment.newInstance(isDarkThemeSelected());
             homeTimelineFragment.setRetainInstance(true);
             setUpFragment(homeTimelineFragment);
             setTitle(R.string.drawer_home_option);
@@ -102,13 +103,18 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    private boolean isDarkThemeSelected() {
+        String theme = PreferenceManager.getDefaultSharedPreferences(this)
+            .getString(getString(R.string.change_theme_key), getString(R.string.change_theme_default_value));
+        return theme.equals(getString(R.string.dark_theme_entry));
+    }
+
     private void setUpDrawer() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = new ActionBarDrawerToggle(
-                this,                
-                drawerLayout,         
-                R.drawable.ic_drawer,
-                R.string.drawer_open,
+                this, 
+                drawerLayout, 
+                R.string.drawer_open, 
                 R.string.drawer_close) {
 
             @Override
@@ -231,7 +237,7 @@ public class MainActivity extends ActionBarActivity {
                 
                 @Override
                 public void onClick(View v) {
-                    Intent profileIntent = UserProfileActivity.buildIntent(MainActivity.this, Twitt4droid.getCurrentUser(MainActivity.this).getScreenName());
+                    Intent profileIntent = UserProfileActivity.buildIntent(MainActivity.this, Twitt4droid.getCurrentUser(MainActivity.this).getScreenName(), isDarkThemeSelected());
                     startActivity(profileIntent);
                 }
             });
@@ -254,13 +260,13 @@ public class MainActivity extends ActionBarActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             switch(position) {
                 case 0: 
-                    HomeTimelineFragment homeTimelineFragment = HomeTimelineFragment.newInstance();
+                    HomeTimelineFragment homeTimelineFragment = HomeTimelineFragment.newInstance(isDarkThemeSelected());
                     homeTimelineFragment.setRetainInstance(true);
                     setUpFragment(homeTimelineFragment);
                     setTitle(R.string.drawer_home_option);
                     break;
                 case 1: 
-                    MentionsTimelineFragment mentionsTimelineFragment = MentionsTimelineFragment.newInstance();
+                    MentionsTimelineFragment mentionsTimelineFragment = MentionsTimelineFragment.newInstance(isDarkThemeSelected());
                     mentionsTimelineFragment.setRetainInstance(true);
                     setUpFragment(mentionsTimelineFragment);
                     setTitle(R.string.drawer_mentions_option);
@@ -270,13 +276,13 @@ public class MainActivity extends ActionBarActivity {
                     setTitle(R.string.drawer_lists_option);
                     break;
                 case 3:
-                    FixedQueryTimelineFragment fixedQueryTimelineFragment = FixedQueryTimelineFragment.newInstance(getString(R.string.drawer_fixed_search_option));
+                    FixedQueryTimelineFragment fixedQueryTimelineFragment = FixedQueryTimelineFragment.newInstance(getString(R.string.drawer_fixed_search_option), isDarkThemeSelected());
                     fixedQueryTimelineFragment.setRetainInstance(true);
                     setUpFragment(fixedQueryTimelineFragment);
                     setTitle(R.string.drawer_fixed_search_option);
                     break;
                 case 4:
-                    QueryableTimelineFragment queryableTimelineFragment = QueryableTimelineFragment.newInstance();
+                    QueryableTimelineFragment queryableTimelineFragment = QueryableTimelineFragment.newInstance(isDarkThemeSelected());
                     queryableTimelineFragment.setRetainInstance(true);
                     setUpFragment(queryableTimelineFragment);
                     setTitle(R.string.drawer_search_option);
