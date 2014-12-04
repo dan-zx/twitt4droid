@@ -71,7 +71,7 @@ public class TweetAdapter extends BaseAdapter {
     public TweetAdapter(Context context) {
         if (!Twitt4droid.isUserLoggedIn(context)) throw new IllegalStateException("User must be logged in in order to use TweetAdapter");
         this.context = context;
-        this.data = new ArrayList<Status>();
+        this.data = new ArrayList<>();
         this.twitter = Twitt4droid.getAsyncTwitter(context);
         setUpTwitter();
     }

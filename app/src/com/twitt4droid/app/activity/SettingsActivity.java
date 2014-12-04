@@ -15,17 +15,14 @@
  */
 package com.twitt4droid.app.activity;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.util.Log;
-import android.view.MenuItem;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -47,18 +44,12 @@ public class SettingsActivity extends PreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) displayHomeAsUp();
         findPreferences();
         setUpLicencesPreference();
         setUpClearCachePreference();
         setUpChangeThemePreference();
         setUpCloseSessionPreference();
         setUpVersionPreference();
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void displayHomeAsUp() {
-        getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @SuppressWarnings("deprecation")
@@ -149,16 +140,6 @@ public class SettingsActivity extends PreferenceActivity {
             versionPreference.setSummary(versionName);
         } catch (NameNotFoundException ex) {
             Log.e(TAG, "Couldn't find version name", ex);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default: return super.onOptionsItemSelected(item);
         }
     }
 }

@@ -15,13 +15,10 @@
  */
 package com.twitt4droid.activity;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.view.MenuItem;
 
 import com.twitt4droid.R;
 import com.twitt4droid.fragment.UserTimelineFragment;
@@ -77,7 +74,6 @@ public class UserProfileActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.twitt4droid_generic_activity);
         setTitle(R.string.twitt4droid_user_profile_activity_title);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) displayHomeAsUp();
         if (!getIntent().getExtras().containsKey(EXTRA_USERNAME)) throw new IllegalArgumentException("EXTRA_USER_USERNAME expected");
         String username = getIntent().getExtras().getString(EXTRA_USERNAME);
         boolean isDarkThemeEnabled = getIntent().getExtras().getBoolean(EXTRA_ENABLE_DARK_THEME);
@@ -85,22 +81,5 @@ public class UserProfileActivity extends FragmentActivity {
             .beginTransaction()
             .replace(R.id.content_frame, UserTimelineFragment.newInstance(username, isDarkThemeEnabled))
             .commit();
-    }
-
-    /** Set whether home should be displayed as an "up" affordance. */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void displayHomeAsUp() {
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default: return super.onOptionsItemSelected(item);
-        }
     }
 }
