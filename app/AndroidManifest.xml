@@ -18,7 +18,7 @@
     package="com.twitt4droid.app"
     android:installLocation="auto"
     android:versionCode="2"
-    android:versionName="1.1-SNAPSHOT" >
+    android:versionName="1.1" >
 
     <uses-sdk
         android:minSdkVersion="8"
