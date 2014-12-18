@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
 
 android {
     compileSdkVersion 21
@@ -26,4 +27,15 @@ dependencies {
     compile 'com.jakewharton:disklrucache:2.0.2'
     compile 'org.twitter4j:twitter4j-core:4.0.2'
     compile 'org.twitter4j:twitter4j-async:4.0.2'
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file:///home/daniel/Dropbox/Public/m2repository/")
+            pom.groupId = 'com.twitt4droid'
+            pom.artifactId = 'twitt4droid'
+            pom.version = '1.1-SNAPSHOT'
+        }
+    }
 }
