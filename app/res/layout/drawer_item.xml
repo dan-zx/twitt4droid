@@ -27,8 +27,7 @@
         android:drawablePadding="8dp"
         android:gravity="center_vertical"
         android:paddingBottom="8dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <View
         android:id="@+id/divider"
@@ -37,6 +36,6 @@
         android:layout_alignLeft="@id/item_text"
         android:layout_alignRight="@id/item_text"
         android:layout_below="@id/item_text"
-        android:background="#f83e3e3e" />
+        android:background="#bfbfbf" />
 
 </RelativeLayout>

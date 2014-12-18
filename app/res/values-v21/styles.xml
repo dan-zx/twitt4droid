@@ -14,13 +14,15 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:twitt4droid="http://schemas.android.com/apk/res-auto" >
+<resources>
 
-    <item
-        android:id="@+id/new_tweet_item"
-        android:icon="@drawable/twitt4droid_ic_compose_tweet_holo_dark"
-        android:title="@string/tweet"
-        twitt4droid:showAsAction="always"/>
+    <style name="Theme.Twitt4droid.WithToolbar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryDark">@color/primary_dark_color</item>
+        <item name="floatingActionButtonStyle">@style/Twitt4droid.Fab</item>
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
 
-</menu>
+</resources>

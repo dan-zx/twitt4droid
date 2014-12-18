@@ -25,14 +25,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.shamanland.fab.FloatingActionButton;
 
 import com.twitt4droid.Twitt4droid;
 import com.twitt4droid.activity.UserProfileActivity;
@@ -57,6 +59,8 @@ public class MainActivity extends ActionBarActivity {
     private static final String FRAGMENT_TAG = "CURRENT_FRAGMENT";
     private static final String CURRENT_TITLE_KEY = "CURRENT_TITLE";
 
+    private Toolbar toolbar;
+    private FloatingActionButton composeTweetButton;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private ListView drawerList;
@@ -66,6 +70,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setUpComposeTweetButton();
         setUpDrawer();
         if (savedInstanceState == null) {
             HomeTimelineFragment homeTimelineFragment = HomeTimelineFragment.newInstance(isDarkThemeSelected());
@@ -73,12 +78,6 @@ public class MainActivity extends ActionBarActivity {
             setUpFragment(homeTimelineFragment);
             setTitle(R.string.drawer_home_option);
         }
-    }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
     }
 
     @Override
@@ -109,11 +108,24 @@ public class MainActivity extends ActionBarActivity {
         return theme.equals(getString(R.string.dark_theme_entry));
     }
 
+    private void setUpComposeTweetButton() {
+        composeTweetButton = (FloatingActionButton) findViewById(R.id.compose_tweet_button);
+        composeTweetButton.setOnClickListener(new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                new TweetDialog(MainActivity.this).show();
+            }
+        });
+    }
+
     private void setUpDrawer() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         drawerToggle = new ActionBarDrawerToggle(
                 this, 
                 drawerLayout, 
+                toolbar,
                 R.string.drawer_open, 
                 R.string.drawer_close) {
 
@@ -133,7 +145,9 @@ public class MainActivity extends ActionBarActivity {
         };
 
         drawerLayout.setDrawerListener(drawerToggle);
-        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT);
+        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
+        drawerLayout.setStatusBarBackground(R.color.primary_dark_color);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         setUpDrawerMenu();
@@ -142,11 +156,11 @@ public class MainActivity extends ActionBarActivity {
     private void setUpDrawerMenu() {
         drawerList = (ListView) drawerLayout.findViewById(R.id.drawer_options);
         DrawerItemAdapter drawerMenuAdapter = new DrawerItemAdapter(this);
-        drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_home_holo_dark, R.string.drawer_home_option));
-        drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_notifications_holo_dark, R.string.drawer_mentions_option));
-        drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_list_holo_dark, R.string.drawer_lists_option));
-        drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_hashtag_holo_dark, R.string.drawer_fixed_search_option));
-        drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_search_holo_dark, R.string.drawer_search_option));
+        drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_home_holo_light, R.string.drawer_home_option));
+        drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_notifications_holo_light, R.string.drawer_mentions_option));
+        drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_list_holo_light, R.string.drawer_lists_option));
+        drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_hashtag_holo_light, R.string.drawer_fixed_search_option));
+        drawerMenuAdapter.add(new DrawerItem(R.drawable.twitt4droid_ic_search_holo_light, R.string.drawer_search_option));
         drawerMenuAdapter.add(new DrawerItem(R.drawable.ic_settings, R.string.drawer_settings_option));
         View drawerHeaderView = findViewById(R.id.drawer_header);
         new DrawerHeaderSetUpTask(drawerHeaderView).execute();
@@ -166,10 +180,6 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.new_tweet_item) {
-            new TweetDialog(this).show();
-            return true;
-        }
         if (drawerToggle.onOptionsItemSelected(item)) return true;
         return super.onOptionsItemSelected(item);
     }

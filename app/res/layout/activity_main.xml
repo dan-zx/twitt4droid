@@ -15,80 +15,114 @@
      limitations under the License.
 -->
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true" >
 
-    <FrameLayout
-        android:id="@+id/content_frame"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <LinearLayout
-        android:id="@+id/drawer"
-        android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="#f8212021"
         android:orientation="vertical" >
 
-        <RelativeLayout
-            android:id="@+id/drawer_header"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/primary_color"
+            android:minHeight="?attr/actionBarSize" />
 
-            <ImageView
-                android:id="@+id/user_profile_banner_image"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:contentDescription="@string/twitt4droid_banner_image_description"
-                android:scaleType="centerCrop"
-                android:src="@color/twitt4droid_no_image_background" />
-
-            <TextView
-                android:id="@+id/user_screen_name"
-                style="@style/Twitt4droid.TextAppearance.Overlay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/user_profile_image"
-                android:layout_toRightOf="@+id/user_profile_image" />
-
-            <TextView
-                android:id="@+id/user_name"
-                style="@style/Twitt4droid.TextAppearance.Overlay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/user_profile_image"
-                android:layout_toRightOf="@+id/user_profile_image"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/user_profile_image"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_alignBottom="@+id/user_profile_banner_image"
-                android:layout_alignParentLeft="true"
-                android:layout_margin="8dp"
-                android:background="@drawable/twitt4droid_image_white_border"
-                android:contentDescription="@string/twitt4droid_profile_image_description"
-                android:src="@color/twitt4droid_no_image_background" />
-
-            <View
-                android:id="@+id/divider"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@id/user_profile_image"
-                android:background="#f83e3e3e" />
-        </RelativeLayout>
-
-        <ListView
-            android:id="@+id/drawer_options"
+        <FrameLayout
+            android:id="@+id/content_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:choiceMode="singleChoice"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="8dp"
-            android:paddingTop="8dp" />
-    </LinearLayout>
+            android:layout_below="@id/toolbar" />
+
+        <com.shamanland.fab.FloatingActionButton
+            android:id="@+id/compose_tweet_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="16dp"
+            android:src="@drawable/twitt4droid_ic_compose_tweet_holo_dark" />
+    </RelativeLayout>
+
+    <com.twitt4droid.app.widget.ScrimInsetsFrameLayout
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:insetForeground="#4000" >
+
+        <LinearLayout
+            android:id="@+id/drawer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#cccccc"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/drawer_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <ImageView
+                    android:id="@+id/user_profile_banner_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:contentDescription="@string/twitt4droid_banner_image_description"
+                    android:scaleType="centerCrop"
+                    android:src="@color/twitt4droid_no_image_background" />
+
+                <TextView
+                    android:id="@+id/user_screen_name"
+                    style="@style/Twitt4droid.TextAppearance.Overlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/user_profile_image"
+                    android:layout_toRightOf="@+id/user_profile_image" />
+
+                <TextView
+                    android:id="@+id/user_name"
+                    style="@style/Twitt4droid.TextAppearance.Overlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/user_profile_image"
+                    android:layout_toRightOf="@+id/user_profile_image"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/user_profile_image"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignBottom="@+id/user_profile_banner_image"
+                    android:layout_alignParentLeft="true"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/twitt4droid_image_white_border"
+                    android:contentDescription="@string/twitt4droid_profile_image_description"
+                    android:src="@color/twitt4droid_no_image_background" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/user_profile_image"
+                    android:background="#f83e3e3e" />
+            </RelativeLayout>
+
+            <ListView
+                android:id="@+id/drawer_options"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:choiceMode="singleChoice"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="8dp"
+                android:paddingTop="8dp" />
+        </LinearLayout>
+    </com.twitt4droid.app.widget.ScrimInsetsFrameLayout>
 
 </android.support.v4.widget.DrawerLayout>

@@ -32,7 +32,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.AppCompat.Light.DarkActionBar" >
+        android:theme="@style/Theme.Twitt4droid.WithDefaultActionBar" >
         <meta-data
             android:name="com.twitt4droid.auth.CONSUMER_KEY"
             android:value="@string/twitter_consumer_key" />
@@ -47,7 +47,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.twitt4droid.app.activity.MainActivity" />
+        <activity
+            android:name="com.twitt4droid.app.activity.MainActivity"
+            android:theme="@style/Theme.Twitt4droid.WithToolbar" />
         <activity
             android:name="com.twitt4droid.activity.WebLoginActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar" />

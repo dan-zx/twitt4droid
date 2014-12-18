@@ -29,4 +29,5 @@ proguard/
 build/
 
 # External libraries
-appcompat-21.0.2/
+appcompat-*/
+floating-action-button-*/
